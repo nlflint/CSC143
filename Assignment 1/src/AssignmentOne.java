@@ -1,5 +1,5 @@
 /**
- * Prints my name, fact and output based on command line arguments
+ * Prints my name, a fact and some output based on command line arguments
  *
  * @author Nathan Flint
  * @version Assignment 1: Class tools
