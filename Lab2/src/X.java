@@ -22,4 +22,14 @@ public class X extends javax.swing.JComponent {
         g.drawLine(0, 0, getWidth(), getHeight());
         g.drawLine(0, getHeight(), getWidth(), 0);
     }
+
+    public static void main(String[] args)
+    {
+        javax.swing.JFrame win;
+        win = new javax.swing.JFrame("Test Component");
+        X x = new X();
+        win.add(x);
+        win.setSize(400, 300);
+        win.setVisible(true);
+    }
 }
