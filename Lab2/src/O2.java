@@ -9,11 +9,14 @@ import java.awt.*;
  */
 public class O2 extends JComponent {
 
+    // Colors of the O
     private Color _lineColor;
     private Color _fillColor;
 
-    public O2 ()
-    {
+    /**
+     * Sets default size and color
+     */
+    public O2 () {
         setPreferredSize(new Dimension(25, 25));
         _lineColor = Color.black;
         _fillColor = Color.white;
@@ -23,25 +26,34 @@ public class O2 extends JComponent {
      * Sets the outline color of the O
      * @param color Color of the outline
      */
-    public void setLineColor(Color color) {_lineColor = color;}
+    public void setLineColor(Color color) {
+        _lineColor = color;
+    }
 
     /**
      * Gets teh outline color of the O
      * @return the outline color
      */
-    public Color getLineColor() {return _lineColor;}
+    public Color getLineColor() {
+        return _lineColor;
+    }
 
     /**
      * Sets the fill color of the O
      * @param color fill color
      */
-    public void setFillColor(Color color) {_fillColor = color;}
+    public void setFillColor(Color color) {
+        _fillColor = color;
+    }
 
     /**
      * Gets the fill color
      * @return the fill color
      */
-    public Color setFillColor() {return _fillColor;}
+    public Color setFillColor() {
+        return _fillColor;
+    }
+
     /**
      * Method that paints the O
      * @param g graphics component where the O will be painted
