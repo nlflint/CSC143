@@ -10,6 +10,15 @@ public class X extends javax.swing.JComponent {
         setPreferredSize(new java.awt.Dimension(25, 25));
     }
 
+    private java.awt.Color lc;
+    public java.awt.Color getLineColor() {
+        return lc;
+    }
+    public void setLineColor(java.awt.Color rgb) {
+        lc = rgb;
+        repaint();
+    }
+
     /**
      * The necessary method. This method
      * renders the component.
