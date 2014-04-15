@@ -1,3 +1,5 @@
+import java.awt.*;
+
 /**
  * A sample component class.
  */
@@ -8,6 +10,7 @@ public class X extends javax.swing.JComponent {
      */
     public X() {
         setPreferredSize(new java.awt.Dimension(25, 25));
+        lc = Color.BLACK;
     }
 
     private java.awt.Color lc;
@@ -26,6 +29,7 @@ public class X extends javax.swing.JComponent {
      */
     public void paintComponent(java.awt.Graphics g) {
         super.paintComponent(g);
+        g.setColor(lc);
         g.drawLine(0, 0, getWidth() - 1, getHeight() - 1);
         g.drawLine(0, getHeight() - 1, getWidth() - 1, 0);
     }
