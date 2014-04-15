@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Draws an O
+ * Draws an O shape
  *
  * @author Nathan Flint
  * @version Lab2: Graphics
@@ -26,11 +26,26 @@ public class O2 extends JComponent {
     public void setLineColor(Color color) {_lineColor = color;}
 
     /**
+     * Gets teh outline color of the O
+     * @return the outline color
+     */
+    public Color getLineColor() {return _lineColor;}
+
+    /**
      * Sets the fill color of the O
      * @param color fill color
      */
     public void setFillColor(Color color) {_fillColor = color;}
 
+    /**
+     * Gets the fill color
+     * @return the fill color
+     */
+    public Color setFillColor() {return _fillColor;}
+    /**
+     * Method that paints the O
+     * @param g graphics component where the O will be painted
+     */
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
