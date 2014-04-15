@@ -3,12 +3,12 @@ import java.awt.*;
 /**
  * A sample component class.
  */
-public class X extends javax.swing.JComponent {
+public class X2 extends javax.swing.JComponent {
 
     /**
      * Constructor, sets the preferred size.
      */
-    public X() {
+    public X2() {
         setPreferredSize(new java.awt.Dimension(25, 25));
         lc = Color.BLACK;
     }
@@ -38,10 +38,10 @@ public class X extends javax.swing.JComponent {
     {
         javax.swing.JFrame win;
         win = new javax.swing.JFrame("Test Component");
-        win.add(new X(), java.awt.BorderLayout.NORTH);
-        win.add(new X(), java.awt.BorderLayout.SOUTH);
-        win.add(new X(), java.awt.BorderLayout.EAST);
-        win.add(new X(), java.awt.BorderLayout.WEST);
+        win.add(new X2(), java.awt.BorderLayout.NORTH);
+        win.add(new X2(), java.awt.BorderLayout.SOUTH);
+        win.add(new X2(), java.awt.BorderLayout.EAST);
+        win.add(new X2(), java.awt.BorderLayout.WEST);
         win.setSize(400, 300);
         win.setVisible(true);
     }
