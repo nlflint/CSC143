@@ -6,6 +6,12 @@
  * @version Assignment 2: SnapShop
  */
 public class GrayScale1 implements Filter {
+
+    // Sets scale factors for R, G, and B. This allows the class to be reused by grayscale2.
+    protected double getRedScale() {return 0.3;}
+    protected double getGreenScale() {return 0.59;}
+    protected double getBlueScale() {return 0.11;}
+
     /**
      * Overrides filter method to convert to gray scale
      * @param  theImage The image to modify
@@ -22,9 +28,9 @@ public class GrayScale1 implements Filter {
 
                 // Calculates luminosity using method1
                 double luminosity = 0;
-                luminosity += pixel.rgb[Pixel.RED] * .30;
-                luminosity += pixel.rgb[Pixel.GREEN] * .59;
-                luminosity += pixel.rgb[Pixel.BLUE] * .11;
+                luminosity += pixel.rgb[Pixel.RED] * getRedScale();
+                luminosity += pixel.rgb[Pixel.GREEN] * getGreenScale();
+                luminosity += pixel.rgb[Pixel.BLUE] * getBlueScale();
 
                 // Save new gray scale pixel
                 data[i][j] = new Pixel((int)luminosity,(int)luminosity,(int)luminosity);

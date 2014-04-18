@@ -19,7 +19,7 @@ public class SnapShopConfiguration
         theShop.addFlipHorizontalFilter(new FlipHorizontalFilter());
         theShop.addFlipVerticalFilter(new FlipVerticalFilter());
         theShop.addGrayScale1Filter(new GrayScale1());
-//        theShop.addGrayScale2Filter(null);
+        theShop.addGrayScale2Filter(new GrayScale2());
 //        theShop.addGaussianFilter(null);
 //        theShop.addLaplacianFilter(null);
 //        theShop.addUnsharpMaskingFilter(null);
