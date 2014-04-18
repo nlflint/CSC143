@@ -9,20 +9,28 @@ import java.awt.*;
  * @version Lab2: Graphics
  */
 public class TTT {
-    private TicTacToePanel ticTacToePanel;
-    private JComponent parentComponent;
+    /**
+     * Application method.
+     * @param args command line arguments
+     */
+    public static void main(String[] args) {
+        new TTT();
+    }
 
+    /**
+     * Constructor that does it all.
+     */
     public TTT()
     {
         // Create a 3x3 layout
         GridLayout grid = new GridLayout(3,3);
-        grid.setHgap(20);
-        grid.setVgap(20);
+        grid.setHgap(30);
+        grid.setVgap(30);
 
-        // Create the tic tac toe board and apply the grid layout
-        ticTacToePanel = new TicTacToePanel();
+        // Create the tic tac toe board, apply the grid layout, and add blank spacing around the panel
+        TicTacToePanel ticTacToePanel = new TicTacToePanel();
         ticTacToePanel.setLayout(grid);
-        ticTacToePanel.setBorder(new EmptyBorder(10,10,10,10));
+        ticTacToePanel.setBorder(new EmptyBorder(15,15,15,15));
 
         // Create a window
         JFrame win = new JFrame("Tic-Tac-Toe");
@@ -31,67 +39,39 @@ public class TTT {
         win.setVisible(true);
 
         // Add tic tac toe board to window.
-        win.add(ticTacToePanel, BorderLayout.CENTER);
+        win.add(ticTacToePanel);
+
+        // Add X's and O's and blanks to the tic tac toe board.
+        ticTacToePanel.add(CreateX());
+        ticTacToePanel.add(CreateO());
+        ticTacToePanel.add(CreateX());
+        ticTacToePanel.add(CreateO());
+        ticTacToePanel.add(CreateX());
+        ticTacToePanel.add(new JPanel());
+        ticTacToePanel.add(CreateO());
+        ticTacToePanel.add(new JPanel());
+        ticTacToePanel.add(CreateX());
+
+        // Draw everything
         win.validate();
 
     }
 
-    public static void main(String[] args) {
-
-        TTT ticTacToeBoard = new TTT();
-        ticTacToeBoard.build();
-    }
-
-    public void build()
-    {
-        // Add X's and O's to the tic tac toe board. The Draw enum also determines which lines
-        // of the tic tac toe board will be drawn.
-        ticTacToePanel.add(CreateXCell());
-        ticTacToePanel.add(CreateOCell());
-        ticTacToePanel.add(CreateXCell());
-        ticTacToePanel.add(CreateOCell());
-        ticTacToePanel.add(CreateXCell());
-        ticTacToePanel.add(CreateTicTacToeCell(null));
-        ticTacToePanel.add(CreateOCell());
-        ticTacToePanel.add(CreateTicTacToeCell(null));
-        ticTacToePanel.add(CreateXCell());
-
-        ticTacToePanel.validate();
-    }
-
     // Creates an "X"
-    private JComponent CreateXCell()
+    private JComponent CreateX()
     {
         X2 xComponent = new X2();
         xComponent.setLineColor(Color.blue);
-
-        return CreateTicTacToeCell(xComponent);
-    }
-
-    // Creates a JPanel with some default spacing and attaches an optional component
-    private JPanel CreateTicTacToeCell(Component shape)
-    {
-        // Create the cell, which is a JPanel, and give it some spacing around it.
-        JPanel cell = new JPanel();
-        cell.setLayout(new BorderLayout());
-        cell.setBorder(BorderFactory.createEmptyBorder(13,13,13,13));
-        cell.setOpaque(false);
-
-        // If a shape was given, then add it. Else it's a blank tile
-        if (shape != null)
-            cell.add(shape);
-
-        return cell;
+        return xComponent;
     }
 
     // Creates an "O"
-    private JComponent CreateOCell()
+    private JComponent CreateO()
     {
         O2 oComponent = new O2();
         oComponent.setLineColor(Color.red);
         oComponent.setFillColor(Color.yellow);
-
-        return CreateTicTacToeCell(oComponent);
+        return oComponent;
     }
 
     /**
