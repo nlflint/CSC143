@@ -18,7 +18,7 @@ public class SnapShopConfiguration
         theShop.setDefaultFilename("");
         theShop.addFlipHorizontalFilter(new FlipHorizontalFilter());
         theShop.addFlipVerticalFilter(new FlipVerticalFilter());
-//        theShop.addGrayScale1Filter(null);
+        theShop.addGrayScale1Filter(new GrayScale1());
 //        theShop.addGrayScale2Filter(null);
 //        theShop.addGaussianFilter(null);
 //        theShop.addLaplacianFilter(null);
