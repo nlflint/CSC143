@@ -108,6 +108,9 @@ public class Gaussian implements Filter
             transformTotalWeight += transform[i];
         }
 
+        if (transformTotalWeight < 1)
+            return;
+
         colors[RED] /= transformTotalWeight;
         colors[GREEN] /= transformTotalWeight;
         colors[BLUE] /= transformTotalWeight;

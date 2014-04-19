@@ -21,7 +21,7 @@ public class SnapShopConfiguration
         theShop.addGrayScale1Filter(new GrayScale1());
         theShop.addGrayScale2Filter(new GrayScale2());
         theShop.addGaussianFilter(new Gaussian());
-//        theShop.addLaplacianFilter(null);
+        theShop.addLaplacianFilter(new Laplacian());
 //        theShop.addUnsharpMaskingFilter(null);
 //        theShop.addEdgyFilter(null);
 //        theShop.addRotateClockwiseFilter(null);
