@@ -6,7 +6,8 @@
  * @author Nathan Flint
  * @version Assignment 2: SnapShop
  */
-public class RotateClockwiseFilter implements Filter {
+public class RotateClockwiseFilter implements Filter
+{
 
     /**
      * Overrides filter method to rotate clockwise

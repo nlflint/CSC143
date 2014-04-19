@@ -5,7 +5,8 @@
  * @author Nathan Flint
  * @version Assignment 2: SnapShop
  */
-public class GrayScale1 implements Filter {
+public class GrayScale1 implements Filter
+{
 
     // Sets scale factors for R, G, and B. This allows the class to be reused by grayscale2.
     protected double getRedScale() {return 0.3;}

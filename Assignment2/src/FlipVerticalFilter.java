@@ -5,7 +5,8 @@
  * @author Nathan Flint
  * @version Assignment 2: SnapShop
  */
-public class FlipVerticalFilter implements Filter {
+public class FlipVerticalFilter implements Filter
+{
 
     /**
      * Flips the givel pixel image vertically
