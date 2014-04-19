@@ -95,12 +95,12 @@ public class SnapShop
     }
 
     /**
-     * Add a filter to the SnapShop GUI to apply a Laplacian transform.
+     * Add a filter to the SnapShop GUI to apply a LaplacianFilter transform.
      * Creates a button and links it to the filter.
      * @param f The filter to apply
      */
     public void addLaplacianFilter(Filter f) {
-        fb.addFilter(f, "Laplacian");
+        fb.addFilter(f, "LaplacianFilter");
     }
 
     /**

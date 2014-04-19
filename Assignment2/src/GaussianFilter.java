@@ -8,7 +8,7 @@
  * @version Assignment 2: SnapShop
  *
  */
-public class Gaussian implements Filter
+public class GaussianFilter implements Filter
 {
     // Used to index an array of int for color
     private final static int RED = 0, GREEN = 1, BLUE = 2;

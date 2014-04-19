@@ -20,11 +20,11 @@ public class SnapShopConfiguration
         theShop.addFlipVerticalFilter(new FlipVerticalFilter());
         theShop.addGrayScale1Filter(new GrayScale1());
         theShop.addGrayScale2Filter(new GrayScale2());
-        theShop.addGaussianFilter(new Gaussian());
-        theShop.addLaplacianFilter(new Laplacian());
-        theShop.addUnsharpMaskingFilter(new UnsharpMasking());
-//        theShop.addEdgyFilter(null);
-//        theShop.addRotateClockwiseFilter(null);
+        theShop.addGaussianFilter(new GaussianFilter());
+        theShop.addLaplacianFilter(new LaplacianFilter());
+        theShop.addUnsharpMaskingFilter(new UnsharpMaskingFilter());
+        theShop.addEdgyFilter(new EdgyFilter());
+        theShop.addRotateClockwiseFilter(new RotateClockwiseFilter());
 //        theShop.addRotateCounterClockwiseFilter(null);
     }
 
