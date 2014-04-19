@@ -2,11 +2,14 @@ import java.awt.image.*;
 
 /**
  * Provides access to an image as an array of Pixels
+ *
+ * Grading Level: Challenge
  * 
  * @author Richard Dunn
  * @author Donald Chinn
  * @author Dan Jinguji
- * @version March 1, 2002
+ * @author Nathan Flint
+ * @version April 18, 2014
  */
 
 public class PixelImage
