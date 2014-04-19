@@ -1,0 +1,31 @@
+Nathan Flint
+Assignment 2: SnapShop
+
+I started this project like the assignment suggested, which is I compiled the
+program in its initial state, and then exercised it. I then examined the source
+code, specifically the HorizontalFlip to see how the PixelImage worked. The
+The SnapShop class was particularly difficult to follow so I put off
+understanding it until I needed to which at the end of the assignment.
+
+Having filters inherit from one another worked very well. When I originally
+wrote the Gaussian filter, I planned how I could reuse the code for the other
+3 filters that follow its same pattern. The only difference between all three
+filters is the transform, so I created a function in Gaussian that would return
+the transform. The other filters would inherit from Gaussian and just override
+the getTransform method. It worked great.
+
+I also used inheritance with the gray scale filters. I designed gray scale 1 to
+have a customizable ratio for each color channel. Then Gray Scale 2 could just
+inherit from gray scale 1 and override the function that returns the ratios.
+This also worked well. I'm really glad I planned how to reuse code before I
+began to write the filters and I plan to do this in the future.
+
+Some refactoring in the Gaussian filter cost me about an hour of time. After
+finishing the Gaussian filter, I attempted to simplify the data I was passing
+around, but my idea did not work because Pixel requires colors between 0-255. I
+didn't push my changes to source control before attempting this refactor, and I
+could not easily reverse the changes. I tried to "undo" my changes. However, I
+had made so many changes that even undo could not bring my work back. Next time
+I will make sure I push my changes before attempting to simplify already working
+code.
+
