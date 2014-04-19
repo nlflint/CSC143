@@ -75,13 +75,12 @@ public class PixelImage
      */
 
     public void setData(Pixel[][] data) throws IllegalArgumentException {
-        WritableRaster wr = this.myImage.getRaster();
+        // Create a new buffered image using width and height of the given data
+        width = data[0].length;
+        height = data.length;
+        this.myImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        if (data.length != wr.getHeight()) {
-            throw new IllegalArgumentException("Array size does not match");
-        } else if (data[0].length != wr.getWidth()) {
-            throw new IllegalArgumentException("Array size does not match");
-        }
+        WritableRaster wr = this.myImage.getRaster();
 
         // Translates from an array of Pixel data to java image data
         for (int row = 0; row < wr.getHeight(); row++) {
