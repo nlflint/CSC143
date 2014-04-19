@@ -86,7 +86,7 @@ public class Gaussian implements Filter
         // where the new colors will be stored
         int[] colors = new int[] {0, 0, 0};
 
-        // Transform each pixel to the new colors.
+        // Transform each pixel to the new colors using the transform weights
         for (int i = 0; i < pixels.length; i++)
         {
             colors[RED] += pixels[i].rgb[Pixel.RED] * transform[i];
