@@ -1,11 +1,11 @@
 /**
  * Created by nate on 4/18/14.
  */
-public class Laplacian extends Gaussian
+public class UnsharpMasking extends Gaussian
 {
     // Overrides method with custom transform.
     protected int[] getTransform()
     {
-        return new int[] {-1, -1, -1, -1, 8, -1, -1, -1, -1};
+        return new int[] {-1, -2, -1, -2, 28, -2, -1, -2, -1};
     }
 }

@@ -102,15 +102,18 @@ public class Gaussian implements Filter
     {
         int[] transform = getTransform();
 
+        // get the total weight of the transform by summing the array.
         int transformTotalWeight = 0;
         for (int i = 0; i < transform.length; i++)
         {
             transformTotalWeight += transform[i];
         }
 
+        // if total weight sums to zero then colors don't need to be weighted, just return.
         if (transformTotalWeight < 1)
             return;
 
+        // Adjust the colors by weight of the transform.
         colors[RED] /= transformTotalWeight;
         colors[GREEN] /= transformTotalWeight;
         colors[BLUE] /= transformTotalWeight;
