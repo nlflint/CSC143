@@ -1,8 +1,4 @@
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.*;
 
 /**
  * Tests for CSC143Triangle class
@@ -10,20 +6,25 @@ import org.junit.runners.JUnit4;
  * @author Nathan Flint
  * @version Lab3: JUnit Testing
  */
-@RunWith(JUnit4.class)
 public class CSC143TriangleTest
 {
-    private final int givenBase = 10;
-    private final int givenHeight = 20;
-    private final double expectedArea = 100.0;
+    private final int givenBase = 21;
+    private final int givenHeight = 33;
+    private final double expectedArea = 346.5;
     private CSC143Triangle testTriangle;
 
+    /**
+     * Initialize test data
+     */
     @Before
     public void testSetup()
     {
         testTriangle = new CSC143Triangle(givenBase, givenHeight);
     }
 
+    /**
+     * Verify getBase return the base of the triangle
+     */
     @Test
     public void base()
     {
@@ -34,6 +35,9 @@ public class CSC143TriangleTest
         Assert.assertEquals("Unexpected width", givenBase, actualBase);
     }
 
+    /**
+     * Verify getHeight returns the height of the triangle
+     */
     @Test
     public void height()
     {
@@ -44,6 +48,9 @@ public class CSC143TriangleTest
         Assert.assertEquals("Unexpected height", givenHeight, actualHeight);
     }
 
+    /**
+     * Verify getArea returns the Base * Height / 2
+     */
     @Test
     public void area()
     {
@@ -54,6 +61,9 @@ public class CSC143TriangleTest
         Assert.assertEquals("Unexpected area", expectedArea ,actualArea, 0);
     }
 
+    /**
+     * Verify that negative base length throws exception
+     */
     @Test(expected=IllegalArgumentException.class)
     public void negativeBaseNotAllowed()
     {
@@ -65,6 +75,9 @@ public class CSC143TriangleTest
 
     }
 
+    /**
+     * Verify that negative height length throws exception
+     */
     @Test(expected=IllegalArgumentException.class)
     public void negativeHeightNotAllowed()
     {
@@ -75,8 +88,9 @@ public class CSC143TriangleTest
         CSC143Triangle triangle = new CSC143Triangle(20, negativeHeight);
     }
 
-
-
+    /**
+     * Verify that area can be greater than integer maximum
+     */
     @Test
     public void areaCanOverflowIntegerMaximum()
     {

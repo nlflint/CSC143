@@ -1,8 +1,4 @@
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.*;
 
 /**
  * Tests for CSC143Rectangle class
@@ -10,19 +6,24 @@ import org.junit.runners.JUnit4;
  * @author Nathan Flint
  * @version Lab3: JUnit Testing
  */
-@RunWith(JUnit4.class)
 public class CSC143CircleTest
 {
     private final int givenDiameter = 20;
     private final double expectedArea = 314.1592653589793;
     private CSC143Circle testCircle;
 
+    /**
+     * Initializes test data
+     */
     @Before
     public void testSetup()
     {
         testCircle = new CSC143Circle(givenDiameter);
     }
 
+    /**
+     * Verify getDiameter returns diameter
+     */
     @Test
     public void diameter()
     {
@@ -33,6 +34,9 @@ public class CSC143CircleTest
         Assert.assertEquals("Unexpected diameter", givenDiameter, actualDiameter);
     }
 
+    /**
+     * Verify that getArea returns the area of the circle
+     */
     @Test
     public void area()
     {
@@ -43,6 +47,9 @@ public class CSC143CircleTest
         Assert.assertEquals("Unexpected area", expectedArea ,actualArea, 0);
     }
 
+    /**
+     * Verify that negative diameter length throws exception during instantiation
+     */
     @Test(expected=IllegalArgumentException.class)
     public void negativeDiameterNotAllowed()
     {
@@ -54,6 +61,9 @@ public class CSC143CircleTest
 
     }
 
+    /**
+     * Verify that area can be greater than the integer maximum
+     */
     @Test
     public void areaCanOverflowIntegerMaximum()
     {
@@ -68,7 +78,5 @@ public class CSC143CircleTest
         // Assert
         Assert.assertEquals("Unexpected area", expectedLargeArea ,actualArea, .000001);
     }
-
-
 }
 

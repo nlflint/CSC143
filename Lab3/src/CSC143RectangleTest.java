@@ -1,8 +1,4 @@
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.*;
 
 /**
  * Tests for CSC143Rectangle class
@@ -10,7 +6,6 @@ import org.junit.runners.JUnit4;
  * @author Nathan Flint
  * @version Lab3: JUnit Testing
  */
-@RunWith(JUnit4.class)
 public class CSC143RectangleTest
 {
     private final int givenWidth = 10;
@@ -18,12 +13,18 @@ public class CSC143RectangleTest
     private final double expectedArea = 200.0;
     private CSC143Rectangle testRectangle;
 
+    /**
+     * Test initialization
+     */
     @Before
     public void testSetup()
     {
         testRectangle = new CSC143Rectangle(givenWidth, givenHeight);
     }
 
+    /**
+     * Verify the getWidth function returns width of rectangle
+     */
     @Test
     public void width()
     {
@@ -34,6 +35,9 @@ public class CSC143RectangleTest
         Assert.assertEquals("Unexpected width", givenWidth, actualWidth);
     }
 
+    /**
+     * Verify getHeight function returns height of the rectangle
+     */
     @Test
     public void height()
     {
@@ -44,6 +48,9 @@ public class CSC143RectangleTest
         Assert.assertEquals("Unexpected height", givenHeight, actualHeight);
     }
 
+    /**
+     * Verify getArea returns the area of the rectangle
+     */
     @Test
     public void area()
     {
@@ -54,6 +61,9 @@ public class CSC143RectangleTest
         Assert.assertEquals("Unexpected area", expectedArea ,actualArea, 0);
     }
 
+    /**
+     * Verify negative width not allowed
+     */
     @Test(expected=IllegalArgumentException.class)
     public void negativeWidthNotAllowed()
     {
@@ -65,6 +75,9 @@ public class CSC143RectangleTest
 
     }
 
+    /**
+     * Verify negative height not allowed
+     */
     @Test(expected=IllegalArgumentException.class)
     public void negativeHeightNotAllowed()
     {
@@ -75,8 +88,9 @@ public class CSC143RectangleTest
         CSC143Rectangle rectangle = new CSC143Rectangle(20, negativeHeight);
     }
 
-
-
+    /**
+     * Verify that if area can be greater than maximum possible integer
+     */
     @Test
     public void areaCanOverflowIntegerMaximum()
     {
