@@ -27,7 +27,7 @@ public class CSC143CircleTest
     public void diameter()
     {
         // Act
-        int actualDiameter = testCircle.getWidth();
+        int actualDiameter = testCircle.getDiameter();
 
         // Assert
         Assert.assertEquals("Unexpected diameter", givenDiameter, actualDiameter);

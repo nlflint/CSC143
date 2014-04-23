@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class CSC143TriangleTest
 {
-    private final int givenWidth = 10;
+    private final int givenBase = 10;
     private final int givenHeight = 20;
     private final double expectedArea = 100.0;
     private CSC143Triangle testTriangle;
@@ -21,17 +21,17 @@ public class CSC143TriangleTest
     @Before
     public void testSetup()
     {
-        testTriangle = new CSC143Triangle(givenWidth, givenHeight);
+        testTriangle = new CSC143Triangle(givenBase, givenHeight);
     }
 
     @Test
-    public void width()
+    public void base()
     {
         // Act
-        int actualWidth = testTriangle.getWidth();
+        int actualBase = testTriangle.getBase();
 
         // Assert
-        Assert.assertEquals("Unexpected width", givenWidth, actualWidth);
+        Assert.assertEquals("Unexpected width", givenBase, actualBase);
     }
 
     @Test
@@ -55,13 +55,13 @@ public class CSC143TriangleTest
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void negativeWidthNotAllowed()
+    public void negativeBaseNotAllowed()
     {
         // Arrange
-        final int negativeWidth = -10;
+        final int negativeBase = -10;
 
         // Act
-        CSC143Triangle triangle = new CSC143Triangle(negativeWidth, 20);
+        CSC143Triangle triangle = new CSC143Triangle(negativeBase, 20);
 
     }
 
@@ -81,10 +81,10 @@ public class CSC143TriangleTest
     public void areaCanOverflowIntegerMaximum()
     {
         // Arrange
-        final int width = 100000;
+        final int base = 100000;
         final int height = 100000;
         final double expectedLargeArea = 5000000000.0;
-        CSC143Triangle triangle = new CSC143Triangle(width, height);
+        CSC143Triangle triangle = new CSC143Triangle(base, height);
 
         // Act
         double actualArea = triangle.getArea();
