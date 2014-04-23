@@ -19,13 +19,13 @@ public class CSC143RectangleTest
     private CSC143Rectangle testRectangle;
 
     @Before
-    public void TestSetup()
+    public void testSetup()
     {
         testRectangle = new CSC143Rectangle(givenWidth, givenHeight);
     }
 
     @Test
-    public void GetWidthStoredByConstructor()
+    public void width()
     {
         // Act
         int actualWidth = testRectangle.getWidth();
@@ -35,7 +35,7 @@ public class CSC143RectangleTest
     }
 
     @Test
-    public void GetHeightStoredByConstructor()
+    public void height()
     {
         // Act
         int actualHeight = testRectangle.getHeight();
@@ -45,7 +45,7 @@ public class CSC143RectangleTest
     }
 
     @Test
-    public void AreaIsProductOfWidthHeight()
+    public void area()
     {
         // Act
         double actualArea = testRectangle.getArea();
@@ -55,7 +55,7 @@ public class CSC143RectangleTest
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void NegativeWidthNotAllowed()
+    public void negativeWidthNotAllowed()
     {
         // Arrange
         final int negativeWidth = -10;
@@ -66,7 +66,7 @@ public class CSC143RectangleTest
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void NegativeHeightNotAllowed()
+    public void negativeHeightNotAllowed()
     {
         // Arrange
         final int negativeHeight = -10;
@@ -78,7 +78,7 @@ public class CSC143RectangleTest
 
 
     @Test
-    public void AreaCanOverflowIntegerMaximum()
+    public void areaCanOverflowIntegerMaximum()
     {
         // Arrange
         final int width = 100000;

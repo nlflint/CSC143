@@ -19,13 +19,13 @@ public class CSC143TriangleTest
     private CSC143Triangle testTriangle;
 
     @Before
-    public void TestSetup()
+    public void testSetup()
     {
         testTriangle = new CSC143Triangle(givenWidth, givenHeight);
     }
 
     @Test
-    public void GetWidthStoredByConstructor()
+    public void width()
     {
         // Act
         int actualWidth = testTriangle.getWidth();
@@ -35,7 +35,7 @@ public class CSC143TriangleTest
     }
 
     @Test
-    public void GetHeightStoredByConstructor()
+    public void height()
     {
         // Act
         int actualHeight = testTriangle.getHeight();
@@ -45,7 +45,7 @@ public class CSC143TriangleTest
     }
 
     @Test
-    public void AreaCalculatedProperly()
+    public void area()
     {
         // Act
         double actualArea = testTriangle.getArea();
@@ -55,7 +55,7 @@ public class CSC143TriangleTest
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void NegativeWidthNotAllowed()
+    public void negativeWidthNotAllowed()
     {
         // Arrange
         final int negativeWidth = -10;
@@ -66,7 +66,7 @@ public class CSC143TriangleTest
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void NegativeHeightNotAllowed()
+    public void negativeHeightNotAllowed()
     {
         // Arrange
         final int negativeHeight = -10;
@@ -78,12 +78,12 @@ public class CSC143TriangleTest
 
 
     @Test
-    public void AreaCanOverflowIntegerMaximum()
+    public void areaCanOverflowIntegerMaximum()
     {
         // Arrange
         final int width = 100000;
         final int height = 100000;
-        final double expectedLargeArea = 10000000000.0;
+        final double expectedLargeArea = 5000000000.0;
         CSC143Triangle triangle = new CSC143Triangle(width, height);
 
         // Act
