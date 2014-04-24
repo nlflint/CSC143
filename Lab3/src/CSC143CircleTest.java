@@ -68,15 +68,15 @@ public class CSC143CircleTest
     public void areaCanOverflowIntegerMaximum()
     {
         // Arrange
-        final int diameter = 100000;
-        final double expectedLargeArea = 7853981633.974483096157;
+        final int diameter = 200000;
+        final double expectedLargeArea = 31415926535.897932;
         CSC143Circle circle = new CSC143Circle(diameter);
 
         // Act
         double actualArea = circle.getArea();
 
         // Assert
-        Assert.assertEquals("Unexpected area", expectedLargeArea ,actualArea, .000001);
+        Assert.assertEquals("Unexpected area", expectedLargeArea ,actualArea, 0);
     }
 }
 
