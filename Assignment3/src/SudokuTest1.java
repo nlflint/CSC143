@@ -1,20 +1,6 @@
-import org.junit.*;
+public class SudokuTest1 {
 
-/**
- * Created by nate on 4/26/14.
- */
-public class SudokuBoardRandomTest
-{
-    @Test
-    public void RandomValues()
-    {
-        randomTest(2,2);
-        randomTest(2,3);
-        randomTest(3,2);
-        randomTest(3,3);
-    }
-
-    public void randomTest(int rows, int cols) {
+    public static void randomTest(int rows, int cols) {
         // create a board of the given layout
         SudokuBoard board = new SudokuBoard(rows, cols);
         // put random values into the board
@@ -35,5 +21,11 @@ public class SudokuBoardRandomTest
             System.out.println("Column " + i + " state: " + board.getColumnState(i));
         for(int i = 0; i < board.size; i++)
             System.out.println("Region " + i + " state: " + board.getRegionState(i));
+    }
+
+    public static void main(String[] args) {
+        randomTest(2,2);
+        randomTest(2,3);
+        randomTest(3,3);
     }
 }

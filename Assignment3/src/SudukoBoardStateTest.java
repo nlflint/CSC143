@@ -2,13 +2,17 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 /**
- * Created by nate on 4/25/14.
+ * Tests the sudoku board.
+ *
+ * Grading Level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 3: Sudoku Core
  */
-public class SudukoBoardTest
+public class SudukoBoardStateTest
 {
-    // A set is part of board. A row or a column or a region is a set of data, or a set.
     @Test
-    public void getStateOfEmptyBoard()
+    public void emptyBoard()
     {
         // empty board
         SudokuBoard board = new SudokuBoard(3,3);
@@ -25,7 +29,7 @@ public class SudukoBoardTest
     }
 
     @Test
-    public void getStateOfIncompleteSets()
+    public void incompleteParts()
     {
         // Creates a board with complete row, column, and region
         SudokuBoard board = CreateTestBoard(2, 2,
@@ -50,7 +54,7 @@ public class SudukoBoardTest
     }
 
     @Test
-    public void verifyErrorHasPreferenceOverIncomplete()
+    public void errorHasPreferenceOverIncomplete()
     {
         // Board with regions, rows and columns that are in two states, incomplete and duplicate.
         SudokuBoard board = CreateTestBoard(2, 2,
@@ -75,7 +79,7 @@ public class SudukoBoardTest
     }
 
     @Test
-    public void getStateOfCompleteSetsWithDupes()
+    public void errorParts()
     {
         // Puts duplicate 4s in rows, columns and regions
         SudokuBoard board = CreateTestBoard(2, 2,
@@ -100,7 +104,7 @@ public class SudukoBoardTest
     }
 
     @Test
-    public void getStateOfCompleteSets()
+    public void completeParts()
     {
         // A board with a complete row, column and region
         SudokuBoard board = CreateTestBoard(2, 2,
@@ -125,7 +129,7 @@ public class SudukoBoardTest
     }
 
     @Test
-    public void getStateOfCompletedBoard()
+    public void completedBoard()
     {
         // A completed error-free board with 3x3 regions
         SudokuBoard board = CreateTestBoard(3, 3,
@@ -159,7 +163,7 @@ public class SudukoBoardTest
     }
 
     @Test
-    public void getStateOfCompletedBoardWith3x2Regions()
+    public void completed3x2Board()
     {
         // A completed error-free board with 3x2 regions
         SudokuBoard board = CreateTestBoard(2, 3,
@@ -192,7 +196,7 @@ public class SudukoBoardTest
     }
 
     @Test
-    public void getStateOfCompletedBoardWith2x3Regions()
+    public void completed2x3Board()
     {
         // A completed error-free board with 2x3 regions
         SudokuBoard board = CreateTestBoard(3, 2,
