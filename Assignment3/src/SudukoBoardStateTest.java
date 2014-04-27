@@ -60,16 +60,16 @@ public class SudukoBoardStateTest
         SudokuBoard board = CreateTestBoard(2, 2,
                 new int[][]
                 {
-                        {0,0,4,0},
+                        {0,4,0,0},
                         {0,0,0,0},
                         {4,0,0,4},
-                        {0,0,4,0}
+                        {0,4,0,0}
                 });
 
         // Get state of interesting rows, columns, and regions
         SudokuBoard.State rowState = board.getRowState(2);
-        SudokuBoard.State columnState = board.getColumnState(2);
-        SudokuBoard.State regionState = board.getRegionState(3);
+        SudokuBoard.State columnState = board.getColumnState(1);
+        SudokuBoard.State regionState = board.getRegionState(2);
 
         // All states should be ERROR. Error has preference over incomplete.
         assertEquals("Unexpected row state", SudokuBoard.State.ERROR, rowState);

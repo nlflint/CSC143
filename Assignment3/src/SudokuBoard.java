@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 /**
  * Implements the core logic of a Sudoku board.
  *
@@ -27,11 +25,8 @@ public class SudokuBoard extends SudokuBase
      */
     public State getRowState(int row)
     {
-        int[] rowValues = new int[size];
-
-        // build an array of values from the given row
-        for (int column = 0; column < size; column++)
-            rowValues[column] = getValue(row, column);
+        // get row of values as an array
+        int[] rowValues = getLineOfValues(row, IterateOn.Columns);
 
         // Get and return state
         return verifySudokuValues(rowValues);
@@ -44,11 +39,8 @@ public class SudokuBoard extends SudokuBase
      */
     public State getColumnState(int column)
     {
-        int[] columnValues = new int[size];
-
-        // builds an array of values from the given column
-        for (int row = 0; row < size; row++)
-            columnValues[row] = getValue(row, column);
+        // Creates an array of values from the column
+        int[] columnValues = getLineOfValues(column, IterateOn.Rows);
 
         // Get and return state
         return verifySudokuValues(columnValues);
@@ -80,6 +72,20 @@ public class SudokuBoard extends SudokuBase
 
         // Get and return state
         return verifySudokuValues(regionValues);
+    }
+
+    // Gets a line of values from the board, either a row or column based on iteration type.
+    private int[] getLineOfValues(int staticIndex, IterateOn iteratesOn)
+    {
+        int[] values = new int[size];
+
+        // build an array of values from the given row
+        for (int i = 0; i < size; i++)
+        {
+            // Get value based on iteration type
+            values[i] = iteratesOn == IterateOn.Columns ? getValue(staticIndex, i) : getValue(i, staticIndex);
+        }
+        return values;
     }
 
     // gets the state of a set of values. used by row, column and region.
@@ -140,5 +146,12 @@ public class SudokuBoard extends SudokuBase
         }
         // All values are accounted for
         return true;
+    }
+
+    // Identifies how getLineOfValues iterates through the board.
+    private enum IterateOn
+    {
+        Rows,
+        Columns
     }
 }
