@@ -1,0 +1,32 @@
+Nathan Flint
+Assignment 3: Sudoku Core
+
+I began this assignment by learning how the Sudoku base class worked. I had
+to understand how the data was being stored, and what functions I was going to
+implement. Before writing any code, I wrote a handful of JUnit tests. I created
+tests that setup the board in many different states, and then asserted the
+return values of the three functions I would implement. With failing tests, I
+then implemented the functions.
+
+The tests worked really well. After I thought I had a function working, the
+tests helped me debug problems by showing that the function was broken. They
+showed me when I had everything working when they passed. Additionally, I spent
+most of my time refactoring the code and the tests gave me confidence in my
+refactor. Several times I broke functionality during a refactor and the tests
+caught my error.
+
+However, there were also several scenarios my initial tests didn't catch. After
+finishing the initial implementation, I added tests for 3x2 regions and 2x3
+regions. I expected them to pass, but they failed. At yet another point, with a
+refactor half complete, I ran some tests to investigate my code, but they
+passed! The tests should have failed. They were good tests, but they were not
+able to catch that the code was incomplete because they contained mirrored data.
+This wasn't bad, but it prevented the test from catching certain kinds of bugs.
+I altered these tests to catch the problem.
+
+Next time, I want my initial test to more exhaustive then there were for this
+assignment. For this assignment, I had several good tests ing beginning, but
+my tests didn't get robust until later in development. I hope that better
+initial tests will help me find problems earlier, and improve my coding by
+making me think ahead. Having to design the tests first, forces me consider more
+aspects of the problem before I get started.
