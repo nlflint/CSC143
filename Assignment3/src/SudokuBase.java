@@ -9,36 +9,36 @@
 public abstract class SudokuBase {
 
     /**
-     * Rows in a region
+     * Rows in a region. This field is shared by many methods.
      */
     public final int rows;
 
     /**
-     * Columns in a region
+     * Columns in a region. This field is shared by many methods.
      */
     public final int columns;
 
     /**
-     * Number of elements in a region
+     * Number of elements in a region. This field is shared by many methods.
      */
     public final int size;
 
-    // Hold values for all values in the sudoku board.
+    // Holds values for all elements of the sudoku board. This field is shared by many methods.
     private final int[] grid;
 
-    // Bit pattern to flag values as given.
+    // Bit pattern to flag values as given. This field is shared by many methods.
     private static final int GIVEN_MASK = 0x00000100;
 
-    // Bit pattern to remove given flag.
+    // Bit pattern to remove given flag. This field is shared by many methods.
     private static final int GIVEN_UNMASK = ~ GIVEN_MASK;
 
     /**
-     * Identifies the state of a row, column or region.
+     * The state of a row, column or region based on its values.
      */
     public enum State {COMPLETE, INCOMPLETE, ERROR};
 
     /**
-     * Constructor. Takes the dimensions of a region.
+     * Constructor. Takes the dimensions of a region. Total size of board is calculated from region dimensions.
      *
      * @param layoutRows number of rows in a region
      * @param layoutColumns number of columns in a region
@@ -62,11 +62,13 @@ public abstract class SudokuBase {
             String msg = "Error in location";
             throw new IllegalArgumentException(msg);
         }
+
+        // returns index based on row and column
         return row * size + col;
     }
 
     /**
-     * Gets a value from the board at the given coordinates. Coordinates are zero based.
+     * Gets the value from the board at the given coordinates. Coordinates are zero based.
      * @param row row on the sudoku board
      * @param col column on the sudoku board
      * @return value at the given row and column
@@ -99,7 +101,7 @@ public abstract class SudokuBase {
     }
 
     /**
-     * Determines if the given element is given.
+     * Determines if the element at row and column is given.
      * @param row Row on the sudoku board
      * @param col Column on the sudoku board.
      * @return true if the value is given, false if it is not given

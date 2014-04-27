@@ -31,9 +31,7 @@ public class SudokuBoard extends SudokuBase
 
         // build an array of values from the given row
         for (int column = 0; column < size; column++)
-        {
             rowValues[column] = getValue(row, column);
-        }
 
         // Get and return state
         return verifySudokuValues(rowValues);
@@ -48,7 +46,7 @@ public class SudokuBoard extends SudokuBase
     {
         int[] columnValues = new int[size];
 
-        // builds an array of values from the given colummn
+        // builds an array of values from the given column
         for (int row = 0; row < size; row++)
             columnValues[row] = getValue(row, column);
 
@@ -87,7 +85,7 @@ public class SudokuBoard extends SudokuBase
     // gets the state of a set of values. used by row, column and region.
     private State verifySudokuValues(int[] sudokuValues)
     {
-        // Create an array the represents the frequency of values, not counting zeros.
+        // Create an array of the frequency of values, not counting zeros.
         int[] valueFrequency = createFrequencyOfValues(sudokuValues);
 
         // Errors have precedence over completeness, so check errors first
@@ -104,9 +102,9 @@ public class SudokuBoard extends SudokuBase
 
     // takes given values, and returns an array of the frequency of those values, not counting zero
     private int[] createFrequencyOfValues(int[] sudokuValues) {
-        // Holds occurrences of each value
+        // Holds occurrences of each value.
+        // Indexes are offset by -1. So index 0 is value 1, index 1 is value 2, etc..
         int[] valueFrequency = new int[sudokuValues.length];
-        Arrays.fill(valueFrequency, 0);
 
         // Count occurrences of each value
         for (int i = 0; i < sudokuValues.length; i ++)
@@ -115,7 +113,7 @@ public class SudokuBoard extends SudokuBase
             if (sudokuValues[i] == 0)
                 continue;
 
-            // found a value
+            // increment count
             valueFrequency[sudokuValues[i] - 1] += 1;
         }
         return valueFrequency;
@@ -125,7 +123,7 @@ public class SudokuBoard extends SudokuBase
     private boolean errorsExist(int[] valueFrequency) {
         for (int value : valueFrequency)
         {
-            // duplicate values are an error
+            // Values with a count of > 1 means there are duplicates, which is an error.
             if (value > 1)
                 return true;
         }
@@ -136,7 +134,7 @@ public class SudokuBoard extends SudokuBase
     private boolean dataSetIsComplete(int[] valueFrequency) {
         for (int value : valueFrequency)
         {
-            /// missing values make the set incomplete
+            // A value with zero occurrences means it's missing, and the data set is incomplete.
             if (value == 0)
                 return false;
         }
