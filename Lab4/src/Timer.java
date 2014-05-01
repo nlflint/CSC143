@@ -45,7 +45,6 @@ public class Timer implements ActionListener
         JFrame window = new JFrame();
         window.setSize(400, 300);
         window.setLocation(100, 100);
-        window.setLayout(new BorderLayout());
         window.setTitle("My Timer");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
