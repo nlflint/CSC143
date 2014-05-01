@@ -108,8 +108,7 @@ public class Timer implements ActionListener
         String buttonText = ((JButton) e.getSource()).getText();
 
         // start or Continue button were pressed.
-        if (source == startPause
-                && (buttonText.equals(START) || buttonText.equals(CONTINUE)))
+        if (source == startPause && (buttonText.equals(START) || buttonText.equals(CONTINUE)))
         {
             // start/continue the stop watch. behaviors are identical.
             timer.start();
@@ -117,7 +116,7 @@ public class Timer implements ActionListener
             startPause.setText(PAUSE);
         }
         // Pause was pressed
-        else if (source == startPause && source.getText().equals(PAUSE))
+        else if (source == startPause && buttonText.equals(PAUSE))
         {
             // Pause stop watch
             timer.pause();
@@ -162,7 +161,7 @@ class StopWatch
 
     /**
      * Constructor. Sets up initial settings, and resets stop watch.
-     * @param milliseconds
+     * @param milliseconds time between clock ticks
      */
     public StopWatch(long milliseconds)
     {
@@ -248,28 +247,19 @@ class StopWatch
      * Pauses stop watch if it's running.
      * Does nothing if it's already paused.
      */
-    public void pause()
-    {
-        timerIsRunning = false;
-    }
+    public void pause() { timerIsRunning = false; }
 
     /**
      * Gets time elapsed in seconds
      * @return elapsed time in seconds
      */
-    public double getElapsedTime()
-    {
-        return elapsedSeconds;
-    }
+    public double getElapsedTime() { return elapsedSeconds; }
 
     /**
      * Adds an event to the event list.
      * @param event Event to be triggered at every tic
      */
-    public void addTickEvent(StopWatchTickEvent event)
-    {
-        tickEvents.add(event);
-    }
+    public void addTickEvent(StopWatchTickEvent event) { tickEvents.add(event); }
 }
 
 /**
