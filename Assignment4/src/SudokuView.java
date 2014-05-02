@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 /**
  * Created by nate on 5/1/14.
@@ -46,18 +47,30 @@ public class SudokuView extends JPanel
 class PlaySpace extends JPanel {
     SudokuBase base;
     int row, column;
+    Map<Integer, JPanel> shapes;
 
-    public PlaySpace(SudokuBase base, int row, int column)
+    public PlaySpace(SudokuBase base, Map<Integer,JPanel> shapes, int row, int column)
     {
         this.base = base;
         this.row = row;
         this.column = column;
+        this.shapes = shapes;
         setPreferredSize(new Dimension(30, 30));
     }
 
     public void paintComponent(Graphics g)
     {
         String value = base.getValue(row, column) + "";
+
         g.drawString(value, 10, 10);
+    }
+}
+
+
+
+class Alpha extends JPanel {
+    public void paintComponent(Graphics g)
+    {
+        g.drawString("A", getWidth() / 2, getHeight() / 2);
     }
 }
