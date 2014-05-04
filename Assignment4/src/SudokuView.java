@@ -6,22 +6,40 @@ import java.awt.event.*;
 import java.util.*;
 
 /**
- * Created by nate on 5/1/14.
+ * Renders a sudoku board.
+ *
+ * Grading Level: Challenge
+ *
+ * @author Nathan Flint
+ * @versino Assignment4: Sudoku Graphics
  */
 public class SudokuView extends JPanel
-        implements SelectedCell, NumericSupport {
+        implements SelectedCell, NumericSupport
+{
 
+    // Hold the Sudoku board
     private SudokuBase base;
+
+    // Contains graphics library for drawing symbals and numbers
     private GraphicsLibrary graphicsLibrary;
 
+    // Contains references to the play spaces
     private PlaySpace[][] playSpaces;
+
+    // the currently selected space
     private PlaySpace selectedPlaySpace;
 
+    /**
+     * Constructor sets up graphics and binds it to the sudoku board.
+     * @param base The sudoku board
+     */
     public SudokuView(SudokuBase base)
     {
+        // Save the sudoku board
         this.base = base;
+
+        // Set white background
         setBackground(Color.white);
-        playSpaces = new PlaySpace[base.size][base.size];
 
         // Setup graphics
         graphicsLibrary = new GraphicsLibrary();
@@ -43,7 +61,8 @@ public class SudokuView extends JPanel
     }
 
     // Allows the view the pickup keyboard input.
-    private void initializeKeyboardListener() {
+    private void initializeKeyboardListener()
+    {
         // Adds a my keylistener and focuses the window.
         addKeyListener(new KeyHandler(this));
         setFocusable(true);
@@ -52,6 +71,8 @@ public class SudokuView extends JPanel
 
     // Creates all the play spaces on the board.
     private void createPlaySpaces(SudokuBase base) {
+        // Initialize an array to save references to the places spaces.
+        playSpaces = new PlaySpace[base.size][base.size];
 
         // Get number of play spaces required, setup grid and spacing.
         int size = base.rows * base.columns;
@@ -105,46 +126,70 @@ public class SudokuView extends JPanel
         boolean regionColumnEven = regionColumn % 2 == 0;
         boolean regionRowEven = regionRow % 2 == 0;
 
-        // If row and column are the same, then set to light grew, else set to white.
+        // If row and column are the same, then set return light gray, else return white.
         if (regionColumnEven ^ regionRowEven)
             return Color.lightGray;
         else
             return Color.white;
     }
 
+    /**
+     * Selects the play space at the given row and column
+     * @param row The indicated row
+     * @param col The indicated column
+     */
     @Override
     public void setSelected(int row, int col)
     {
+        // Make sure the row and columns are within the game board
         if (row < 0 || row >= base.size || col < 0 || col >= base.size )
+            // out of range, do nothing.
             return;
 
+        // Un-colors the existing selected play space. Make sure one is selected before trying to rest its color.
         if (selectedPlaySpace != null)
             selectedPlaySpace.setBackground(
                     getRegionBackgroundColor(selectedPlaySpace.row, selectedPlaySpace.column));
 
+        // Save the new selected play space and change its background color to yellow
         selectedPlaySpace = playSpaces[row][col];
         selectedPlaySpace.setBackground(Color.yellow);
     }
 
+    /**
+     * Gets the row index of the currently selected play space
+     * @return row
+     */
     @Override
     public int getSelectedRow()
     {
+        // If no playspace is selected return 0.
         if (selectedPlaySpace == null)
             return 0;
         return selectedPlaySpace.row;
     }
 
+    /**
+     * Gets the column index of the currently selected play space
+     * @return column
+     */
     @Override
     public int getSelectedColumn()
     {
+        // If no playspace is selected return 0.
         if (selectedPlaySpace == null)
             return 0;
         return selectedPlaySpace.column;
     }
 
+    /**
+     * Sets if the board symbols should be drawn as numbers
+     * @param flag true if the values of the board should show as numbers.
+     */
     @Override
     public void setNumeric(boolean flag)
     {
+        // Update the graphics library based on the given flag
         if (flag)
             graphicsLibrary.setGraphicsType(GraphicsLibrary.GraphicsType.Numeric);
         else
@@ -152,61 +197,112 @@ public class SudokuView extends JPanel
 
     }
 
+    /**
+     * Indicates if the sudoku values are displayed as numbers.
+     * @return
+     */
     @Override
-    public boolean showsNumeric() {
+    public boolean showsNumeric()
+    {
+        // Look into the graphics library to see if its set to numeric
         return graphicsLibrary.getGraphicsType() == GraphicsLibrary.GraphicsType.Numeric;
     }
 }
 
+/**
+ * Represents a play space on the sudoku board.
+ */
 class PlaySpace extends JPanel {
+    // holds the state of the sudoku board
     SudokuBase base;
+
+    // The row an column that this play space represents
     int row, column;
+
+    // Contains methods to translate sudoku values into graphics
     GraphicsLibrary library;
 
+    /**
+     * Constructs a play space.
+     * @param base a Sudoku board
+     * @param library a graphics library
+     * @param row the row that this play space represents on the sudoku board
+     * @param column the row that this play space represents on the sudoku board
+     */
     public PlaySpace(SudokuBase base, GraphicsLibrary library, int row, int column)
     {
+        // Save data
         this.base = base;
         this.row = row;
         this.column = column;
         this.library = library;
+
+        // Set size and a border
         setPreferredSize(new Dimension(50, 50));
         setBorder(new BorderUIResource.LineBorderUIResource(Color.black));
     }
 
+    /**
+     * Draws this play space
+     * @param g graphics object that will be used for drawing
+     */
+    @Override
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
+
+        // gets a value for the sudoku board
         int value = base.getValue(row, column);
 
+        // Set the color of the graphics based on if the value was given.
         Color givenColor = base.isGiven(row, column) ? Color.black : new Color(114, 221, 114);
         g.setColor(givenColor);
 
+        // use the value to get a class that draws the right symbol
         GraphicSymbol graphic = library.getGraphic(value);
+
+        // sets constraints that the graphic class will draw within.
         Dimension drawingArea = new Dimension(getWidth(), getHeight());
+
+        // call the class to draw the graphic.
         graphic.draw(g, drawingArea);
 
     }
 }
 
+/**
+ * A lookup table for getting classes to draw the symbols.
+ */
 class GraphicsLibrary
 {
+    // Which set of symbols to use. numbers or pictures.
     enum GraphicsType
     {
         Symbolic,
         Numeric
     }
 
+    // The lookup table for graphics
     private Map<Integer, GraphicSymbol> symbolDefinitions;
 
+    // Identifies which set of graphics are currently being used
     GraphicsType graphicsType;
 
+    /**
+     * Constructor. Defaults to Symbolic graphics.
+     */
     public GraphicsLibrary()
     {
         setGraphicsType(GraphicsType.Symbolic);
     }
 
+    /**
+     * Sets which graphics set the library should present, numbers or symbals.
+     * @param type Numbers or symbols
+     */
     public void setGraphicsType(GraphicsType type)
     {
+        // Reload the graphics set based on the given setting
         switch (type)
         {
             case Numeric:
@@ -221,31 +317,48 @@ class GraphicsLibrary
         graphicsType = type;
     }
 
+    /**
+     * Gets teh currently configured graphics type.
+     * @return numeric or symbolic
+     */
     public GraphicsType getGraphicsType() { return graphicsType; }
 
+    /**
+     * Gets a graphics object for drawing the given sudoku value.
+     * @param number sudoku value
+     * @return graphics object
+     */
     public GraphicSymbol getGraphic(int number)
     {
+        // looks up the value in the Hashmap
         return symbolDefinitions.get(number);
     }
 
+    // Rebuilds the hashmap to use numeric graphics
     private void buildGraphicsLibraryWithNumbers()
     {
+        // resets the hashmap and sets a blank graphic for value 0
         initializeSymbolDefinitions();
 
+        // Set values 1 - 12 with numerical graphics
         for (int i = 1; i < 13; i++)
             symbolDefinitions.put(i, new Numeric(i));
     }
 
+    // common initialization code for the hashmap
     private void initializeSymbolDefinitions()
     {
         symbolDefinitions = new HashMap<Integer, GraphicSymbol>();
         symbolDefinitions.put(0, new Blank());
     }
 
+    // Rebuilds the hashmap to use symbolic graphics
     private void buildGraphicsLibraryWithSymbols()
     {
+        // resets the hashmap and sets a blank graphic for value 0
         initializeSymbolDefinitions();
 
+        // configure a different graphic for each sudoku value
         symbolDefinitions.put(1, new OneDot());
         symbolDefinitions.put(2, new TwoDots());
         symbolDefinitions.put(3, new ThreeDots());
@@ -261,29 +374,55 @@ class GraphicsLibrary
     }
 }
 
+/**
+ * All graphics implement this interface for drawing withing the given draw area.
+ */
 interface GraphicSymbol {
     public void draw(Graphics g,  Dimension drawArea);
 }
 
-class Numeric implements GraphicSymbol {
-
-    private int numeral;
-
-    public Numeric(int number) { numeral = number; }
-
-    @Override
-    public void draw(Graphics g, Dimension drawArea) {
-        g.setFont(new Font("Times New Roman", Font.BOLD, 24));
-        g.drawString(numeral + "", (int) (drawArea.getWidth() / 2.8), (int) (drawArea.getHeight() / 1.5));
-    }
-}
-
+/**
+ * Draws nothing. Used for Sudoku value 0.
+ */
 class Blank implements GraphicSymbol {
     @Override
     public void draw(Graphics g, Dimension drawArea) {}
 }
 
+/**
+ * Code for drawing a number. Use constructor to configure which number.
+ */
+class Numeric implements GraphicSymbol {
+
+    // Which number should be drawn.
+    private int numeral;
+
+    // constructor saves which number should be drawn.
+    public Numeric(int number) { numeral = number; }
+
+    /**
+     * Draws the number given to constructor to the given graphics object, and within the given drawing area.
+     * @param g graphics graphics object that will be used for drawing
+     * @param drawArea digit will be centered in the area between 0,0 and this given dimension.
+     */
+    @Override
+    public void draw(Graphics g, Dimension drawArea) {
+        // Draw the numeral to the center of the area.
+        g.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        g.drawString(numeral + "", (int) (drawArea.getWidth() / 2.8), (int) (drawArea.getHeight() / 1.5));
+    }
+}
+
+/**
+ * Draws a Dot in the center of the given area.
+ */
+
 class OneDot implements GraphicSymbol {
+    /**
+     * Draws a dot centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g,Dimension drawArea) {
         int width = drawArea.width / 4;
@@ -295,12 +434,21 @@ class OneDot implements GraphicSymbol {
     }
 }
 
+/**
+ * Draws two dots
+ */
 class TwoDots implements GraphicSymbol {
+    /**
+     * Draws two dots centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int width = drawArea.width / 4;
         int height = drawArea .height / 4;
 
+        // dots share the same y coordinate, but have different x coordinate
         int x1 = drawArea.width / 6 * 2 - (width / 2);
         int x2 = drawArea.width / 6 * 4 - (width / 2);
         int y = drawArea.height / 2 - (height / 2);
@@ -310,11 +458,21 @@ class TwoDots implements GraphicSymbol {
     }
 }
 
+/**
+ * draws three dots
+ */
 class ThreeDots implements GraphicSymbol {
+    /**
+     * Draws three dots in the center of the area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int width = drawArea.width / 4;
         int height = drawArea .height / 4;
+
+        // all three dots centered and scaled within the given area.
         int x1 = drawArea.width / 6 * 2 - (width / 2);
         int x2 = drawArea.width / 6 * 4 - (width / 2);
         int y1 = drawArea.height / 6 * 2 - (height / 2);
@@ -326,11 +484,21 @@ class ThreeDots implements GraphicSymbol {
     }
 }
 
+/**
+ * draws four dots
+ */
 class FourDots implements GraphicSymbol {
+    /**
+     * Draws four dots centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int width = drawArea.width / 4;
         int height = drawArea .height / 4;
+
+        // all four dots use a combination of these 4 axis.
         int x1 = drawArea.width / 6 * 2 - (width / 2);
         int x2 = drawArea.width / 6 * 4 - (width / 2);
         int y1 = drawArea.height / 6 * 2 - (height / 2);
@@ -343,7 +511,15 @@ class FourDots implements GraphicSymbol {
     }
 }
 
+/**
+ * draws a triangle pointing up
+ */
 class UpTriangle implements GraphicSymbol {
+    /**
+     * Draws a triangle pointing up centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
 
