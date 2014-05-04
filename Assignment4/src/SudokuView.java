@@ -2,8 +2,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.event.*;
+import java.util.*;
 
 /**
  * Created by nate on 5/1/14.
@@ -12,8 +12,8 @@ public class SudokuView extends JPanel
         implements SelectedCell, NumericSupport {
 
     private SudokuBase base;
-    private boolean usesNumericGraphics;
     private GraphicsLibrary graphicsLibrary;
+
     private PlaySpace[][] playSpaces;
     private PlaySpace selectedPlaySpace;
 
@@ -24,7 +24,6 @@ public class SudokuView extends JPanel
         playSpaces = new PlaySpace[base.size][base.size];
 
         // Setup graphics
-        usesNumericGraphics = true;
         graphicsLibrary = new GraphicsLibrary();
 
         // Set spacing around entire board.
@@ -35,56 +34,93 @@ public class SudokuView extends JPanel
         // Create playing squares
         createPlaySpaces(base);
 
+        // Add keyboard listener
+        initializeKeyboardListener();
+
         // show everything
         setVisible(true);
 
     }
 
+    // Allows the view the pickup keyboard input.
+    private void initializeKeyboardListener() {
+        // Adds a my keylistener and focuses the window.
+        addKeyListener(new KeyHandler(this));
+        setFocusable(true);
+        requestFocusInWindow();
+    }
+
+    // Creates all the play spaces on the board.
     private void createPlaySpaces(SudokuBase base) {
+
+        // Get number of play spaces required, setup grid and spacing.
         int size = base.rows * base.columns;
         GridLayout layout = new GridLayout(size,size);
         layout.setVgap(2);
         layout.setHgap(2);
         setLayout(layout);
 
+        // loop through rows and columns and create a play space for each row and column.
         for (int row = 0; row < size; row++)
         {
             for (int column = 0; column < size; column++)
             {
+                // Create the play space
                 PlaySpace playSpace = new PlaySpace(base, graphicsLibrary, row, column);
+
+                // Set the background color based on the region of the space
                 playSpace.setBackground(getRegionBackgroundColor(row, column));
+
+                // Allow this space to respond to mouse clicks
+                playSpace.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        super.mouseClicked(e);
+
+                        // Change selected row to the space that was clicked
+                        PlaySpace play = ((PlaySpace)e.getSource());
+                        setSelected(play.row, play.column);
+                    }
+                });
+
+                // Track the space internally so that it can be selected later on.
                 playSpaces[row][column] = playSpace;
+
+                // Visually add space to the grid.
                 add(playSpace);
             }
         }
     }
 
+    // this formula gives the regions an alternating color.
     private Color getRegionBackgroundColor(int row, int column)
     {
+        // Calculate which region the cell is in.
         int numberRegionsHorizontally = base.size / base.columns;
         int numberRegionsVertically = base.size / base.rows;
-
         int regionColumn = column / numberRegionsHorizontally;
         int regionRow = row / numberRegionsVertically;
 
+        // Determine if the region row and column are odd or even.
         boolean regionColumnEven = regionColumn % 2 == 0;
         boolean regionRowEven = regionRow % 2 == 0;
 
-        if (regionColumnEven && regionRowEven
-                || !regionColumnEven && !regionRowEven)
+        // If row and column are the same, then set to light grew, else set to white.
+        if (regionColumnEven ^ regionRowEven)
+            return Color.lightGray;
+        else
             return Color.white;
-
-        return Color.lightGray;
-
-
-
     }
 
     @Override
     public void setSelected(int row, int col)
     {
+        if (row < 0 || row >= base.size || col < 0 || col >= base.size )
+            return;
+
         if (selectedPlaySpace != null)
-            selectedPlaySpace.setBackground(getRegionBackgroundColor(getSelectedRow(), getSelectedColumn()));
+            selectedPlaySpace.setBackground(
+                    getRegionBackgroundColor(selectedPlaySpace.row, selectedPlaySpace.column));
 
         selectedPlaySpace = playSpaces[row][col];
         selectedPlaySpace.setBackground(Color.yellow);
@@ -110,15 +146,15 @@ public class SudokuView extends JPanel
     public void setNumeric(boolean flag)
     {
         if (flag)
-            graphicsLibrary.setGraphicType(GraphicsLibrary.GraphicType.Numeric);
+            graphicsLibrary.setGraphicsType(GraphicsLibrary.GraphicsType.Numeric);
         else
-            graphicsLibrary.setGraphicType(GraphicsLibrary.GraphicType.Symbolic);
+            graphicsLibrary.setGraphicsType(GraphicsLibrary.GraphicsType.Symbolic);
 
     }
 
     @Override
     public boolean showsNumeric() {
-        return graphicsLibrary.getGraphicType() == GraphicsLibrary.GraphicType.Numeric;
+        return graphicsLibrary.getGraphicsType() == GraphicsLibrary.GraphicsType.Numeric;
     }
 }
 
@@ -133,7 +169,7 @@ class PlaySpace extends JPanel {
         this.row = row;
         this.column = column;
         this.library = library;
-        setPreferredSize(new Dimension(30, 30));
+        setPreferredSize(new Dimension(50, 50));
         setBorder(new BorderUIResource.LineBorderUIResource(Color.black));
     }
 
@@ -152,27 +188,40 @@ class PlaySpace extends JPanel {
     }
 }
 
-class GraphicsLibrary {
+class GraphicsLibrary
+{
+    enum GraphicsType
+    {
+        Symbolic,
+        Numeric
+    }
+
     private Map<Integer, GraphicSymbol> symbolDefinitions;
 
-    GraphicType graphicType;
+    GraphicsType graphicsType;
 
     public GraphicsLibrary()
     {
-        setGraphicType(GraphicType.Symbolic);
+        setGraphicsType(GraphicsType.Symbolic);
     }
 
-    public void setGraphicType(GraphicType type)
+    public void setGraphicsType(GraphicsType type)
     {
-        graphicType = type;
+        switch (type)
+        {
+            case Numeric:
+                buildGraphicsLibraryWithNumbers();
+                break;
 
-        if (graphicType.equals(GraphicType.Numeric))
-            buildGraphicsLibraryWithNumbers();
-        else
-            buildGraphicsLibraryWithSymbols();
+            case Symbolic:
+                buildGraphicsLibraryWithSymbols();
+                break;
+        }
+
+        graphicsType = type;
     }
 
-    public GraphicType getGraphicType() { return graphicType; }
+    public GraphicsType getGraphicsType() { return graphicsType; }
 
     public GraphicSymbol getGraphic(int number)
     {
@@ -210,13 +259,6 @@ class GraphicsLibrary {
         symbolDefinitions.put(11, new Ring());
         symbolDefinitions.put(12, new CircleX());
     }
-
-    enum GraphicType {
-        Symbolic,
-        Numeric
-    }
-
-
 }
 
 interface GraphicSymbol {
@@ -231,8 +273,8 @@ class Numeric implements GraphicSymbol {
 
     @Override
     public void draw(Graphics g, Dimension drawArea) {
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.drawString(numeral + "", (int) drawArea.getWidth() / 3, (int) (drawArea.getHeight() / 1.5));
+        g.setFont(new Font("Times New Roman", Font.BOLD, 24));
+        g.drawString(numeral + "", (int) (drawArea.getWidth() / 2.8), (int) (drawArea.getHeight() / 1.5));
     }
 }
 
@@ -421,4 +463,37 @@ class CircleX implements GraphicSymbol {
         g2d.drawLine(5 * widthUnit, heightUnit, widthUnit, 5 * heightUnit);
     }
 }
+
+class KeyHandler extends KeyAdapter
+{
+    SelectedCell view;
+
+    public KeyHandler(SelectedCell view) { this.view = view; }
+
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+        int selectedRow = view.getSelectedRow();
+        int selectedColumn = view.getSelectedColumn();
+
+        switch (e.getKeyCode())
+        {
+            case KeyEvent.VK_UP:
+                view.setSelected(selectedRow - 1, selectedColumn);
+                break;
+            case KeyEvent.VK_DOWN:
+                view.setSelected(selectedRow + 1, selectedColumn);
+                break;
+            case KeyEvent.VK_LEFT:
+                view.setSelected(selectedRow, selectedColumn - 1);
+                break;
+            case KeyEvent.VK_RIGHT:
+                view.setSelected(selectedRow, selectedColumn + 1);
+                break;
+        }
+    }
+
+
+}
+
 
