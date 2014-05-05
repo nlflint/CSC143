@@ -11,11 +11,10 @@ import java.util.*;
  * Grading Level: Challenge
  *
  * @author Nathan Flint
- * @versino Assignment4: Sudoku Graphics
+ * @version Assignment4: Sudoku Graphics
  */
 public class SudokuView extends JPanel
-        implements SelectedCell, NumericSupport
-{
+        implements SelectedCell, NumericSupport {
 
     // Hold the Sudoku board
     private SudokuBase base;
@@ -33,8 +32,7 @@ public class SudokuView extends JPanel
      * Constructor sets up graphics and binds it to the sudoku board.
      * @param base The sudoku board
      */
-    public SudokuView(SudokuBase base)
-    {
+    public SudokuView(SudokuBase base) {
         // Save the sudoku board
         this.base = base;
 
@@ -61,8 +59,7 @@ public class SudokuView extends JPanel
     }
 
     // Allows the view the pickup keyboard input.
-    private void initializeKeyboardListener()
-    {
+    private void initializeKeyboardListener() {
         // Adds a my keylistener and focuses the window.
         addKeyListener(new KeyHandler(this));
         setFocusable(true);
@@ -82,10 +79,8 @@ public class SudokuView extends JPanel
         setLayout(layout);
 
         // loop through rows and columns and create a play space for each row and column.
-        for (int row = 0; row < size; row++)
-        {
-            for (int column = 0; column < size; column++)
-            {
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
                 // Create the play space
                 PlaySpace playSpace = new PlaySpace(base, graphicsLibrary, row, column);
 
@@ -94,28 +89,31 @@ public class SudokuView extends JPanel
 
                 // Allow this space to respond to mouse clicks
                 playSpace.addMouseListener(new MouseAdapter() {
+                    /**
+                     * Annonymous object for handling mouse input.
+                     * @param e event info
+                     */
                     @Override
                     public void mousePressed(MouseEvent e) {
                         super.mouseClicked(e);
 
                         // Change selected row to the space that was clicked
-                        PlaySpace play = ((PlaySpace)e.getSource());
-                        setSelected(play.row, play.column);
+                        PlaySpace playSpace = ((PlaySpace)e.getSource());
+                        setSelected(playSpace.row, playSpace.column);
                     }
                 });
 
-                // Track the space internally so that it can be selected later on.
+                // Add space to an array so that it can be referenced later on.
                 playSpaces[row][column] = playSpace;
 
-                // Visually add space to the grid.
+                // add the space to the UI.
                 add(playSpace);
             }
         }
     }
 
-    // this formula gives the regions an alternating color.
-    private Color getRegionBackgroundColor(int row, int column)
-    {
+    // this formula gives the regions an alternating background color.
+    private Color getRegionBackgroundColor(int row, int column) {
         // Calculate which region the cell is in.
         int numberRegionsHorizontally = base.size / base.columns;
         int numberRegionsVertically = base.size / base.rows;
@@ -139,8 +137,7 @@ public class SudokuView extends JPanel
      * @param col The indicated column
      */
     @Override
-    public void setSelected(int row, int col)
-    {
+    public void setSelected(int row, int col) {
         // Make sure the row and columns are within the game board
         if (row < 0 || row >= base.size || col < 0 || col >= base.size )
             // out of range, do nothing.
@@ -161,8 +158,7 @@ public class SudokuView extends JPanel
      * @return row
      */
     @Override
-    public int getSelectedRow()
-    {
+    public int getSelectedRow() {
         // If no playspace is selected return 0.
         if (selectedPlaySpace == null)
             return 0;
@@ -174,8 +170,7 @@ public class SudokuView extends JPanel
      * @return column
      */
     @Override
-    public int getSelectedColumn()
-    {
+    public int getSelectedColumn() {
         // If no playspace is selected return 0.
         if (selectedPlaySpace == null)
             return 0;
@@ -187,8 +182,7 @@ public class SudokuView extends JPanel
      * @param flag true if the values of the board should show as numbers.
      */
     @Override
-    public void setNumeric(boolean flag)
-    {
+    public void setNumeric(boolean flag) {
         // Update the graphics library based on the given flag
         if (flag)
             graphicsLibrary.setGraphicsType(GraphicsLibrary.GraphicsType.Numeric);
@@ -202,8 +196,7 @@ public class SudokuView extends JPanel
      * @return
      */
     @Override
-    public boolean showsNumeric()
-    {
+    public boolean showsNumeric() {
         // Look into the graphics library to see if its set to numeric
         return graphicsLibrary.getGraphicsType() == GraphicsLibrary.GraphicsType.Numeric;
     }
@@ -229,8 +222,7 @@ class PlaySpace extends JPanel {
      * @param row the row that this play space represents on the sudoku board
      * @param column the row that this play space represents on the sudoku board
      */
-    public PlaySpace(SudokuBase base, GraphicsLibrary library, int row, int column)
-    {
+    public PlaySpace(SudokuBase base, GraphicsLibrary library, int row, int column) {
         // Save data
         this.base = base;
         this.row = row;
@@ -273,11 +265,9 @@ class PlaySpace extends JPanel {
 /**
  * A lookup table for getting classes to draw the symbols.
  */
-class GraphicsLibrary
-{
+class GraphicsLibrary {
     // Which set of symbols to use. numbers or pictures.
-    enum GraphicsType
-    {
+    enum GraphicsType {
         Symbolic,
         Numeric
     }
@@ -291,8 +281,7 @@ class GraphicsLibrary
     /**
      * Constructor. Defaults to Symbolic graphics.
      */
-    public GraphicsLibrary()
-    {
+    public GraphicsLibrary() {
         setGraphicsType(GraphicsType.Symbolic);
     }
 
@@ -300,11 +289,9 @@ class GraphicsLibrary
      * Sets which graphics set the library should present, numbers or symbals.
      * @param type Numbers or symbols
      */
-    public void setGraphicsType(GraphicsType type)
-    {
+    public void setGraphicsType(GraphicsType type) {
         // Reload the graphics set based on the given setting
-        switch (type)
-        {
+        switch (type) {
             case Numeric:
                 buildGraphicsLibraryWithNumbers();
                 break;
@@ -328,15 +315,13 @@ class GraphicsLibrary
      * @param number sudoku value
      * @return graphics object
      */
-    public GraphicSymbol getGraphic(int number)
-    {
+    public GraphicSymbol getGraphic(int number) {
         // looks up the value in the Hashmap
         return symbolDefinitions.get(number);
     }
 
     // Rebuilds the hashmap to use numeric graphics
-    private void buildGraphicsLibraryWithNumbers()
-    {
+    private void buildGraphicsLibraryWithNumbers() {
         // resets the hashmap and sets a blank graphic for value 0
         initializeSymbolDefinitions();
 
@@ -346,15 +331,13 @@ class GraphicsLibrary
     }
 
     // common initialization code for the hashmap
-    private void initializeSymbolDefinitions()
-    {
+    private void initializeSymbolDefinitions() {
         symbolDefinitions = new HashMap<Integer, GraphicSymbol>();
         symbolDefinitions.put(0, new Blank());
     }
 
     // Rebuilds the hashmap to use symbolic graphics
-    private void buildGraphicsLibraryWithSymbols()
-    {
+    private void buildGraphicsLibraryWithSymbols() {
         // resets the hashmap and sets a blank graphic for value 0
         initializeSymbolDefinitions();
 
@@ -526,6 +509,7 @@ class UpTriangle implements GraphicSymbol {
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
 
+        // 3 scaled points of the triangle
         int[] xPoints = new int[] {3 * widthUnit, 5 * widthUnit, widthUnit};
         int[] yPoints = new int[] {heightUnit, 5 * heightUnit, 5 * heightUnit};
 
@@ -533,12 +517,21 @@ class UpTriangle implements GraphicSymbol {
     }
 }
 
+/**
+ * Draws a triangle pointing down
+ */
 class DownTriangle implements GraphicSymbol {
+    /**
+     * Draws a triangle pointing down centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
 
+        // Three points of the triangle
         int[] xPoints = new int[] {widthUnit, 5 * widthUnit, 3 * widthUnit};
         int[] yPoints = new int[] { heightUnit, heightUnit, 5 * heightUnit};
 
@@ -547,14 +540,21 @@ class DownTriangle implements GraphicSymbol {
 }
 
 
-
-
+/**
+ * draws a star
+ */
 class Star implements GraphicSymbol {
+    /**
+     * Draws a star centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
 
+        // the star is made of 2 triangles overlaping each other
         int[] xPoints1 = new int[] {3 * widthUnit, 5 * widthUnit, widthUnit};
         int[] yPoints1 = new int[] {heightUnit, 4 * heightUnit, 4 * heightUnit};
 
@@ -566,110 +566,171 @@ class Star implements GraphicSymbol {
     }
 }
 
+/**
+ * draws an up arrow
+ */
 class UpArrow implements GraphicSymbol {
+    /**
+     * Draws an arrow pointing up centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
 
+        // Set the line to be wider
         Graphics2D g2d = (Graphics2D)g;
         g2d.setStroke(new BasicStroke(3));
 
+        // Arrow is made of these three lines
         g2d.drawLine(3 * widthUnit, heightUnit, 3 * widthUnit, 5 * heightUnit );
-        g2d.drawLine(3 * widthUnit, heightUnit, 4 * widthUnit, 3 * heightUnit );
-        g2d.drawLine(3 * widthUnit, heightUnit, 2 * widthUnit, 3 * heightUnit );
+        g2d.drawLine(3 * widthUnit, heightUnit, 4 * widthUnit, 3 * heightUnit);
+        g2d.drawLine(3 * widthUnit, heightUnit, 2 * widthUnit, 3 * heightUnit);
     }
 }
 
-
+/**
+ * draws a down arrow
+ */
 class DownArrow implements GraphicSymbol {
+    /**
+     * Draws an arrow pointing down centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
 
+        // Makes the line thicker
         Graphics2D g2d = (Graphics2D)g;
         g2d.setStroke(new BasicStroke(3));
 
+        // Arrow is made of three lines
         g2d.drawLine(3 * widthUnit, 5 * heightUnit, 3 * widthUnit, heightUnit);
         g2d.drawLine(3 * widthUnit, 5 * heightUnit, 4 * widthUnit, 3 * heightUnit);
         g2d.drawLine(3 * widthUnit, 5 * heightUnit, 2 * widthUnit, 3 * heightUnit);
     }
 }
 
-
+/**
+ * draws a cross
+ */
 class Cross implements GraphicSymbol {
+    /**
+     * Draws a cross centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
 
+        // Make the line thicker
         Graphics2D g2d = (Graphics2D)g;
         g2d.setStroke(new BasicStroke(4));
 
+        // Made of 2 lines
         g2d.drawLine(widthUnit * 3, heightUnit, widthUnit * 3, heightUnit * 5);
         g2d.drawLine(widthUnit * 2, heightUnit * 2, widthUnit * 4, heightUnit * 2);
     }
 }
 
+/**
+ * draws a ring
+ */
 class Ring implements GraphicSymbol {
+    /**
+     * Draws a triangle pointing up centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         Graphics2D g2d = (Graphics2D)g;
 
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
-
+         // draws a circle with a thick line
         g2d.setStroke(new BasicStroke(5));
         g2d.drawOval(widthUnit, heightUnit, widthUnit * 4, heightUnit * 4);
     }
 }
 
+/**
+ * draws a circle with an X over it
+ */
 class CircleX implements GraphicSymbol {
+    /**
+     * Draws a triangle pointing up centered and scaled within the given area.
+     * @param g graphics to use for drawing.
+     * @param drawArea drawing area is between (0,0) and this dimension
+     */
     @Override
     public void draw(Graphics g, Dimension drawArea) {
         int widthUnit = drawArea.width / 6;
         int heightUnit = drawArea.height / 6;
 
+        // Makes the lines thicker
         Graphics2D g2d = (Graphics2D)g;
         g2d.setStroke(new BasicStroke(3));
 
+        // draws a circle and two lines
         g2d.drawOval(widthUnit, heightUnit, widthUnit * 4, heightUnit * 4);
         g2d.drawLine(widthUnit, heightUnit, 5 * widthUnit, 5 * heightUnit);
         g2d.drawLine(5 * widthUnit, heightUnit, widthUnit, 5 * heightUnit);
     }
 }
 
-class KeyHandler extends KeyAdapter
-{
+/**
+ * Handles keyboard input for moving the selected cell with arrow keys
+ */
+class KeyHandler extends KeyAdapter {
+    // The selectedCell class will be used to change the selected cell
     SelectedCell view;
 
+    /**
+     * Constructor holds a reference to the selected cell object
+     * @param view the selected cell object
+     */
     public KeyHandler(SelectedCell view) { this.view = view; }
 
+    /**
+     * This method is executed everytime a key is pressed.
+     * @param e event information
+     */
     @Override
-    public void keyPressed(KeyEvent e)
-    {
+    public void keyPressed(KeyEvent e) {
+        // Get the currently selected column and row
         int selectedRow = view.getSelectedRow();
         int selectedColumn = view.getSelectedColumn();
 
-        switch (e.getKeyCode())
-        {
+        // Based on the key, alter the currently selected row.
+        // Not worrying of the selected cell goes off the board because
+        // the selected cell object will handle that.
+        switch (e.getKeyCode()) {
+            // If up was pressed
             case KeyEvent.VK_UP:
                 view.setSelected(selectedRow - 1, selectedColumn);
                 break;
+            // If down was pressed
             case KeyEvent.VK_DOWN:
                 view.setSelected(selectedRow + 1, selectedColumn);
                 break;
+            // If left was pressed
             case KeyEvent.VK_LEFT:
                 view.setSelected(selectedRow, selectedColumn - 1);
                 break;
+            // If right was pressed
             case KeyEvent.VK_RIGHT:
                 view.setSelected(selectedRow, selectedColumn + 1);
                 break;
         }
     }
-
-
 }
 
 
