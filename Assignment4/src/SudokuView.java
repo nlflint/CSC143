@@ -272,8 +272,9 @@ class GraphicsLibrary {
         Numeric
     }
 
-    // The lookup table for graphics
-    private Map<Integer, GraphicSymbol> symbolDefinitions;
+    // The lookup tables for graphics
+    private Map<Integer, GraphicSymbol> symbolicDefinitions;
+    private Map<Integer, GraphicSymbol> numericDefinitions;
 
     // Identifies which set of graphics are currently being used
     GraphicsType graphicsType;
@@ -282,27 +283,16 @@ class GraphicsLibrary {
      * Constructor. Defaults to Symbolic graphics.
      */
     public GraphicsLibrary() {
+        buildNumericLibrary();
+        buildSymbolicLibrary();
         setGraphicsType(GraphicsType.Symbolic);
     }
 
     /**
-     * Sets which graphics set the library should present, numbers or symbals.
+     * Sets which graphics set the library should present, numbers or symbols.
      * @param type Numbers or symbols
      */
-    public void setGraphicsType(GraphicsType type) {
-        // Reload the graphics set based on the given setting
-        switch (type) {
-            case Numeric:
-                buildGraphicsLibraryWithNumbers();
-                break;
-
-            case Symbolic:
-                buildGraphicsLibraryWithSymbols();
-                break;
-        }
-
-        graphicsType = type;
-    }
+    public void setGraphicsType(GraphicsType type) { graphicsType = type; }
 
     /**
      * Gets teh currently configured graphics type.
@@ -316,44 +306,43 @@ class GraphicsLibrary {
      * @return graphics object
      */
     public GraphicSymbol getGraphic(int number) {
-        // looks up the value in the Hashmap
-        return symbolDefinitions.get(number);
+        // look up the graphic in the correct library
+        if (graphicsType == GraphicsType.Numeric)
+            return numericDefinitions.get(number);
+        else
+            return symbolicDefinitions.get(number);
     }
 
-    // Rebuilds the hashmap to use numeric graphics
-    private void buildGraphicsLibraryWithNumbers() {
+    // Builds a hash map with numeric graphics
+    private void buildNumericLibrary() {
         // resets the hashmap and sets a blank graphic for value 0
-        initializeSymbolDefinitions();
+        numericDefinitions = new HashMap<Integer, GraphicSymbol>();
+        numericDefinitions.put(0, new Blank());
 
         // Set values 1 - 12 with numerical graphics
         for (int i = 1; i < 13; i++)
-            symbolDefinitions.put(i, new Numeric(i));
+            numericDefinitions.put(i, new Numeric(i));
     }
 
-    // common initialization code for the hashmap
-    private void initializeSymbolDefinitions() {
-        symbolDefinitions = new HashMap<Integer, GraphicSymbol>();
-        symbolDefinitions.put(0, new Blank());
-    }
-
-    // Rebuilds the hashmap to use symbolic graphics
-    private void buildGraphicsLibraryWithSymbols() {
+    // Builds a hash map with symbolic graphics
+    private void buildSymbolicLibrary() {
         // resets the hashmap and sets a blank graphic for value 0
-        initializeSymbolDefinitions();
+        symbolicDefinitions = new HashMap<Integer, GraphicSymbol>();
+        symbolicDefinitions.put(0, new Blank());
 
         // configure a different graphic for each sudoku value
-        symbolDefinitions.put(1, new OneDot());
-        symbolDefinitions.put(2, new TwoDots());
-        symbolDefinitions.put(3, new ThreeDots());
-        symbolDefinitions.put(4, new FourDots());
-        symbolDefinitions.put(5, new UpTriangle());
-        symbolDefinitions.put(6, new DownTriangle());
-        symbolDefinitions.put(7, new Star());
-        symbolDefinitions.put(8, new UpArrow());
-        symbolDefinitions.put(9, new DownArrow());
-        symbolDefinitions.put(10, new Cross());
-        symbolDefinitions.put(11, new Ring());
-        symbolDefinitions.put(12, new CircleX());
+        symbolicDefinitions.put(1, new OneDot());
+        symbolicDefinitions.put(2, new TwoDots());
+        symbolicDefinitions.put(3, new ThreeDots());
+        symbolicDefinitions.put(4, new FourDots());
+        symbolicDefinitions.put(5, new UpTriangle());
+        symbolicDefinitions.put(6, new DownTriangle());
+        symbolicDefinitions.put(7, new Star());
+        symbolicDefinitions.put(8, new UpArrow());
+        symbolicDefinitions.put(9, new DownArrow());
+        symbolicDefinitions.put(10, new Cross());
+        symbolicDefinitions.put(11, new Ring());
+        symbolicDefinitions.put(12, new CircleX());
     }
 }
 
