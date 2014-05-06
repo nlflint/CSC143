@@ -1,11 +1,11 @@
 public class Oops {
   
 //    Instatatiate a RuntimeException here.
-  RuntimeException x;
+  static RuntimeException x = new RuntimeException("Instantiated in field declaration");
   
   public Oops() {
 //    Instatatiate a RuntimeException here.
-    x = new RuntimeException("Instantiated in the constructor");
+//    x = new RuntimeException("Instantiated in the constructor");
   }
   
   public void m1() {
@@ -14,7 +14,7 @@ public class Oops {
   
   public void m2() {
 //    Instatatiate a RuntimeException here.
-    x = new RuntimeException("Instantiated in m2");
+//    x = new RuntimeException("Instantiated in m2");
     m3();
   }
   
@@ -24,13 +24,15 @@ public class Oops {
   
   public void m4() {
 //    Instatatiate a RuntimeException here.
-    x = new RuntimeException("Instantiated in m4");
+//    x = new RuntimeException("Instantiated in m4");
     throw x;
   }
   
   public static void main(String[] args) {
 //    Instatatiate a RuntimeException here.
-    new Oops().m1();
+      Oops oops = new Oops();
+      //oops.x = new RuntimeException("Instantiated in main");
+      oops.m1();
   }
   
 }
