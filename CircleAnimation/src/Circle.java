@@ -9,8 +9,13 @@ public class Circle extends JComponent {
     int distanceFromCenter;
     double velocity;
     int diameter;
-    int direction;
     Color color;
+    Direction direction;
+
+    enum Direction {
+        Clockwise,
+        CounterClockwise
+    }
 
     Point rotationPoint;
 
@@ -20,7 +25,7 @@ public class Circle extends JComponent {
         diameter = 10;
         distanceFromCenter =(int)(130 * Math.random()) + 20;
         this.rotationPoint = rotationPoint;
-        direction = Math.random() < 0.5 ? 1 : -1;
+        direction = (Math.random() - 0.5) > 0 ? Direction.Clockwise: Direction.CounterClockwise;
         setSize(diameter,diameter);
         velocity = Math.random() * 4;
 
@@ -47,7 +52,8 @@ public class Circle extends JComponent {
 
     public void step()
     {
-        angleFromCenter += direction * velocity;
+        int directionFactor = direction == Direction.CounterClockwise ? -1 : 1;
+        angleFromCenter += directionFactor * velocity;
         angleFromCenter %= 360;
     }
 }
