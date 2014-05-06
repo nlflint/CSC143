@@ -1,0 +1,33 @@
+Nathan Flint
+Assignment 4: Sudoku Graphics
+
+I started this assignment by planning what classes I would create. This didn't
+work out very well, and I ended up deleting a lot of code. Next time I
+
+It was pretty easy getting numerical strings to print and update from the model.
+The hardest part was getting the symbols to work. I wanted the play spaces to be
+able to switch between symbols and numerals on the fly, so I decided to use an
+intermediate class (between the play spaces and graphics) I called the 
+graphics library. It store to collections of graphics, one for symbols and one
+for numerals. The library would be used by the play spaces for getting graphics
+based on the sudoku values, and the library also has a method to switch between
+numbers and symbols which the view could do at any time.
+
+I also made all the graphics (both symbols and numbers) implement a common
+interface. The graphics library just holds a bunch of objects that implement
+this interface, and the play spaces use that interface for drawing. I really
+liked writing part of the program.
+
+The trickiest part of this assignment was the logic behind the region colors. I
+would actually prefer the board controlled these details, and still think the
+logic belongs in the sudoku base class. It took about 10 minutes of racking my
+brain to come up with a solution.
+
+The graphics took the longest time to implement, and I spent well over half of
+the the time creating and testing the graphics. I almost forgot to implement the
+keyboard and mouse click events, and it ended up being very easy to do after
+the fact I didn't have to reconstruct any details of the program for it.
+
+Next time, I won't try to plan so far ahead. I planned so far ahead, that I
+create classes which I ended up not using. I had to delete a few classes because
+my idea wasn't going to work. Next time I will code in a more iterative manner.
