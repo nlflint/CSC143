@@ -16,8 +16,8 @@ import java.util.*;
 public class SudokuView extends JPanel
         implements SelectedCell, NumericSupport {
 
-    // Hold the Sudoku board
-    private SudokuBase base;
+    // Hold the Sudoku board information
+    private int numberRowsInRegion, numberColumnsInRegion, boardWidth;
 
     // Contains graphics library for drawing symbals and numbers
     private GraphicsLibrary graphicsLibrary;
@@ -33,8 +33,11 @@ public class SudokuView extends JPanel
      * @param base The sudoku board
      */
     public SudokuView(SudokuBase base) {
-        // Save the sudoku board
-        this.base = base;
+
+        // Save the sudoku board information
+        numberRowsInRegion = base.rows;
+        numberColumnsInRegion = base.columns;
+        boardWidth = base.size;
 
         // Set white background
         setBackground(Color.white);
@@ -43,9 +46,7 @@ public class SudokuView extends JPanel
         graphicsLibrary = new GraphicsLibrary();
 
         // Set spacing around entire board.
-        Border line = new BorderUIResource.LineBorderUIResource(Color.black, 1);
-        Border empty = new BorderUIResource.EmptyBorderUIResource(2,2,2,2);
-        setBorder(new BorderUIResource.CompoundBorderUIResource(line, empty));
+        configureEdgeBorder();
 
         // Create playing squares
         createPlaySpaces(base);
@@ -58,52 +59,38 @@ public class SudokuView extends JPanel
 
     }
 
-    // Allows the view the pickup keyboard input.
-    private void initializeKeyboardListener() {
-        // Adds a my keylistener and focuses the window.
-        addKeyListener(new KeyHandler(this));
-        setFocusable(true);
-        requestFocusInWindow();
+    // Creates a boarder around edge of the board
+    private void configureEdgeBorder() {
+        Border line = new BorderUIResource.LineBorderUIResource(Color.black, 1);
+        Border empty = new BorderUIResource.EmptyBorderUIResource(2,2,2,2);
+        setBorder(new BorderUIResource.CompoundBorderUIResource(line, empty));
     }
 
     // Creates all the play spaces on the board.
     private void createPlaySpaces(SudokuBase base) {
         // Initialize an array to save references to the places spaces.
-        playSpaces = new PlaySpace[base.size][base.size];
+        // Board is always square
+        playSpaces = new PlaySpace[boardWidth][boardWidth];
 
-        // Get number of play spaces required, setup grid and spacing.
-        int size = base.rows * base.columns;
-        GridLayout layout = new GridLayout(size,size);
+        //setup grid layout with spacing.
+        GridLayout layout = new GridLayout(boardWidth, boardWidth);
         layout.setVgap(2);
         layout.setHgap(2);
         setLayout(layout);
 
-        // loop through rows and columns and create a play space for each row and column.
-        for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
+        // create play spaces by row and column
+        for (int row = 0; row < boardWidth; row++) {
+            for (int column = 0; column < boardWidth; column++) {
                 // Create the play space
                 PlaySpace playSpace = new PlaySpace(base, graphicsLibrary, row, column);
 
                 // Set the background color based on the region of the space
                 playSpace.setBackground(getRegionBackgroundColor(row, column));
 
-                // Allow this space to respond to mouse clicks
-                playSpace.addMouseListener(new MouseAdapter() {
-                    /**
-                     * Annonymous object for handling mouse input.
-                     * @param e event info
-                     */
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                        super.mouseClicked(e);
+                // Enable space to respond to mouse clicks
+                playSpace.addMouseListener(new MouseHandler(this));
 
-                        // Change selected row to the space that was clicked
-                        PlaySpace playSpace = ((PlaySpace)e.getSource());
-                        setSelected(playSpace.row, playSpace.column);
-                    }
-                });
-
-                // Add space to an array so that it can be referenced later on.
+                // Add space to an array so that it can be referenced for set-selected-cell methods.
                 playSpaces[row][column] = playSpace;
 
                 // add the space to the UI.
@@ -114,21 +101,33 @@ public class SudokuView extends JPanel
 
     // this formula gives the regions an alternating background color.
     private Color getRegionBackgroundColor(int row, int column) {
-        // Calculate which region the cell is in.
-        int numberRegionsHorizontally = base.size / base.columns;
-        int numberRegionsVertically = base.size / base.rows;
-        int regionColumn = column / numberRegionsHorizontally;
-        int regionRow = row / numberRegionsVertically;
+        // Get even-ness of the region axis where the cell resides
+        boolean regionRowIsEven = isRegionAxisIndexEven(column, numberColumnsInRegion);
+        boolean regionColumnIsEven = isRegionAxisIndexEven(row, numberRowsInRegion);
 
-        // Determine if the region row and column are odd or even.
-        boolean regionColumnEven = regionColumn % 2 == 0;
-        boolean regionRowEven = regionRow % 2 == 0;
-
-        // If row and column are the same, then set return light gray, else return white.
-        if (regionColumnEven ^ regionRowEven)
+        // XOR logic, if row and column have the same even-ness then color is light gray, else it's white.
+        if (regionRowIsEven ^ regionColumnIsEven)
             return Color.lightGray;
         else
             return Color.white;
+    }
+
+    // Calculates even-ness of the region where the space resides, along one axis
+    private boolean isRegionAxisIndexEven(int spaceIndex, int numberSpacesAlongRegion) {
+        // Calculate which region the cell is in, along one axis.
+        int numberRegionsOnAxis = boardWidth / numberSpacesAlongRegion;
+        int regionAxisIndex = spaceIndex / numberRegionsOnAxis;
+
+        // Determine if the region's index on this axis is even
+        return regionAxisIndex % 2 == 0;
+    }
+
+    // Allows the view the sense keyboard input.
+    private void initializeKeyboardListener() {
+        // Adds a my keylistener and focuses the window.
+        addKeyListener(new KeyHandler(this));
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     /**
@@ -139,14 +138,14 @@ public class SudokuView extends JPanel
     @Override
     public void setSelected(int row, int col) {
         // Make sure the row and columns are within the game board
-        if (row < 0 || row >= base.size || col < 0 || col >= base.size )
+        if (row < 0 || row >= boardWidth || col < 0 || col >= boardWidth)
             // out of range, do nothing.
             return;
 
         // Un-colors the existing selected play space. Make sure one is selected before trying to rest its color.
         if (selectedPlaySpace != null)
             selectedPlaySpace.setBackground(
-                    getRegionBackgroundColor(selectedPlaySpace.row, selectedPlaySpace.column));
+                    getRegionBackgroundColor(selectedPlaySpace.getRow(), selectedPlaySpace.getColumn()));
 
         // Save the new selected play space and change its background color to yellow
         selectedPlaySpace = playSpaces[row][col];
@@ -162,7 +161,7 @@ public class SudokuView extends JPanel
         // If no playspace is selected return 0.
         if (selectedPlaySpace == null)
             return 0;
-        return selectedPlaySpace.row;
+        return selectedPlaySpace.getRow();
     }
 
     /**
@@ -174,7 +173,7 @@ public class SudokuView extends JPanel
         // If no playspace is selected return 0.
         if (selectedPlaySpace == null)
             return 0;
-        return selectedPlaySpace.column;
+        return selectedPlaySpace.getColumn();
     }
 
     /**
@@ -193,7 +192,7 @@ public class SudokuView extends JPanel
 
     /**
      * Indicates if the sudoku values are displayed as numbers.
-     * @return
+     * @return type of graphics being used
      */
     @Override
     public boolean showsNumeric() {
@@ -210,7 +209,7 @@ class PlaySpace extends JPanel {
     SudokuBase base;
 
     // The row an column that this play space represents
-    int row, column;
+    private int row, column;
 
     // Contains methods to translate sudoku values into graphics
     GraphicsLibrary library;
@@ -258,8 +257,19 @@ class PlaySpace extends JPanel {
 
         // call the class to draw the graphic.
         graphic.draw(g, drawingArea);
-
     }
+
+    /**
+     * Gets the row on the board where this playspace resides
+     * @return row
+     */
+    public int getRow() { return row;}
+
+    /**
+     * Get teh column on the board where this playspace resides
+     * @return the column
+     */
+    public int getColumn() { return column;}
 }
 
 /**
@@ -672,6 +682,32 @@ class CircleX implements GraphicSymbol {
         g2d.drawOval(widthUnit, heightUnit, widthUnit * 4, heightUnit * 4);
         g2d.drawLine(widthUnit, heightUnit, 5 * widthUnit, 5 * heightUnit);
         g2d.drawLine(5 * widthUnit, heightUnit, widthUnit, 5 * heightUnit);
+    }
+}
+
+class MouseHandler extends MouseAdapter {
+
+    private SelectedCell view;
+
+    /**
+     * Constructor. Saves a reference to the view so cells can be selected.
+     * @param view
+     */
+    public MouseHandler(SelectedCell view) {
+        this.view = view;
+    }
+
+     /**
+     * Selects a cell on the view when mouse is clicked
+     * @param e event info
+     */
+    @Override
+    public void mousePressed(MouseEvent e) {
+        super.mouseClicked(e);
+
+        // Change selected row to the space that was clicked
+        PlaySpace playSpace = ((PlaySpace)e.getSource());
+        view.setSelected(playSpace.getRow(), playSpace.getColumn());
     }
 }
 
