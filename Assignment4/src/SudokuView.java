@@ -105,7 +105,7 @@ public class SudokuView extends JPanel
         boolean regionRowIsEven = isRegionAxisIndexEven(column, numberColumnsInRegion);
         boolean regionColumnIsEven = isRegionAxisIndexEven(row, numberRowsInRegion);
 
-        // XOR logic, if row and column have the same even-ness then color is light gray, else it's white.
+        // if row and column have the same even-ness then color is light gray, else it's white.
         if (regionRowIsEven == regionColumnIsEven)
             return Color.lightGray;
         else
