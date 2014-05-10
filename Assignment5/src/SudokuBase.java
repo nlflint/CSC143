@@ -6,7 +6,7 @@
  * @author Nathan Flint
  * @version Assignment 3: Sudoku Core
  */
-public abstract class SudokuBase {
+public abstract class SudokuBase extends java.util.Observable {
 
     /**
      * Rows in a region. This field is shared by many methods.
@@ -98,6 +98,8 @@ public abstract class SudokuBase {
 
         // Set the value
         grid[getIndex(row, col)] = value;
+        setChanged();
+        notifyObservers();
     }
 
     /**
@@ -117,6 +119,8 @@ public abstract class SudokuBase {
         for(int i = 0; i < grid.length; i++)
            if(grid[i] != 0)
               grid[i] |= GIVEN_MASK;
+        setChanged();
+        notifyObservers();
     }
 
     /**

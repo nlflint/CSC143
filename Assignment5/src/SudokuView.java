@@ -14,7 +14,7 @@ import java.util.*;
  * @version Assignment4: Sudoku Graphics
  */
 public class SudokuView extends JPanel
-        implements SelectedCell, NumericSupport {
+        implements SelectedCell, NumericSupport, Observer {
 
     // Hold the Sudoku board information
     private int numberRowsInRegion, numberColumnsInRegion, boardWidth;
@@ -43,7 +43,7 @@ public class SudokuView extends JPanel
         setBackground(Color.white);
 
         // Setup graphics
-        graphicsLibrary = new GraphicsLibrary();
+        graphicsLibrary = GraphicsLibrary.getInstance();
 
         // Set spacing around entire board.
         configureEdgeBorder();
@@ -53,6 +53,9 @@ public class SudokuView extends JPanel
 
         // Add keyboard listener
         initializeKeyboardListener();
+
+        // Add this view as an observer of the model
+        base.addObserver(this);
 
         // show everything
         setVisible(true);
@@ -199,6 +202,11 @@ public class SudokuView extends JPanel
         // Look into the graphics library to see if its set to numeric
         return graphicsLibrary.getGraphicsType() == GraphicsLibrary.GraphicsType.Numeric;
     }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        repaint();
+    }
 }
 
 /**
@@ -222,7 +230,7 @@ class PlaySpace extends JPanel {
      * @param column the row that this play space represents on the sudoku board
      */
     public PlaySpace(SudokuBase base, GraphicsLibrary library, int row, int column) {
-        // Save data
+        // Save member data
         this.base = base;
         this.row = row;
         this.column = column;
@@ -246,7 +254,7 @@ class PlaySpace extends JPanel {
         int value = base.getValue(row, column);
 
         // Set the color of the graphics based on if the value was given.
-        Color givenColor = base.isGiven(row, column) ? Color.black : new Color(114, 221, 114);
+        Color givenColor = base.isGiven(row, column) ? new Color(114, 221, 114): Color.black;
         g.setColor(givenColor);
 
         // use the value to get a class that draws the right symbol
@@ -276,6 +284,19 @@ class PlaySpace extends JPanel {
  * A lookup table for getting classes to draw the symbols.
  */
 class GraphicsLibrary {
+    //This is a singleton
+    private static GraphicsLibrary instance;
+
+    /**
+     * Gets an instance of the graphics library (singleton)
+     * @return the instance of the graphics library
+     */
+    public static GraphicsLibrary getInstance() {
+        if (instance == null)
+            instance = new GraphicsLibrary();
+        return instance;
+    }
+
     // Which set of symbols to use. numbers or pictures.
     enum GraphicsType {
         Symbolic,
@@ -292,7 +313,7 @@ class GraphicsLibrary {
     /**
      * Constructor. Defaults to Symbolic graphics.
      */
-    public GraphicsLibrary() {
+    private GraphicsLibrary() {
         buildNumericLibrary();
         buildSymbolicLibrary();
         setGraphicsType(GraphicsType.Symbolic);
