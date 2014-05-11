@@ -105,8 +105,8 @@ public class SudokuView extends JPanel
     // this formula gives the regions an alternating background color.
     private Color getRegionBackgroundColor(int row, int column) {
         // Get even-ness of the region axis where the cell resides
-        boolean regionRowIsEven = isRegionAxisIndexEven(column, numberColumnsInRegion);
-        boolean regionColumnIsEven = isRegionAxisIndexEven(row, numberRowsInRegion);
+        boolean regionRowIsEven = isRegionAxisIndexEven(column, numberRowsInRegion);
+        boolean regionColumnIsEven = isRegionAxisIndexEven(row, numberColumnsInRegion);
 
         // if row and column have the same even-ness then color is light gray, else it's white.
         if (regionRowIsEven == regionColumnIsEven)
