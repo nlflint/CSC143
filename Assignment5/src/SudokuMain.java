@@ -2,32 +2,53 @@ import javax.swing.*;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Stack;
 
 /**
  * Created by nate on 5/10/14.
  */
 public class SudokuMain {
     private JFrame applicationWindow;
-    private JFrame previousApplicationWindow;
-    private SudokuBase model;
-    private JPanel setupModePanel;
+    private Stack<JFrame> previousApplicationWindows;
 
     public SudokuMain() {
-
-        createNewGame(3, 3);
-        setupInitialBoardValues();
-        changeToPlayMode();
-}
-
-    private void createNewGame(int rows, int columns) {
-        applicationWindow = createApplicationWindow();
-        initializeBoardComponents(applicationWindow, rows, columns);
-        createSetupModeComponents(applicationWindow);
-        applicationWindow.pack();
-        applicationWindow.setVisible(true);
+        previousApplicationWindows = new Stack<JFrame>();
+        createNewGame(3, 3, true);
     }
 
-    private void setupInitialBoardValues() {
+    private void createNewGame(int rows, int columns, boolean bypassSetupMode) {
+        SudokuBase model = new SudokuBoard(rows, columns);
+
+        SudokuView view = new SudokuView(model);
+        view.setSelected(0,0);
+
+        SudokuController controller = new SudokuController(model, view);
+
+        SetupModeViewController setupModeViewController = new SetupModeViewController(model, this);
+
+        JFrame window = createApplicationWindow(view, controller, setupModeViewController);
+
+        setActiveApplicationWindow(window);
+
+        if (bypassSetupMode){
+            setupInitialBoardValues(model);
+            setupModeViewController.setVisible(false);
+        }
+
+        window.pack();
+        window.setVisible(true);
+
+    }
+
+    private void setActiveApplicationWindow(JFrame window) {
+        if (applicationWindow != null) {
+            applicationWindow.setVisible(false);
+            previousApplicationWindows.add(applicationWindow);
+        }
+        applicationWindow = window;
+    }
+
+    private void setupInitialBoardValues(SudokuBase model) {
         model.setValue(0, 3, 6);
         model.setValue(0, 5, 1);
         model.setValue(1, 2, 4);
@@ -43,63 +64,18 @@ public class SudokuMain {
         model.fixGivens();
     }
 
-    private void createSetupModeComponents(JFrame window) {
-        setupModePanel = new JPanel(new BorderLayout());
-
-        JLabel setupModeText = new JLabel("Setup Mode");
-        setupModeText.setFont(new Font("Helvitica", Font.BOLD, 24));
-        setupModeText.setForeground(Color.red);
-        setupModeText.setHorizontalAlignment(SwingConstants.CENTER);
-        setupModePanel.add(setupModeText, BorderLayout.NORTH);
-
-        JPanel buttonsPanel = new JPanel();
-
-        JButton cancelGivens = new JButton("Cancel");
-        cancelGivens.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                applicationWindow.setVisible(false);
-                previousApplicationWindow.setVisible(true);
-                applicationWindow = previousApplicationWindow;
-                previousApplicationWindow = null;
-            }
-        });
-        buttonsPanel.add(cancelGivens);
-
-        JButton setGivens = new JButton("Set Givens");
-        setGivens.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeToPlayMode();
-            }
-        });
-        buttonsPanel.add(setGivens);
-
-        setupModePanel.add(buttonsPanel, BorderLayout.SOUTH);
-        window.add(setupModePanel, BorderLayout.SOUTH);
-    }
-
-    private void changeToPlayMode() {
-        model.fixGivens();
-        setupModePanel.setVisible(false);
-        applicationWindow.pack();
-    }
-
-    private void initializeBoardComponents(JFrame window, int rows, int columns) {
-        model = createSudokuModel(rows, columns);
-        SudokuView view = createSudokuView(model);
-        SudokuController controller = createSudokuController(model, view);
-
-        window.add(controller, BorderLayout.NORTH);
-        window.add(view);
-    }
-
-    private JFrame createApplicationWindow() {
+    private JFrame createApplicationWindow(SudokuView view,
+                                           SudokuController controller,
+                                           SetupModeViewController setupModeViewController) {
         JFrame applicationWindow = new JFrame();
         applicationWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        createMenu(applicationWindow);
-        return applicationWindow;
+        applicationWindow.add(controller, BorderLayout.NORTH);
+        applicationWindow.add(view);
+        applicationWindow.add(setupModeViewController, BorderLayout.SOUTH);
 
+        createMenu(applicationWindow);
+
+        return applicationWindow;
 }
 
     private void createMenu(JFrame window) {
@@ -126,11 +102,9 @@ public class SudokuMain {
                 quit();
             }
         });
-
     }
 
-    private void quit()
-    {
+    private void quit() {
         final int SUCCESS_EXIT_CODE = 0;
         System.exit(SUCCESS_EXIT_CODE);
     }
@@ -138,28 +112,18 @@ public class SudokuMain {
     private void promptNewGame() {
         NewGameDialog dialog = new NewGameDialog(applicationWindow);
         if (dialog.okWasClicked()) {
-            applicationWindow.setVisible(false);
-            previousApplicationWindow = applicationWindow;
-            createNewGame(dialog.getRows(), dialog.getColumns());
+            createNewGame(dialog.getRows(), dialog.getColumns(), false);
         }
-
-
     }
 
-    private SudokuBase createSudokuModel(int rows, int columns) {
-        return new SudokuBoard(rows, columns);
+    public void cancelSetupMode() {
+        applicationWindow.setVisible(false);
+        applicationWindow = previousApplicationWindows.pop();
+        applicationWindow.setVisible(true);
     }
 
-    private SudokuView createSudokuView(SudokuBase base)
-    {
-        SudokuView sudokuView = new SudokuView(base);
-        sudokuView.setSelected(0,0);
-        return sudokuView;
-    }
-
-    private SudokuController createSudokuController(SudokuBase base, SudokuView sudokuView)
-    {
-        return new SudokuController(base, sudokuView);
+    public void packActiveWindow() {
+        applicationWindow.pack();
     }
 
     public static void main(String[] args)
@@ -167,6 +131,50 @@ public class SudokuMain {
         new SudokuMain();
     }
 
+}
+
+class SetupModeViewController extends JPanel {
+    private SudokuMain applicationMain;
+    private SudokuBase model;
+
+    public SetupModeViewController(SudokuBase sudokuModel, SudokuMain main) {
+        super();
+        this.applicationMain = main;
+        this.model = sudokuModel;
+
+        setLayout(new BorderLayout());
+
+        JLabel setupModeText = new JLabel("Setup Mode");
+        setupModeText.setFont(new Font("Helvitica", Font.BOLD, 24));
+        setupModeText.setForeground(Color.red);
+        setupModeText.setHorizontalAlignment(SwingConstants.CENTER);
+        add(setupModeText, BorderLayout.NORTH);
+
+        JPanel buttonsPanel = new JPanel();
+
+        JButton cancelGivens = new JButton("Cancel");
+        cancelGivens.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                applicationMain.cancelSetupMode();
+
+            }
+        });
+        buttonsPanel.add(cancelGivens);
+
+        JButton setGivens = new JButton("Set Givens");
+        setGivens.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                model.fixGivens();
+                setVisible(false);
+                applicationMain.packActiveWindow();
+            }
+        });
+        buttonsPanel.add(setGivens);
+
+        add(buttonsPanel, BorderLayout.SOUTH);
+    }
 }
 
 /**
@@ -354,12 +362,12 @@ class NewGameDialog extends JDialog implements ActionListener {
     }
 
     private boolean inputIsValid(int rows, int columns) {
-        return rows > 0 && columns > 0 && (rows * columns) < 13;
+        return rows > 1 && columns > 1 && (rows * columns) < 13;
 }
 
     private void showWrongInputMessage() {
         String errorLineOne = "Rows and Columns must be positive whole numbers that\n";
-        String errorLineTwo = "when multiplied together are greater than 0 and less than 13.";
+        String errorLineTwo = "when multiplied together are greater than 1 and less than 13.";
         JOptionPane.showMessageDialog(null, errorLineOne + errorLineTwo);
     }
 
