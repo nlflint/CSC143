@@ -1,0 +1,14 @@
+Nathan Flint
+Assignment 5: Sudoku Input Handling
+
+Notes:
+1) Made Graphics Library singleton.
+2) Found and fixed row/col bug in view
+3) Most difficult part was organizing the creation of model view controller
+4) discovered two kinds of code in the main class, setup code and execution code.
+5) Dialog took a lot longer than expected
+6) Like using small functions. find it easier to read.
+7) Struggled with mouse dragging bug.
+
+
+
