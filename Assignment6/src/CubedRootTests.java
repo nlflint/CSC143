@@ -2,10 +2,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by nathanf on 5/19/2014.
+ * Cube root tests
+ * Grading Level: Challenge
+ *
+ * @author NathanF
+ * @version Assignment 6: Newton-Raphson Roots
  */
 public class CubedRootTests {
-    private final double defaultEpsilon = 0.00000001;
 
     @Test
     public void cubeRootEasy()
@@ -19,8 +22,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void large()
-    {
+    public void large() {
         // Arrange data
         double cubeRoot = 1e7;
         double expectedRoot = 215.443469;
@@ -30,8 +32,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void small()
-    {
+    public void small() {
         // Arrange data
         double cubeRoot = 1.254e-4;
         double expectedRoot = 0.0500532765;
@@ -41,8 +42,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void veryLarge()
-    {
+    public void veryLarge() {
         // Arrange data
         double cubeRoot = 1e25;
         double expectedRoot = 2.15443469e8;
@@ -52,8 +52,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void verySmall()
-    {
+    public void verySmall() {
         // Arrange data
         double cubeRoot = 1e-13;
         double expectedRoot = 4.64158883e-5;
@@ -63,8 +62,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void negativeEasy()
-    {
+    public void negativeEasy() {
         // Arrange data
         double cubeRoot = -27.0;
         double expectedRoot = -3.0;
@@ -74,8 +72,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void negativeVeryLarge()
-    {
+    public void negativeVeryLarge() {
         // Arrange data
         double cubeRoot = -1e25;
         double expectedRoot = -2.15443469e8;
@@ -85,8 +82,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void negativeVerySmall()
-    {
+    public void negativeVerySmall() {
         // Arrange data
         double cubeRoot = -1e-13;
         double expectedRoot = -4.64158883e-5;
@@ -96,8 +92,7 @@ public class CubedRootTests {
     }
 
     @Test
-    public void one()
-    {
+    public void one() {
         // Arrange data
         double cubeRoot = 1.0;
         double expectedRoot = 1.0;
@@ -108,8 +103,7 @@ public class CubedRootTests {
 
 
     @Test
-    public void zero()
-    {
+    public void zero() {
         // Arrange data
         double cubeRoot = 0.0;
         double expectedRoot = 0.0;

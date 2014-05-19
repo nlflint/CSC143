@@ -3,12 +3,15 @@ import org.junit.Test;
 //import static org.junit.runner;
 
 /**
- * Created by nate on 5/15/14.
+ * Square root tests
+ * Grading Level: Challenge
+ *
+ * @author NathanF
+ * @version Assignment 6: Newton-Raphson Roots
  */
 public class SquareRootTests {
     @Test
-    public void easy()
-    {
+    public void easy() {
          // Arrange data
         double squareRoot = 25.0;
         double expectedRoot = 5.0;
@@ -18,8 +21,7 @@ public class SquareRootTests {
     }
 
    @Test
-    public void large()
-    {
+    public void large() {
         // Arrange data
         double squareRoot = 1e7;
         double expectedRoot = 3162.277660;
@@ -29,8 +31,7 @@ public class SquareRootTests {
     }
 
     @Test
-    public void small()
-    {
+    public void small() {
         // Arrange data
         double squareRoot = 1.254e-4;
         double expectedRoot = 0.011198214143;
@@ -40,8 +41,7 @@ public class SquareRootTests {
     }
 
     @Test
-    public void veryLarge()
-    {
+    public void veryLarge() {
         // Arrange data
         double squareRoot = 1e16;
         double expectedRoot = 1e8;
@@ -51,8 +51,7 @@ public class SquareRootTests {
     }
 
     @Test
-    public void verySmall()
-    {
+    public void verySmall() {
         // Arrange data
         double squareRoot = 1e-16;
         double expectedRoot = 1e-8;
@@ -62,8 +61,7 @@ public class SquareRootTests {
     }
 
     @Test
-    public void veryVeryLarge()
-    {
+    public void veryVeryLarge() {
         // Arrange data
         double squareRoot = 1e58;
         double expectedRoot = 1e29;
@@ -73,8 +71,7 @@ public class SquareRootTests {
     }
 
     @Test
-    public void veryVerySmall()
-    {
+    public void veryVerySmall() {
         // Arrange data
         double squareRoot = 1e-58;
         double expectedRoot = 1e-29;
@@ -83,11 +80,8 @@ public class SquareRootTests {
         Assert.assertEquals(expectedRoot, NewtonRaphson.sqrt(squareRoot), getEpsilon(expectedRoot));
     }
 
-
-
     @Test
-    public void one()
-    {
+    public void one() {
         // Arrange data
         double squareRoot = 1.0;
         double expectedRoot = 1.0;
@@ -97,8 +91,7 @@ public class SquareRootTests {
     }
 
     @Test
-    public void zero()
-    {
+    public void zero() {
         // Arrange data
         double squareRoot = 0.0;
         double expectedRoot = 0.0;

@@ -1,6 +1,5 @@
 /**
  * Calculates square roots and cube roots
- *
  * Grading Level: Challenge
  *
  * @author Nathan Flint
@@ -21,8 +20,7 @@ public class NewtonRaphson {
         return sqrtFormula(n, n, 0);
     }
 
-    private static double sqrtFormula(double guess, double squareRoot, int iteration)
-            throws ConvergenceException {
+    private static double sqrtFormula(double guess, double squareRoot, int iteration) {
         if (iteration > 100)
             throw new ConvergenceException("Over 100 iterations reached");
 
@@ -37,10 +35,6 @@ public class NewtonRaphson {
             double ret = sqrtFormula(newGuess, squareRoot, ++iteration);
             return ret;
         }
-
-
-
-
     }
 
     public static double cbrt(double n) {
@@ -65,7 +59,6 @@ public class NewtonRaphson {
         else
             return cbrtFormula(newGuess, cubeRoot, ++iteration);
     }
-
 }
 
 class ConvergenceException extends RuntimeException {
