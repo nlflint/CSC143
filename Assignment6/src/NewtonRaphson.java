@@ -9,18 +9,22 @@
 public class NewtonRaphson {
 
     public static double sqrt(double n) {
-        try {
-            return sqrtFormula(1.0, n, 0);
-        } catch (Exception e) {
-            System.err.printf("Unable to calculate root for %d. Over 100 iterations and answer not reached!", n);
-        }
-        return -1;
+        // precondition, square root must be positive
+        if (n < 0)
+            throw new IllegalArgumentException("input square root must be greater than 0");
+
+        // Special case for zeros
+        if (n == 0)
+            return 0;
+
+        // enter a recursive loop
+        return sqrtFormula(n, n, 0);
     }
 
     private static double sqrtFormula(double guess, double squareRoot, int iteration)
-            throws Exception {
+            throws ConvergenceException {
         if (iteration > 100)
-            throw new Exception("Over 100 iterations reached");
+            throw new ConvergenceException("Over 100 iterations reached");
 
         double newGuess = (guess + squareRoot / guess) / 2.0;
 
@@ -29,38 +33,44 @@ public class NewtonRaphson {
         double check =  newGuessSquaredMinusSquareRoot / squareRoot;
         if ( check < 1e-10)
             return newGuess;
-        else
-            return sqrtFormula(newGuess, squareRoot, iteration++);
+        else {
+            double ret = sqrtFormula(newGuess, squareRoot, ++iteration);
+            return ret;
+        }
+
 
 
 
     }
 
     public static double cbrt(double n) {
-        try {
-            return cbrtFormula(1.0, n, 0);
-        } catch (Exception e) {
-            System.err.printf("Unable to calculate root for %d. Over 100 iterations and answer not reached!", n);
-        }
-        return -1;
+        // Special case for zeros
+        if (n == 0)
+            return 0;
+
+        // Enter into a recursive loop
+        return cbrtFormula(n, n, 0);
     }
 
-    private static double cbrtFormula(double guess, double cubeRoot, int iteration) throws Exception {
+    private static double cbrtFormula(double guess, double cubeRoot, int iteration) {
         if (iteration > 100)
-            throw new Exception("Over 100 iterations reached");
+            throw new ConvergenceException("Over 100 iterations reached");
 
         double newGuess = (guess * 2 + cubeRoot / (guess * guess)) / 3.0;
-
 
         double newGuessCubedMinusCubeRoot = newGuess * newGuess * newGuess - cubeRoot;
         double check =  newGuessCubedMinusCubeRoot / cubeRoot;
         if ( check < 1e-10)
             return newGuess;
         else
-            return cbrtFormula(newGuess, cubeRoot, iteration++);
-
-
-
+            return cbrtFormula(newGuess, cubeRoot, ++iteration);
     }
 
+}
+
+class ConvergenceException extends RuntimeException {
+    public ConvergenceException(String message) {
+        super(message);
+    }
+    
 }
