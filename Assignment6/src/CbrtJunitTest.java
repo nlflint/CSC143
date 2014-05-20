@@ -8,7 +8,7 @@ import org.junit.Test;
  * @author NathanF
  * @version Assignment 6: Newton-Raphson Roots
  */
-public class CubedRootTests {
+public class CbrtJunitTest {
 
     @Test
     public void cubeRootEasy()
@@ -118,9 +118,6 @@ public class CubedRootTests {
     }
 
     private double getEpsilon(double expectedResult) {
-        if (expectedResult > 0)
-            return expectedResult / 1e8;
-        else
-            return expectedResult / -1e8;
+            return Math.abs(expectedResult / 1e9);
     }
 }

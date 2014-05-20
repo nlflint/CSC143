@@ -8,7 +8,7 @@ import org.junit.Test;
  * @author NathanF
  * @version Assignment 6: Newton-Raphson Roots
  */
-public class SquareRootTests {
+public class SqrtJunitTest {
     @Test
     public void easy() {
          // Arrange data
@@ -121,7 +121,7 @@ public class SquareRootTests {
     }
 
     private double getEpsilon(double expectedResult) {
-        double epsilon = expectedResult / 1e8;
+        double epsilon = expectedResult / 1e9;
         return epsilon;
     }
 }
