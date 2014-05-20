@@ -28,7 +28,7 @@ public class NewtonRaphson {
     private static double sqrtFormula(double guess, double squareRoot, int iteration) {
         // Limit the recursion to 100 iterations
         if (iteration > 100)
-            throw new ConvergenceException("Over 100 iterations reached");
+            throw new ConvergenceException("Answer did not converge after 100 iterations");
 
         // Newton-Raphson for square roots
         double newGuess = (guess + squareRoot / guess) / 2.0;
@@ -56,7 +56,7 @@ public class NewtonRaphson {
     private static double cbrtFormula(double guess, double cubeRoot, int iteration) {
         // Limit the recursion to 100 iterations
         if (iteration > 100)
-            throw new ConvergenceException("Over 100 iterations reached");
+            throw new ConvergenceException("Answer did not converge after 100 iterations");
 
         // Newton-Raphson for cube roots
         double newGuess = (guess * 2 + cubeRoot / (guess * guess)) / 3.0;
