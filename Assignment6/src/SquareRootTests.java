@@ -1,6 +1,5 @@
 import org.junit.Assert;
 import org.junit.Test;
-//import static org.junit.runner;
 
 /**
  * Square root tests
@@ -99,8 +98,6 @@ public class SquareRootTests {
         // Act and assert
         Assert.assertEquals(expectedRoot, NewtonRaphson.sqrt(squareRoot), getEpsilon(expectedRoot));
     }
-
-
 
     @Test(expected = ConvergenceException.class)
     public void tooLarge() {
