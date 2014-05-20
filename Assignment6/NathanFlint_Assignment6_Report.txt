@@ -1,0 +1,51 @@
+Nathan Flint
+Assignment 6: Newton-Raphson Roots
+
+To start this assignment, I wanted prove how the NewtonRaphson
+formulas were simplified algebraically. It actually took me a good 30 minutes
+to figure out how they were simplified. It's been > 1 year since I took Calc2,
+and my algebra is quite rusty.
+
+After simplifying the formulas, I wrote a couple of simple tests. I used some
+standard values that I could calculate from memory, like sqrt(25) and cbrt(27).
+I used these simple tests to implement my first attempt at a solution. We
+haven't covered recursion in class yet, but this assignment is a great case for
+using it. My first crack at the algorithms was pretty straight forward and I got
+the simple tests to pass quite quickly. The difficulty came later.
+
+Standard values are not exhaustive enough to test my solution, so I added tests
+for very large and small numbers, and added negative input tests for cube roots
+too. A large input test like 1e50 should have easily passed, I thought, but it
+immediately failed, and I couldn't figure out why. After some discussion on the
+boards, I discovered the epsilon must be tuned for each test. I was using a
+static 1e-8 epsilon for each test which I got from the assignment, but that
+would never work for large numbers like 1e50. 
+
+I factored out a simple function to calculate an acceptable epsilon based on the
+expected output. The function took the expected result and divided it by 1e-8.
+There was still a small problem: some times 7 digits was still enough precision
+that the test would pass. The problem was with my division method. Depending on
+how close the expected result was to the next magnitude, the epsilon might be 7
+significant digits, so I just upped the divisor to 1e-9 to make sure cbrt and
+sqrt give at least 8 significant digits.
+
+I was surprised when tests with negative cube roots weren't working with my
+epsilon formula. The problem is that the jUnit Assert method expect a positive
+for epsilon, so I just ran the division through Math.abs() before returning from
+the helper function. 
+
+The most import thing I learned about this assignment are that significant
+digits are very important when calculating doubles. I really have to make sure I
+know that the math isn't perfect and design my code with the mind sent that I
+have to account for loss of precision.
+
+Challenge:
+For square roots: The boundaries for input are between 2.4e-59 and
+4.3e58 inclusive.
+
+For cube roots: The boundaries for positive inputer are between 8.6e-14 and
+4.8e25 inclusive, and negative input are between -4.8e25 and -8.6e-14
+inclusive.  
+
+
+ 
