@@ -1,3 +1,6 @@
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * Abstract class for a Sudoku board.
  *
@@ -187,7 +190,13 @@ public abstract class SudokuBase extends java.util.Observable {
     }
 
     //Writes current values of the sudoku board to the given stream
-    protected void writeToStream(java.io.OutputStream os) {
+    protected void writeToStream(java.io.OutputStream os) throws IOException {
+        // Create a stream that can write binary data
+        DataOutputStream dataOut = new DataOutputStream(os);
+
+        // Save each value from the raw grid.
+        for (int value : grid)
+            dataOut.writeInt(value);
     }
 
     // gets value from given row and column including any masking bits.

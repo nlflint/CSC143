@@ -148,6 +148,11 @@ public class SudokuBoard extends SudokuBase
         return true;
     }
 
+    //Writes current values of the sudoku board to the given stream
+    protected void writeToStream(java.io.OutputStream os) {
+
+    }
+
     // Identifies how getLineOfValues iterates through the board.
     private enum IterateOn
     {

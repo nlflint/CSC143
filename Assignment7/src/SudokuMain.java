@@ -1,3 +1,4 @@
+import SudokuGraphics.*;
 import javax.swing.*;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
