@@ -1,0 +1,130 @@
+Nathan Flint
+Assignments 3, 4, 5, 7: Full write up.
+
+Assignment 3: Sudoku Core:
+I began assignment3 by learning how the Sudoku base class worked. I had
+to understand how the data was being stored, and what functions I was going to
+implement. Before writing any code, I wrote a handful of JUnit tests. I created
+tests that setup the board in many different states, and then asserted the
+return values of the three functions I would implement. With failing tests, I
+then implemented the functions.
+
+The tests worked really well. After I thought I had a function working, the
+tests helped me debug problems by showing that the function was broken. They
+showed me when I had everything working when they passed. Additionally, I spent
+most of my time refactoring the code and the tests gave me confidence in my
+refactor. Several times I broke functionality during a refactor and the tests
+caught my error.
+
+However, there were also several scenarios my initial tests didn't catch. After
+finishing the initial implementation, I added tests for 3x2 regions and 2x3
+regions. I expected them to pass, but they failed. At yet another point, with a
+refactor half complete, I ran some tests to investigate my code, but they
+passed! The tests should have failed. They were good tests, but they were not
+able to catch that the code was incomplete because they contained mirrored data.
+This wasn't bad, but it prevented the test from catching certain kinds of bugs.
+I altered these tests to catch the problem.
+
+Next time, I want my initial test to more exhaustive then there were for this
+assignment. For this assignment, I had several good tests ing beginning, but
+my tests didn't get robust until later in development. I hope that better
+initial tests will help me find problems earlier, and improve my coding by
+making me think ahead. Having to design the tests first, forces me consider more
+aspects of the problem before I get started.
+
+Assignment 4: Sudoku Graphics
+I started this assignment by planning what classes I would create. This didn't
+work out very well, and I ended up deleting a lot of code. Next time I will have
+an over arching plan, but and solve the detail as they come, rather than in
+advance.
+
+It was pretty easy getting numerical strings to print and update from the model.
+The hardest part was getting the symbols to work. I wanted the play spaces to be
+able to switch between symbols and numerals on the fly, so I decided to use an
+intermediate class (between the play spaces and graphics) I called the 
+graphics library. It store to collections of graphics, one for symbols and one
+for numerals. The library would be used by the play spaces for getting graphics
+based on the sudoku values, and the library also has a method to switch between
+numbers and symbols which the view could do at any time.
+
+I also made all the graphics (both symbols and numbers) implement a common
+interface. The graphics library just holds a bunch of objects that implement
+this interface, and the play spaces use that interface for drawing. I really
+liked writing part of the program.
+
+The trickiest part of this assignment was the logic behind the region colors. I
+would actually prefer the board controlled these details, and still think the
+logic belongs in the sudoku base class. It took about 10 minutes of racking my
+brain to come up with a solution.
+
+The graphics took the longest time to implement, and I spent well over half of
+the the time creating and testing the graphics. I almost forgot to implement the
+keyboard and mouse click events, and it ended up being very easy to do after
+the fact I didn't have to reconstruct any details of the program for it.
+
+Next time, I won't try to plan so far ahead. I planned so far ahead, that I
+create classes which I ended up not using. I had to delete a few classes because
+my idea wasn't going to work. Next time I will code in a more iterative manner.
+
+Assignment 5: Sudoku Input Handling
+Notes:
+I wanted to have one source for all the graphics, but all clients reading the
+graphics, need to read the same reference because the numeric setting could
+change on the fly. I decided to make the graphics library a singleton, so that
+the numeric setting could be set in one place, and all clients would get the new
+graphics.
+
+I found a fixed a bug in Assignment 4. The rows and columns of individual 
+regions were swapped. So a board with 3x2 regions, actually looked like it had
+2x3 regions.
+
+The most difficult part of assignment 5, was getting the model, view and
+controller to work together. I spent a lot of time organizing the code to some
+thing I thought was clean.
+
+I discovered I was creating two kinds of code for the main class. The first type
+being setup code which creates objects and ties them together. The second type
+of code is execution code that runs after everything is setup. I organized the
+setup code so that it only ran once for each game, which made it easy to just
+create entire new JFrames if the users selected a new game.
+
+The new game dialog took a lot longer to implement that I expected. I struggled
+to get the layout manager to work so that the dialog looked nice. It was a
+simple dialog that had two text fields and two buttons.
+
+Along the way, I've discovered that I really like having small functions with
+descriptive names. I am going to try to write future programs to use lots of
+small functions.
+
+Assignment 7: Sudoku Serialization/Integration
+I really enjoyed assignment 7. The first thing I wanted to do was fix a mistake
+from assignment 5. I created the Setup Mode incorrectly, so that it didn't use
+dialog, but instead created a whole new game window and just hid the old one.
+I significantly refactored the code to support changing out the model on an
+exiting JFrame that already had a game underway. I created a nice function
+called AttachModel that could take any model, and regenerate the contents and 
+shape of the JFrame to use this model. I was able to reuse the function for
+loading saved games and creating new ones.
+
+The serialization was pretty straight forward. I decided to use the Data Stream
+to save the games. The files output by this method are almost impossible to read
+by a human, but are significantly easier program. I used this method because
+human readability is not important. It's much easier to edit board by using
+the program. The serialization itself is easy, but the menu system was quite
+complicated. I was able to reuse some file operations, and the save/save-as
+functions use almost the same code.
+
+Editing the MRU list on the fly took some refactoring. I has to change how the
+menu's were created, because the original code was designed to run once and kept
+no references to the menu items. I refactored this code so that the menu creation
+code could be run over and over again whenever the MRU changed.
+
+Designing the algorithms to draw the indicators took quite a bit of planning 
+and testing. The hardest indicator was regions. I used scratch paper to come up
+with the math to calculate the shape of the regions. I decided to make the
+indicators part of the SudokuView so that I wouldn't have to redesign the main
+function to handle multiple views. This made it easier to implement.
+
+Overall, I really like doing assignment 7, and am pleased with the design I
+created.
+
