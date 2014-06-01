@@ -1,10 +1,9 @@
-package View;
+package Views;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.*;
 
 import Model.SudokuBase;
@@ -33,6 +32,10 @@ public class SudokuView extends JPanel
     // the currently selected space
     private PlaySpace selectedPlaySpace;
 
+    //Panels for grouping componments
+    private JPanel playSpacePanel;
+    private JPanel statusPanel;
+
     /**
      * Constructor sets up graphics and binds it to the sudoku board.
      * @param base The sudoku board
@@ -44,17 +47,22 @@ public class SudokuView extends JPanel
         numberColumnsInRegion = base.columns;
         boardWidth = base.size;
 
+        configureEdgeBorder(this);
+
         // Set white background
         setBackground(Color.white);
 
         // Setup graphics
         graphicsLibrary = GraphicsLibrary.getInstance();
 
-        // Set spacing around entire board.
-        configureEdgeBorder();
+        //configure layout
+        setLayout(new BorderLayout());
 
         // Create playing squares
         createPlaySpaces(base);
+
+        // Create status indicators
+        createStatusIndicators(base);
 
         // Add keyboard listener
         initializeKeyboardListener();
@@ -67,15 +75,46 @@ public class SudokuView extends JPanel
 
     }
 
+    public void hideIndicators() {
+        statusPanel.setVisible(false);
+        repaint();
+    }
+
+    private void createStatusIndicators(SudokuBase base) {
+        statusPanel = new JPanel();
+        FlowLayout flowLeftAligned = new FlowLayout(FlowLayout.LEFT);
+        statusPanel.setLayout(flowLeftAligned);
+
+        add(statusPanel,BorderLayout.SOUTH);
+        // Set spacing around status panel.
+        //configureEdgeBorder(playSpacePanel);
+
+        RegionStatusIndicator regionIndicator = new RegionStatusIndicator(base);
+        statusPanel.add(regionIndicator);
+
+        ColumnStatusIndicator columnIndicator = new ColumnStatusIndicator(base);
+        statusPanel.add(columnIndicator);
+
+        RowStatusIndicator rowIndicator = new RowStatusIndicator(base);
+        statusPanel.add(rowIndicator);
+
+    }
+
     // Creates a boarder around edge of the board
-    private void configureEdgeBorder() {
+    private void configureEdgeBorder(JPanel panel) {
         Border line = new BorderUIResource.LineBorderUIResource(Color.black, 1);
         Border empty = new BorderUIResource.EmptyBorderUIResource(2,2,2,2);
-        setBorder(new BorderUIResource.CompoundBorderUIResource(line, empty));
+        panel.setBorder(new BorderUIResource.CompoundBorderUIResource(line, empty));
     }
 
     // Creates all the play spaces on the board.
     private void createPlaySpaces(SudokuBase base) {
+        playSpacePanel = new JPanel();
+        add(playSpacePanel);
+
+        // Set spacing around entire board.
+        //configureEdgeBorder(playSpacePanel);
+
         // Initialize an array to save references to the places spaces.
         // Board is always square
         playSpaces = new PlaySpace[boardWidth][boardWidth];
@@ -84,7 +123,7 @@ public class SudokuView extends JPanel
         GridLayout layout = new GridLayout(boardWidth, boardWidth);
         layout.setVgap(2);
         layout.setHgap(2);
-        setLayout(layout);
+        playSpacePanel.setLayout(layout);
 
         // create play spaces by row and column
         for (int row = 0; row < boardWidth; row++) {
@@ -102,7 +141,7 @@ public class SudokuView extends JPanel
                 playSpaces[row][column] = playSpace;
 
                 // add the space to the UI.
-                add(playSpace);
+                playSpacePanel.add(playSpace);
             }
         }
     }
@@ -211,151 +250,6 @@ public class SudokuView extends JPanel
     @Override
     public void update(Observable o, Object arg) {
         repaint();
-    }
-}
-
-/**
- * Represents a play space on the sudoku board.
- */
-class PlaySpace extends JPanel {
-    // holds the state of the sudoku board
-    SudokuBase base;
-
-    // The row an column that this play space represents
-    private int row, column;
-
-    // Contains methods to translate sudoku values into graphics
-    GraphicsLibrary library;
-
-    /**
-     * Constructs a play space.
-     * @param base a Sudoku board
-     * @param library a graphics library
-     * @param row the row that this play space represents on the sudoku board
-     * @param column the row that this play space represents on the sudoku board
-     */
-    public PlaySpace(SudokuBase base, GraphicsLibrary library, int row, int column) {
-        // Save member data
-        this.base = base;
-        this.row = row;
-        this.column = column;
-        this.library = library;
-
-        // Set size and a border
-        setPreferredSize(new Dimension(50, 50));
-        setBorder(new BorderUIResource.LineBorderUIResource(Color.black));
-    }
-
-    /**
-     * Draws this play space
-     * @param g graphics object that will be used for drawing
-     */
-    @Override
-    public void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-
-        // gets a value for the sudoku board
-        int value = base.getValue(row, column);
-
-        // Set the color of the graphics based on if the value was given.
-        Color givenColor = base.isGiven(row, column) ? new Color(114, 221, 114): Color.black;
-        g.setColor(givenColor);
-
-        // use the value to get a class that draws the right symbol
-        GraphicSymbol graphic = library.getGraphic(value);
-
-        // sets constraints that the graphic class will draw within.
-        Dimension drawingArea = new Dimension(getWidth(), getHeight());
-
-        // call the class to draw the graphic.
-        graphic.draw(g, drawingArea);
-    }
-
-    /**
-     * Gets the row on the board where this playspace resides
-     * @return row
-     */
-    public int getRow() { return row;}
-
-    /**
-     * Get teh column on the board where this playspace resides
-     * @return the column
-     */
-    public int getColumn() { return column;}
-}
-
-
-class MouseHandler extends MouseAdapter {
-
-    private SelectedCell view;
-
-    /**
-     * Constructor. Saves a reference to the view so cells can be selected.
-     * @param view
-     */
-    public MouseHandler(SelectedCell view) {
-        this.view = view;
-    }
-
-     /**
-     * Selects a cell on the view when mouse is clicked
-     * @param e event info
-     */
-    @Override
-    public void mousePressed(MouseEvent e) {
-        super.mouseClicked(e);
-
-        // Change selected row to the space that was clicked
-        PlaySpace playSpace = ((PlaySpace)e.getSource());
-        view.setSelected(playSpace.getRow(), playSpace.getColumn());
-    }
-}
-
-/**
- * Handles keyboard input for moving the selected cell with arrow keys
- */
-class KeyHandler extends KeyAdapter {
-    // The selectedCell class will be used to change the selected cell
-    SelectedCell view;
-
-    /**
-     * Constructor holds a reference to the selected cell object
-     * @param view the selected cell object
-     */
-    public KeyHandler(SelectedCell view) { this.view = view; }
-
-    /**
-     * This method is executed everytime a key is pressed.
-     * @param e event information
-     */
-    @Override
-    public void keyPressed(KeyEvent e) {
-        // Get the currently selected column and row
-        int selectedRow = view.getSelectedRow();
-        int selectedColumn = view.getSelectedColumn();
-
-        // Based on the key, alter the currently selected row.
-        // Not worrying of the selected cell goes off the board because
-        // the selected cell object will handle that.
-        switch (e.getKeyCode()) {
-            // If up was pressed
-            case KeyEvent.VK_UP:
-                view.setSelected(selectedRow - 1, selectedColumn);
-                break;
-            // If down was pressed
-            case KeyEvent.VK_DOWN:
-                view.setSelected(selectedRow + 1, selectedColumn);
-                break;
-            // If left was pressed
-            case KeyEvent.VK_LEFT:
-                view.setSelected(selectedRow, selectedColumn - 1);
-                break;
-            // If right was pressed
-            case KeyEvent.VK_RIGHT:
-                view.setSelected(selectedRow, selectedColumn + 1);
-                break;
-        }
     }
 }
 

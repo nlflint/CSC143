@@ -1,4 +1,4 @@
-package View;
+package Views;
 
 /**
  * Interface to support the programmatic control of the

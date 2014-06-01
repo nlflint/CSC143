@@ -1,4 +1,4 @@
-package Sudoku;
+package Dialogs;
 
 import javax.swing.*;
 import java.awt.*;

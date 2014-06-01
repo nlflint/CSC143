@@ -1,4 +1,4 @@
-package View;
+package Views;
 
 /**
  * Support for numeric output for SudokuView, optional.

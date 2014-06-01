@@ -1,13 +1,19 @@
 package Sudoku;
 
 import Controllers.*;
+import Dialogs.*;
 import Model.*;
-import View.SudokuView;
+import Views.SudokuView;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Main class for the sudoku program. Ties together the view and model with a controller.
@@ -16,23 +22,75 @@ import java.io.*;
  * @author Nathan Flint
  * @version Assignment 5: Sudoku Input Handling
  */
-public class SudokuMain {
+public class SudokuMain implements Observer{
     // Contains the active game window, and previous active games windows.
     private JFrame applicationWindow;
     private SudokuBoard currentModel;
     private SudokuView currentView;
     private SudokuController currentController;
+    private String lastFilePath;
+    private boolean gameHasUnsavedChanges;
+    private List<String> mostRecentFiles;
+    private int limitOfMostRecentFiles = 4;
+    private String configFileFullPath;
 
     /**
      * Constructor. Sets up and initial game window.
      */
     public SudokuMain() {
-        // Creates a new 3x3 game and by-passes the Setup mode.
-        SudokuBoard model = new SudokuBoard(3,3);
-        setupInitialBoardValues(model);
+        configFileFullPath = getFullConfigFilePath();
 
-        // Attaches the model to the window
-        attachModel(model);
+        // Load config file
+        loadListOfRecentFiles();
+
+        SudokuBoard model;
+        if (mostRecentFiles.size() > 0 && fileExists(mostRecentFiles.get(0)))
+        {
+            openGame(mostRecentFiles.get(0));
+        }
+        else
+        {
+            // Creates a new 3x3 game and by-passes the Setup mode.
+            model = new SudokuBoard(3,3);
+            setupInitialBoardValues(model);
+
+            attachModel(model);
+        }
+    }
+
+    private String getFullConfigFilePath() {
+        final String configFileName = ".sudokurc";
+        File configFile = new File(configFileName);
+        return configFile.getAbsolutePath();
+    }
+
+    private void loadListOfRecentFiles() {
+        mostRecentFiles = new ArrayList<String>();
+
+        // stop if config file doesn't exist
+        if (!fileExists(configFileFullPath))
+            return;
+
+
+        FileInputStream fileInputStream;
+        DataInputStream dataInputStream;
+        try {
+            fileInputStream = new FileInputStream(configFileFullPath);
+            dataInputStream = new DataInputStream(fileInputStream);
+            for (int i = 0; i < limitOfMostRecentFiles; i++) {
+                String fullFilename  = dataInputStream.readUTF();
+                if (fileExists(fullFilename))
+                    mostRecentFiles.add(fullFilename);
+            }
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        }
+    }
+
+    private boolean fileExists(String fileName) {
+        File f = new File(fileName);
+        return f.exists() && !f.isDirectory();
     }
 
     // Creates JFrames with everything connected in a playable game
@@ -55,6 +113,9 @@ public class SudokuMain {
         // Finalizes the layout and shows the window.
         applicationWindow.pack();
         applicationWindow.setVisible(true);
+
+        // observe the model for changes
+        model.addObserver(this);
 
         // Save reference
         currentModel = model;
@@ -111,15 +172,32 @@ public class SudokuMain {
         // Create window
         applicationWindow = new JFrame("Sudoku");
         applicationWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        applicationWindow.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (gameHasUnsavedChanges)
+                    promptSaveGame();
+            }
+        });
 
         // Creates the file drop down menu.
         createMenu(applicationWindow);
     }
 
+    private void promptSaveGame() {
+        SaveGameDialog saveDialog = new SaveGameDialog(applicationWindow);
+        if (saveDialog.userRequestsSaveChanges)
+            save();
+
+    }
+
     // Creates a menu for the given window
     private void createMenu(JFrame window) {
-        JMenuBar menubar = new JMenuBar();
-        window.setJMenuBar(menubar);
+        JMenuBar menubar = window.getJMenuBar();
+        if (menubar == null)
+            menubar = new JMenuBar();
+
+        menubar.removeAll();
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic('f');
@@ -127,6 +205,8 @@ public class SudokuMain {
 
         // The new game option lets users start a new game
         JMenuItem newCmd = new JMenuItem("New Game");
+        newCmd.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         newCmd.setMnemonic('n');
         fileMenu.add(newCmd);
         newCmd.addActionListener(new ActionListener() {
@@ -138,6 +218,8 @@ public class SudokuMain {
 
         // open menu option
         JMenuItem openCmd = new JMenuItem("Open");
+        openCmd.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         openCmd.setMnemonic('o');
         fileMenu.add(openCmd);
         openCmd.addActionListener(new ActionListener() {
@@ -147,9 +229,13 @@ public class SudokuMain {
             }
         });
 
+        fileMenu.addSeparator();
+
         // save AS menu option
         JMenuItem saveAsCmd = new JMenuItem("Save As...");
-        saveAsCmd.setMnemonic('o');
+        saveAsCmd.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+        saveAsCmd.setMnemonic('a');
         fileMenu.add(saveAsCmd);
         saveAsCmd.addActionListener(new ActionListener() {
             @Override
@@ -160,7 +246,9 @@ public class SudokuMain {
 
         // save menu option
         JMenuItem saveCmd = new JMenuItem("Save");
-        saveAsCmd.setMnemonic('o');
+        saveCmd.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        saveAsCmd.setMnemonic('s');
         fileMenu.add(saveCmd);
         saveCmd.addActionListener(new ActionListener() {
             @Override
@@ -169,8 +257,45 @@ public class SudokuMain {
             }
         });
 
+        fileMenu.addSeparator();
+        for (int i = 0; i < mostRecentFiles.size(); i ++) {
+            JMenuItem mruItem = new JMenuItem(mostRecentFiles.get(i));
+            mruItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JMenuItem selectedMenuItem = (JMenuItem) e.getSource();
+                    String fullFilename = selectedMenuItem.getText();
+                    if (fileExists(fullFilename))
+                        openGame(fullFilename);
+                    else {
+                        //Error opening file. remove it from the list.
+                        JOptionPane.showMessageDialog(applicationWindow, "Cannot open file: " + fullFilename);
+                        applicationWindow.getJMenuBar().getMenu(0).remove(selectedMenuItem);
+                    }
+                }
+            });
+            fileMenu.add(mruItem);
+        }
+
+        fileMenu.addSeparator();
+
+        // save menu option
+        JMenuItem resetCmd = new JMenuItem("Reset Game");
+        resetCmd.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_R, ActionEvent.CTRL_MASK));
+        resetCmd.setMnemonic('r');
+        fileMenu.add(resetCmd);
+        resetCmd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reset();
+            }
+        });
+
         // quit menu option
         JMenuItem quitCmd = new JMenuItem("Quit");
+        quitCmd.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
         quitCmd.setMnemonic('q');
         fileMenu.add(quitCmd);
         quitCmd.addActionListener(new ActionListener() {
@@ -179,12 +304,19 @@ public class SudokuMain {
                 quit();
             }
         });
+
+        window.setJMenuBar(menubar);
+        menubar.validate();
+    }
+
+    private void reset() {
+        currentModel.resetGame();
     }
 
     // Quites the game
     private void quit() {
-        final int SUCCESS_EXIT_CODE = 0;
-        System.exit(SUCCESS_EXIT_CODE);
+        WindowEvent wev = new WindowEvent(applicationWindow, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(wev);
     }
 
     // Creates a new game
@@ -202,7 +334,12 @@ public class SudokuMain {
         GameSetupDialog setup = new GameSetupDialog(applicationWindow, rows, columns);
 
         if(setup.userAccepted)
+        {
             attachModel(setup.model);
+            lastFilePath = null;
+            gameHasUnsavedChanges = true;
+        }
+
     }
 
     private void open() {
@@ -235,6 +372,10 @@ public class SudokuMain {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Unable to open: \n" + e.getMessage());
         }
+
+        lastFilePath = path;
+        gameHasUnsavedChanges = false;
+        setMostRecentGame(path);
     }
 
     private SudokuBoard initializeSudokuBoard(FileInputStream openFile) throws IOException {
@@ -274,6 +415,39 @@ public class SudokuMain {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Unable to save: \n" + e.getMessage());
         }
+
+        lastFilePath = path;
+        gameHasUnsavedChanges = false;
+        setMostRecentGame(path);
+    }
+
+    private void setMostRecentGame(String path) {
+        // Remove duplicate file names
+        Iterator<String> iterator = mostRecentFiles.iterator();
+        while (iterator.hasNext())
+            if (iterator.next().equals(path))
+                iterator.remove();
+
+        // Add new file to top of list
+        mostRecentFiles.add(0,path);
+        int newMruLength = Math.min(mostRecentFiles.size(), limitOfMostRecentFiles);
+        mostRecentFiles = mostRecentFiles.subList(0, newMruLength);
+
+        // Write the current list to the config file.
+        try {
+            FileOutputStream fileOutput = new FileOutputStream(configFileFullPath);
+            DataOutputStream dataOutput = new DataOutputStream(fileOutput);
+            for (String filename : mostRecentFiles)
+                dataOutput.writeUTF(filename);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(applicationWindow,"Error saving: " + e.getMessage());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(applicationWindow, "Error saving: " + e.getMessage());
+        }
+
+        // Recreate menu bar to update file list.
+        createMenu(applicationWindow);
+
     }
 
     private void writeFileHeader(FileOutputStream saveFile) throws IOException {
@@ -283,7 +457,15 @@ public class SudokuMain {
     }
 
     private void save() {
+        if (lastFilePath == null)
+            saveAs();
+        else
+            saveGame(lastFilePath);
+    }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        gameHasUnsavedChanges = true;
     }
 
     /**
@@ -294,6 +476,7 @@ public class SudokuMain {
     {
         new SudokuMain();
     }
+
 
 }
 

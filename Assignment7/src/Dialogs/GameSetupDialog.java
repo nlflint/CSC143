@@ -1,8 +1,8 @@
-package Sudoku;
+package Dialogs;
 
 import Controllers.*;
 import Model.SudokuBoard;
-import View.SudokuView;
+import Views.SudokuView;
 import javax.swing.*;
 import java.awt.*;
 
@@ -21,6 +21,7 @@ public class GameSetupDialog extends JDialog {
         model = new SudokuBoard(rows, columns);
         SudokuView view = new SudokuView(model);
         view.setSelected(0,0);
+        view.hideIndicators();
         SudokuController controller = new SudokuController(model, view);
         SetGivensViewController setGivensViewController = new SetGivensViewController(this);
 

@@ -3,7 +3,7 @@ package Controllers;
 import Model.SudokuBase;
 import SudokuGraphics.GraphicSymbol;
 import SudokuGraphics.GraphicsLibrary;
-import View.SelectedCell;
+import Views.SelectedCell;
 
 import javax.swing.*;
 import javax.swing.plaf.BorderUIResource;

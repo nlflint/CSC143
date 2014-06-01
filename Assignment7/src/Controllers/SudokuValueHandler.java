@@ -1,7 +1,7 @@
 package Controllers;
 
 import Model.SudokuBase;
-import View.SelectedCell;
+import Views.SelectedCell;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

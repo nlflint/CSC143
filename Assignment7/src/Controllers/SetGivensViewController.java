@@ -1,6 +1,6 @@
 package Controllers;
 
-import Sudoku.GameSetupDialog;
+import Dialogs.GameSetupDialog;
 
 import javax.swing.*;
 import java.awt.*;
