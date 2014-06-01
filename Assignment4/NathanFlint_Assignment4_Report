@@ -2,7 +2,9 @@ Nathan Flint
 Assignment 4: Sudoku Graphics
 
 I started this assignment by planning what classes I would create. This didn't
-work out very well, and I ended up deleting a lot of code. Next time I
+work out very well, and I ended up deleting a lot of code. Next time I will have
+an over arching plan, but and solve the detail as they come, rather than in
+advance.
 
 It was pretty easy getting numerical strings to print and update from the model.
 The hardest part was getting the symbols to work. I wanted the play spaces to be
