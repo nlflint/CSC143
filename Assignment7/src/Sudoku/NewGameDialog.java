@@ -1,4 +1,4 @@
-package Controllers;
+package Sudoku;
 
 import javax.swing.*;
 import java.awt.*;

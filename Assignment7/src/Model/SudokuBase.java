@@ -1,5 +1,6 @@
 package Model;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -188,7 +189,13 @@ public abstract class SudokuBase extends java.util.Observable {
     }
 
     //Sets values of the sudoku board using given input stream
-    protected void readFromStream(java.io.InputStream is) {
+    protected void readFromStream(java.io.InputStream is) throws IOException {
+        // Create a stream that can write binary data
+        DataInputStream dataIn = new DataInputStream(is);
+
+        // Save each value from the raw grid.
+        for (int i = 0; i < (size * size); i++)
+            grid[i] = dataIn.readInt();
     }
 
     //Writes current values of the sudoku board to the given stream
@@ -199,15 +206,5 @@ public abstract class SudokuBase extends java.util.Observable {
         // Save each value from the raw grid.
         for (int value : grid)
             dataOut.writeInt(value);
-    }
-
-    // gets value from given row and column including any masking bits.
-    protected int getRawValue(int row, int col) {
-        return grid[getIndex(row, col)];
-    }
-
-    // sets value at given row and column
-    protected void setRawValue(int row, int col, int value) {
-        grid[getIndex(row, col)] = value;
     }
 }

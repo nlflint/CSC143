@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 
 /**
  * Main class for the sudoku program. Ties together the view and model with a controller.
@@ -205,26 +206,80 @@ public class SudokuMain {
     }
 
     private void open() {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Sudoku Game", "sudoku");
+        chooser.setFileFilter(filter);
 
+        // show dialog
+        int returnVal = chooser.showOpenDialog(applicationWindow);
+
+        // save if user clicked save.
+        if(returnVal == JFileChooser.APPROVE_OPTION)
+            openGame(chooser.getSelectedFile().getPath());
+    }
+
+    private void openGame(String path) {
+        // Append .sudoku
+        if (!path.endsWith(".sudoku"))
+            path += ".sudoku";
+
+        try {
+            FileInputStream openFile = new FileInputStream(path);
+            SudokuBoard newBoard = initializeSudokuBoard(openFile);
+            newBoard.deserialize(openFile);
+            attachModel(newBoard);
+            openFile.close();
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Unable to open: \n" + e.getMessage());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Unable to open: \n" + e.getMessage());
+        }
+    }
+
+    private SudokuBoard initializeSudokuBoard(FileInputStream openFile) throws IOException {
+        DataInputStream dataStream = new DataInputStream(openFile);
+        int rows = dataStream.readInt();
+        int columns = dataStream.readInt();
+        return new SudokuBoard(rows,columns);
     }
 
     private void saveAs() {
+        // Create dialog
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "Sudoku Save Game", "sudoku");
+                "Sudoku Game", "sudoku");
         chooser.setFileFilter(filter);
+
+        // show dialog
         int returnVal = chooser.showSaveDialog(applicationWindow);
+
+        // save if user clicked save.
         if(returnVal == JFileChooser.APPROVE_OPTION)
             saveGame(chooser.getSelectedFile().getPath());
     }
 
     private void saveGame(String path) {
-        // Add .sudoku as file extension
+        // Append .sudoku
         if (!path.endsWith(".sudoku"))
            path += ".sudoku";
 
+        try {
+            FileOutputStream saveFile = new FileOutputStream(path);
+            writeFileHeader(saveFile);
+            currentModel.serialize(saveFile);
+            saveFile.close();
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Unable to save: \n" + e.getMessage());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Unable to save: \n" + e.getMessage());
+        }
+    }
 
-
+    private void writeFileHeader(FileOutputStream saveFile) throws IOException {
+        DataOutputStream dataStream = new DataOutputStream(saveFile);
+        dataStream.writeInt(currentModel.rows);
+        dataStream.writeInt(currentModel.columns);
     }
 
     private void save() {

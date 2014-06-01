@@ -1,7 +1,6 @@
 package Controllers;
 
-import Model.SudokuBase;
-import Sudoku.SudokuMain;
+import Sudoku.GameSetupDialog;
 
 import javax.swing.*;
 import java.awt.*;

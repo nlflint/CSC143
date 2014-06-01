@@ -153,19 +153,23 @@ public class SudokuBoard extends SudokuBase
     }
 
     //Writes current values of the sudoku board to the given stream
-    public ByteArrayOutputStream serializeBoard()
-            throws FileNotFoundException, IOException {
+    public void serialize(OutputStream outputStream) throws IOException {
 
         // Write width and height header
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         DataOutputStream dataOut = new DataOutputStream(outputStream);
-        dataOut.writeInt(rows);
-        dataOut.writeInt(columns);
 
         // Let the board write its own rows
         writeToStream(outputStream);
+    }
 
-        return outputStream;
+    //Writes current values of the sudoku board to the given stream
+    public void deserialize(InputStream inputStream) throws IOException {
+
+        // Write width and height header
+        DataInputStream dataIn = new DataInputStream(inputStream);
+
+        // Let the board write its own rows
+        readFromStream(inputStream);
     }
 
     // Identifies how getLineOfValues iterates through the board.
