@@ -1,3 +1,7 @@
+package Model;
+
+import java.io.*;
+
 /**
  * Implements the core logic of a Sudoku board.
  *
@@ -149,8 +153,19 @@ public class SudokuBoard extends SudokuBase
     }
 
     //Writes current values of the sudoku board to the given stream
-    protected void writeToStream(java.io.OutputStream os) {
+    public ByteArrayOutputStream serializeBoard()
+            throws FileNotFoundException, IOException {
 
+        // Write width and height header
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        DataOutputStream dataOut = new DataOutputStream(outputStream);
+        dataOut.writeInt(rows);
+        dataOut.writeInt(columns);
+
+        // Let the board write its own rows
+        writeToStream(outputStream);
+
+        return outputStream;
     }
 
     // Identifies how getLineOfValues iterates through the board.

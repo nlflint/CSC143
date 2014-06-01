@@ -1,9 +1,13 @@
+package View;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.BorderUIResource;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
+import Model.SudokuBase;
 import SudokuGraphics.*;
 
 /**

@@ -1,3 +1,5 @@
+package View;
+
 /**
  * Support for numeric output for SudokuView, optional.
  */

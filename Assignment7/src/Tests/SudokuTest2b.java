@@ -1,3 +1,10 @@
+package Tests;
+
+import Model.SudokuBase;
+import Model.SudokuBoard;
+import View.NumericSupport;
+import View.SudokuView;
+
 import java.awt.event.*;
 import javax.swing.*;
 

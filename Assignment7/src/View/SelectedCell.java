@@ -1,3 +1,5 @@
+package View;
+
 /**
  * Interface to support the programmatic control of the
  * SelectedCell in SudokuView.

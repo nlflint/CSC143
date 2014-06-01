@@ -1,4 +1,9 @@
-import java.awt.event.*;
+package Tests;
+
+import Model.SudokuBase;
+import Model.SudokuBoard;
+import View.SudokuView;
+
 import javax.swing.*;
 
 public class SudokuTest2a {
