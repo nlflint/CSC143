@@ -11,7 +11,6 @@ import SudokuGraphics.*;
 
 /**
  * Renders a sudoku board.
- *
  * Grading Level: Challenge
  *
  * @author Nathan Flint
@@ -75,11 +74,13 @@ public class SudokuView extends JPanel
 
     }
 
+    // Hides status indicators when setting up a new game
     public void hideIndicators() {
         statusPanel.setVisible(false);
         repaint();
     }
 
+    // Creates row, column and region status indicators along bottom of window
     private void createStatusIndicators(SudokuBase base) {
         statusPanel = new JPanel();
         FlowLayout flowLeftAligned = new FlowLayout(FlowLayout.LEFT);
@@ -248,6 +249,9 @@ public class SudokuView extends JPanel
     }
 
     @Override
+    /**
+     * Used by observable model whenever something changes. Used to redraw everything if model changes.
+     */
     public void update(Observable o, Object arg) {
         repaint();
     }

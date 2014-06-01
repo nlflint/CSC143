@@ -20,7 +20,7 @@ import java.util.Observer;
  * Grading Level: Challenge
  *
  * @author Nathan Flint
- * @version Assignment 5: Sudoku Input Handling
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 public class SudokuMain implements Observer{
     // Contains the active game window, and previous active games windows.
@@ -28,7 +28,7 @@ public class SudokuMain implements Observer{
     private SudokuBoard currentModel;
     private SudokuView currentView;
     private SudokuController currentController;
-    private String lastFilePath;
+    private String lastAccessedFilePath;
     private boolean gameHasUnsavedChanges;
     private List<String> mostRecentFiles;
     private int limitOfMostRecentFiles = 4;
@@ -38,11 +38,11 @@ public class SudokuMain implements Observer{
      * Constructor. Sets up and initial game window.
      */
     public SudokuMain() {
+        // Load config file recent list of files
         configFileFullPath = getFullConfigFilePath();
-
-        // Load config file
         loadListOfRecentFiles();
 
+        // Create or load initial board
         SudokuBoard model;
         if (mostRecentFiles.size() > 0 && fileExists(mostRecentFiles.get(0)))
         {
@@ -51,19 +51,28 @@ public class SudokuMain implements Observer{
         else
         {
             // Creates a new 3x3 game and by-passes the Setup mode.
-            model = new SudokuBoard(3,3);
-            setupInitialBoardValues(model);
-
+            model = createModel(3, 3, new int[][]{
+                    {0, 0, 0, 5, 0, 1, 7, 0, 0},
+                    {6, 5, 0, 0, 7, 2, 0, 4, 1},
+                    {0, 0, 2, 4, 0, 0, 0, 0, 3},
+                    {0, 0, 0, 6, 2, 8, 0, 0, 0},
+                    {0, 0, 6, 0, 0, 0, 1, 0, 0},
+                    {0, 0, 0, 3, 1, 4, 0, 0, 0},
+                    {2, 0, 0, 0, 0, 7, 3, 0, 0},
+                    {7, 9, 0, 1, 6, 0, 0, 5, 2},
+                    {0, 0, 5, 2, 0, 9, 0, 0, 0}});
             attachModel(model);
         }
     }
 
+    // Defines config file location using working folder the file name.
     private String getFullConfigFilePath() {
         final String configFileName = ".sudokurc";
         File configFile = new File(configFileName);
         return configFile.getAbsolutePath();
     }
 
+    // Gets list of most recently accessed files from the config file.
     private void loadListOfRecentFiles() {
         mostRecentFiles = new ArrayList<String>();
 
@@ -71,14 +80,17 @@ public class SudokuMain implements Observer{
         if (!fileExists(configFileFullPath))
             return;
 
-
         FileInputStream fileInputStream;
         DataInputStream dataInputStream;
         try {
+            // open streams
             fileInputStream = new FileInputStream(configFileFullPath);
             dataInputStream = new DataInputStream(fileInputStream);
+
+            // read only the first couple strings, to limit
             for (int i = 0; i < limitOfMostRecentFiles; i++) {
                 String fullFilename  = dataInputStream.readUTF();
+                // Make sure files exists before adding it to the MRU list.
                 if (fileExists(fullFilename))
                     mostRecentFiles.add(fullFilename);
             }
@@ -88,12 +100,46 @@ public class SudokuMain implements Observer{
         }
     }
 
+    // Checks if a file exists at the given path
     private boolean fileExists(String fileName) {
         File f = new File(fileName);
         return f.exists() && !f.isDirectory();
     }
 
-    // Creates JFrames with everything connected in a playable game
+    // Opens the a game from the given path
+    private void openGame(String path) {
+        // Append .sudoku
+        if (!path.endsWith(".sudoku"))
+            path += ".sudoku";
+
+        try {
+            // open stream to game file
+            FileInputStream openFile = new FileInputStream(path);
+            SudokuBoard newBoard = createBlankSudokuBoard(openFile);
+            newBoard.deserialize(openFile);
+            attachModel(newBoard);
+            openFile.close();
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Unable to open: \n" + e.getMessage());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Unable to open: \n" + e.getMessage());
+        }
+
+        // Set flag state for last accessed file
+        lastAccessedFilePath = path;
+        gameHasUnsavedChanges = false;
+        addMostRecentGame(path);
+    }
+
+    // Creates a blank board using rows and column header from file.
+    private SudokuBoard createBlankSudokuBoard(FileInputStream openFile) throws IOException {
+        DataInputStream dataStream = new DataInputStream(openFile);
+        int rows = dataStream.readInt();
+        int columns = dataStream.readInt();
+        return new SudokuBoard(rows,columns);
+    }
+
+    // Sets up window to use new model.
     private void attachModel(SudokuBoard model) {
         // Create window if one doesn't exist yet
         if (applicationWindow == null)
@@ -103,7 +149,10 @@ public class SudokuMain implements Observer{
         view.setSelected(0,0);
         SudokuController controller = new SudokuController(model, view);
 
+        // Remove old game components if they exist.
         removeOldComponents();
+
+        // Add new components
         addNewCompoents(view, controller);
 
         // Creates a key listener for the new window
@@ -124,47 +173,34 @@ public class SudokuMain implements Observer{
 
     }
 
-    private void addNewCompoents(SudokuView view, SudokuController controller) {
-        applicationWindow.add(controller, BorderLayout.NORTH);
-        applicationWindow.add(view);
-    }
+    // Adds given save file to the top of MRU list.
+    private void addMostRecentGame(String path) {
+        // Remove duplicate file names
+        Iterator<String> iterator = mostRecentFiles.iterator();
+        while (iterator.hasNext())
+            if (iterator.next().equals(path))
+                iterator.remove();
 
-    private void removeOldComponents() {
-        if (currentController != null)
-            applicationWindow.remove(currentController);
-        if (currentView != null)
-            applicationWindow.remove(currentView);
-    }
+        // Add new file to top of list
+        mostRecentFiles.add(0,path);
+        int newMruLength = Math.min(mostRecentFiles.size(), limitOfMostRecentFiles);
+        mostRecentFiles = mostRecentFiles.subList(0, newMruLength);
 
-    // Sets up given model with some initial values
-    private void setupInitialBoardValues(SudokuBoard model) {
-        model.setValue(0, 3, 6);
-        model.setValue(0, 5, 1);
-        model.setValue(1, 2, 4);
-        model.setValue(1, 4, 5);
-        model.setValue(1, 5, 3);
-        model.setValue(2, 3, 3);
-        model.setValue(3, 2, 6);
-        model.setValue(4, 0, 2);
-        model.setValue(4, 1, 3);
-        model.setValue(4, 3, 1);
-        model.setValue(5, 0, 6);
-        model.setValue(5, 2, 1);
-        model.fixGivens();
-    }
+        // Update config file with new MRU list.
+        try {
+            FileOutputStream fileOutput = new FileOutputStream(configFileFullPath);
+            DataOutputStream dataOutput = new DataOutputStream(fileOutput);
+            for (String filename : mostRecentFiles)
+                dataOutput.writeUTF(filename);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(applicationWindow,"Error saving: " + e.getMessage());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(applicationWindow, "Error saving: " + e.getMessage());
+        }
 
-    // Adds a new key listener to the window.
-    private void addKeyListener(SudokuBase model, SudokuView view, SudokuController controller) {
-        applicationWindow.addKeyListener(new SudokuValueHandler(view, model, controller));
-        applicationWindow.setFocusable(true);
-        applicationWindow.requestFocusInWindow();
-    }
+        // Recreate menu bar to update file list.
+        createMenu(applicationWindow);
 
-    private void removeAllKeyListerns() {
-        //remove all existing key listerns
-        KeyListener[] listeners = applicationWindow.getKeyListeners();
-        for (KeyListener listener : listeners)
-            applicationWindow.removeKeyListener(listener);
     }
 
     // Creates a JFrame for the game and populates it with given views and controllers.
@@ -184,6 +220,7 @@ public class SudokuMain implements Observer{
         createMenu(applicationWindow);
     }
 
+    // This shows and handles the save/don't save dialog that appears when quiting
     private void promptSaveGame() {
         SaveGameDialog saveDialog = new SaveGameDialog(applicationWindow);
         if (saveDialog.userRequestsSaveChanges)
@@ -257,6 +294,7 @@ public class SudokuMain implements Observer{
             }
         });
 
+        // Add Most recently used files
         fileMenu.addSeparator();
         for (int i = 0; i < mostRecentFiles.size(); i ++) {
             JMenuItem mruItem = new JMenuItem(mostRecentFiles.get(i));
@@ -309,39 +347,31 @@ public class SudokuMain implements Observer{
         menubar.validate();
     }
 
-    private void reset() {
-        currentModel.resetGame();
-    }
-
-    // Quites the game
-    private void quit() {
-        WindowEvent wev = new WindowEvent(applicationWindow, WindowEvent.WINDOW_CLOSING);
-        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(wev);
-    }
-
-    // Creates a new game
+    // Handles File -> New Game functionality
     private void promptNewGame() {
         // prompt user for dimensions of new game board.
         NewGameDialog dialog = new NewGameDialog(applicationWindow);
         if (dialog.okWasClicked()) {
             // Ok was clicked so setup new game
-            setupNewGame(dialog.getRows(), dialog.getColumns());
+            promptSetupNewGame(dialog.getRows(), dialog.getColumns());
         }
     }
 
-    private void setupNewGame(int rows, int columns) {
+    // shows dialog for setting up givens for a new game.
+    private void promptSetupNewGame(int rows, int columns) {
         // users clicked ok so create a new game, and DONT bypass setup mode.
         GameSetupDialog setup = new GameSetupDialog(applicationWindow, rows, columns);
 
         if(setup.userAccepted)
         {
             attachModel(setup.model);
-            lastFilePath = null;
+            lastAccessedFilePath = null;
             gameHasUnsavedChanges = true;
         }
 
     }
 
+    // Handles File -> Open functionality
     private void open() {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -356,35 +386,7 @@ public class SudokuMain implements Observer{
             openGame(chooser.getSelectedFile().getPath());
     }
 
-    private void openGame(String path) {
-        // Append .sudoku
-        if (!path.endsWith(".sudoku"))
-            path += ".sudoku";
-
-        try {
-            FileInputStream openFile = new FileInputStream(path);
-            SudokuBoard newBoard = initializeSudokuBoard(openFile);
-            newBoard.deserialize(openFile);
-            attachModel(newBoard);
-            openFile.close();
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Unable to open: \n" + e.getMessage());
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Unable to open: \n" + e.getMessage());
-        }
-
-        lastFilePath = path;
-        gameHasUnsavedChanges = false;
-        setMostRecentGame(path);
-    }
-
-    private SudokuBoard initializeSudokuBoard(FileInputStream openFile) throws IOException {
-        DataInputStream dataStream = new DataInputStream(openFile);
-        int rows = dataStream.readInt();
-        int columns = dataStream.readInt();
-        return new SudokuBoard(rows,columns);
-    }
-
+    // Handles File -> SaveAs functionality
     private void saveAs() {
         // Create dialog
         JFileChooser chooser = new JFileChooser();
@@ -400,10 +402,11 @@ public class SudokuMain implements Observer{
             saveGame(chooser.getSelectedFile().getPath());
     }
 
+    // Saves the current game to the given path
     private void saveGame(String path) {
         // Append .sudoku
         if (!path.endsWith(".sudoku"))
-           path += ".sudoku";
+            path += ".sudoku";
 
         try {
             FileOutputStream saveFile = new FileOutputStream(path);
@@ -416,55 +419,85 @@ public class SudokuMain implements Observer{
             JOptionPane.showMessageDialog(null, "Unable to save: \n" + e.getMessage());
         }
 
-        lastFilePath = path;
+        lastAccessedFilePath = path;
         gameHasUnsavedChanges = false;
-        setMostRecentGame(path);
+        addMostRecentGame(path);
     }
 
-    private void setMostRecentGame(String path) {
-        // Remove duplicate file names
-        Iterator<String> iterator = mostRecentFiles.iterator();
-        while (iterator.hasNext())
-            if (iterator.next().equals(path))
-                iterator.remove();
-
-        // Add new file to top of list
-        mostRecentFiles.add(0,path);
-        int newMruLength = Math.min(mostRecentFiles.size(), limitOfMostRecentFiles);
-        mostRecentFiles = mostRecentFiles.subList(0, newMruLength);
-
-        // Write the current list to the config file.
-        try {
-            FileOutputStream fileOutput = new FileOutputStream(configFileFullPath);
-            DataOutputStream dataOutput = new DataOutputStream(fileOutput);
-            for (String filename : mostRecentFiles)
-                dataOutput.writeUTF(filename);
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(applicationWindow,"Error saving: " + e.getMessage());
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(applicationWindow, "Error saving: " + e.getMessage());
-        }
-
-        // Recreate menu bar to update file list.
-        createMenu(applicationWindow);
-
-    }
-
+    // Writes row and columns to front of file.
     private void writeFileHeader(FileOutputStream saveFile) throws IOException {
         DataOutputStream dataStream = new DataOutputStream(saveFile);
         dataStream.writeInt(currentModel.rows);
         dataStream.writeInt(currentModel.columns);
     }
 
+    // Handles the File -> Save functionality
     private void save() {
-        if (lastFilePath == null)
+        if (lastAccessedFilePath == null)
             saveAs();
         else
-            saveGame(lastFilePath);
+            saveGame(lastAccessedFilePath);
     }
 
+    // executes the File -> reset Game menu functionality
+    private void reset() {
+        currentModel.resetGame();
+    }
+
+    // Handles the File -> Quit functionality
+    private void quit() {
+        WindowEvent wev = new WindowEvent(applicationWindow, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(wev);
+    }
+
+    // creates a model with given values
+    private SudokuBoard createModel(int rows, int columns, int[][] values)
+    {
+        SudokuBoard model = new SudokuBoard(rows, columns);
+        for (int i = 0; i < values.length; i++)
+            for(int j = 0; j < values[i].length; j++)
+                model.setValue(i, j, values[i][j]);
+        model.fixGivens();
+        return model;
+    }
+
+    // Adds the given view and controllers to the current application window
+    private void addNewCompoents(SudokuView view, SudokuController controller) {
+        applicationWindow.add(controller, BorderLayout.NORTH);
+        applicationWindow.add(view);
+    }
+
+    // Prepares for a new game by removing current view and controller.
+    private void removeOldComponents() {
+        if (currentController != null)
+            applicationWindow.remove(currentController);
+        if (currentView != null)
+            applicationWindow.remove(currentView);
+    }
+
+    // Adds a new key listener to the window.
+    private void addKeyListener(SudokuBase model, SudokuView view, SudokuController controller) {
+        applicationWindow.addKeyListener(new SudokuValueHandler(view, model, controller));
+        applicationWindow.setFocusable(true);
+        applicationWindow.requestFocusInWindow();
+    }
+
+    // Prepares for a new game by removing exiting key listeners
+    private void removeAllKeyListerns() {
+        //remove all existing key listerns
+        KeyListener[] listeners = applicationWindow.getKeyListeners();
+        for (KeyListener listener : listeners)
+            applicationWindow.removeKeyListener(listener);
+    }
+
+    /**
+     * Used by observables to indicate changes have been made to the model.
+     * @param o Observable object
+     * @param arg object
+     */
     @Override
     public void update(Observable o, Object arg) {
+        // Flag that there are now unsaved changes.
         gameHasUnsavedChanges = true;
     }
 

@@ -6,14 +6,30 @@ import Views.SudokuView;
 import javax.swing.*;
 import java.awt.*;
 
-
 /**
  * Shows a dialog for setting up givens of a new game.
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 public class GameSetupDialog extends JDialog {
+    /**
+     * Indicates if the user accepts the new game
+     */
     public boolean userAccepted;
+
+    /**
+     * Model that is prepared by the user.
+     */
     public SudokuBoard model;
 
+    /**
+     * Constructor. Use row and columns to indicate the size of the new board.
+     * @param owner JFrame that owns this dialog.
+     * @param rows Number of rows new board shall have
+     * @param columns Number of columns the new board shall have
+     */
     public GameSetupDialog(JFrame owner, int rows, int columns) {
         super(owner, "New Game", true);
 

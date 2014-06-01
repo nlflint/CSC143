@@ -9,6 +9,10 @@ import java.awt.event.ActionListener;
 
 /**
  * This is the view and controller for setting givens, aka Setup Mode.
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 public class SetGivensViewController extends JPanel {
     // Used to cancel setup mode

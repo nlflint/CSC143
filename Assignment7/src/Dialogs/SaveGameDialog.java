@@ -6,14 +6,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by nate on 5/31/14.
+ * This model dialog asks users if they want to save or discard changes. Its used when closing the game
+ * with pending changes.
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 public class SaveGameDialog extends JDialog implements ActionListener {
+    // References to buttons
     private JButton save;
     private JButton doNotSave;
 
+    /**
+     * Indicates of the user wants to save changes or not
+     */
     public boolean userRequestsSaveChanges;
 
+    /**
+     * Constructor. Sets up dialog.
+     * @param owner JFrame that owns this dialog.
+     */
     public SaveGameDialog(JFrame owner) {
         super(owner, "Save Changes?", true);
 
@@ -40,6 +53,10 @@ public class SaveGameDialog extends JDialog implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * Mouse handler for both buttons
+     * @param e event arguments
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         JButton clickedButton = (JButton)e.getSource();

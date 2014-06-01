@@ -9,6 +9,10 @@ import java.util.HashMap;
 
 /**
  * Controller for adding values to the sudoku board.
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 public class SudokuController extends JPanel {
     // Holds a reference to each conrol button. Used to flash the background color when a key is pressed.

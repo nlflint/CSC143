@@ -4,7 +4,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Created by nate on 6/1/14.
+ * Handles mouse clicks for each play space
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 class MouseHandler extends MouseAdapter {
 

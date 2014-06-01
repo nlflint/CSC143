@@ -3,7 +3,7 @@ package Views;
 /**
  * Support for numeric output for SudokuView, optional.
  */
-public interface NumericSupport {
+interface NumericSupport {
     
     /**
      * Sets the output type: True for numeric output, False

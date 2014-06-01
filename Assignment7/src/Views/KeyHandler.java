@@ -5,6 +5,10 @@ import java.awt.event.KeyEvent;
 
 /**
  * Handles keyboard input for moving the selected cell with arrow keys
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 class KeyHandler extends KeyAdapter {
     // The selectedCell class will be used to change the selected cell

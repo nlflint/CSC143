@@ -161,18 +161,6 @@ public abstract class SudokuBase extends java.util.Observable {
      * Gets a string representation of the entire board.
      * @return string representation of all values on the sudoku board.
      */
-
-    public int getRegionIndex(int row, int column) {
-        int regionsAcross = size / columns;
-        int regionsDown = size / rows;
-
-        int regionColumnIndex = column / columns;
-        int regionRowIndex = row / rows;
-
-        return regionRowIndex * regionsAcross + regionColumnIndex;
-
-    }
-
     public String toString() {
         String board = "";
 

@@ -7,6 +7,10 @@ import java.awt.event.ActionListener;
 
 /**
  * A dialog for for getting dimensions when creating a new game.
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 public class NewGameDialog extends JDialog implements ActionListener {
 
@@ -21,6 +25,7 @@ public class NewGameDialog extends JDialog implements ActionListener {
     private JTextField rowsInput;
     private JTextField columnsInput;
 
+    // References to buttons
     private JButton ok;
     private JButton cancel;
 

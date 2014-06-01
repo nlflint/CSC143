@@ -8,6 +8,10 @@ import java.awt.event.KeyEvent;
 
 /**
  * The keyboard listener for a sudoku game.
+ * Grading level: Challenge
+ *
+ * @author Nathan Flint
+ * @version Assignment 7: Sudoku Serialization/Integration
  */
 public class SudokuValueHandler extends KeyAdapter {
     // The selectedCell class will be used to change the selected cell
