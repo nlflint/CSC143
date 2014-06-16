@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class CalculatorTests {
     @Test
-    public void simpleAddition() {
+    public void addition() {
         // Arrange
         Tokenizer tokenizer = new Tokenizer();
         List<Token> tokens = tokenizer.tokenize("2 + 2");
@@ -29,7 +29,7 @@ public class CalculatorTests {
     }
 
     @Test
-    public void simpleSubtraction() {
+    public void subtraction() {
         // Arrange
         Tokenizer tokenizer = new Tokenizer();
         List<Token> tokens = tokenizer.tokenize("30 - 2");
@@ -54,5 +54,61 @@ public class CalculatorTests {
 
         // Assert
         assertEquals(54.0, value, 0.0);
+    }
+
+    @Test
+    public void multiply() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("4 * 5");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(20.0, value, 0.0);
+    }
+
+    @Test
+    public void divide() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("30 / 6");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(5.0, value, 0.0);
+    }
+
+    @Test
+    public void multipleAndDivide() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("30 / 6 * 4 / 10 * 3 * 4 / 8");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(3.0, value, 0.0);
+    }
+
+    @Test
+    public void multipleDivideAddAndSubtract() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("30 / 6 * 4 + 10 * 3 - 8 / 4");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(100.0, value, 0.0);
     }
 }

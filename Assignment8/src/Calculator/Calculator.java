@@ -23,6 +23,14 @@ public class Calculator {
             return token.operate(recursiveCalculate(leftTokens), recursiveCalculate(rightTokens));
         }
 
+        int multipleOrDivideIndex = findIndexOfLastMultiplyOrDivide(tokens);
+        if (multipleOrDivideIndex >= 0) {
+            OperatorToken token = (OperatorToken) tokens.get(multipleOrDivideIndex);
+            List<Token> leftTokens = getTokensLeftOfIndex(multipleOrDivideIndex, tokens);
+            List<Token> rightTokens = getTokensRightOfIndex(multipleOrDivideIndex, tokens);
+            return token.operate(recursiveCalculate(leftTokens), recursiveCalculate(rightTokens));
+        }
+
         return tokens.get(0).getValue();
     }
 
@@ -50,6 +58,17 @@ public class Calculator {
             Token token = tokens.get(i);
             if (token instanceof PlusToken
                     || token instanceof MinusToken)
+                return i;
+        }
+        return -1;
+    }
+
+    private int findIndexOfLastMultiplyOrDivide(List<Token> tokens) {
+        int lastIndex = tokens.size() - 1;
+        for (int i = lastIndex; i > 0; i--) {
+            Token token = tokens.get(i);
+            if (token instanceof ProductToken
+                    || token instanceof QuotientToken)
                 return i;
         }
         return -1;
