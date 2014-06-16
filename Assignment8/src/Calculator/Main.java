@@ -2,6 +2,7 @@ package Calculator;
 
 import Tokenizer.Tokenizer;
 import Tokenizer.Tokens.*;
+import Validation.ValidationResult;
 import Validation.Validator;
 
 import java.util.List;
@@ -27,10 +28,10 @@ public class Main {
 
     public String resolveExpression(String expression) {
         List<Token> tokens = tokenizer.tokenize(expression);
-        boolean isValid = validator.isExpressionValid(tokens);
+        ValidationResult validationResult = validator.isExpressionValid(tokens);
 
-        if (!isValid) {
-            return validator.getValidationMessage();
+        if (!validationResult.result) {
+            return validationResult.message;
         }
 
         if (isRemoveVariable(tokens)) {
