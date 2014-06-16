@@ -1,12 +1,11 @@
 package Tests;
 
-import Calculator.Calculator;
-import Calculator.Main;
-import Calculator.VariableRepository;
+import Program.Calculator;
+import Program.VariableRepository;
 import Tokenizer.Tokenizer;
 import Validation.ValidationEngine;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,7 @@ public class MainTests {
 
         // Act & Assert
         for (String[] expression : expressionsList) {
-            assertEquals(expression[1], calculator.resolveExpression(expression[0]));
+            assertEquals(expression[1], calculator.calculate(expression[0]));
         }
     }
 }

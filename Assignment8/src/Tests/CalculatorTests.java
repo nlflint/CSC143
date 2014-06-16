@@ -1,10 +1,10 @@
 package Tests;
 
-import Calculator.VariableRepository;
+import Program.VariableRepository;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import java.util.List;
-import Calculator.Calculator;
+import Program.Calculator;
 import Tokenizer.Tokenizer;
 import Tokenizer.Tokens.Token;
 
@@ -20,7 +20,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(4.0, value, 0.0);
@@ -34,7 +34,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(28.0, value, 0.0);
@@ -48,7 +48,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(54.0, value, 0.0);
@@ -62,7 +62,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(20.0, value, 0.0);
@@ -76,7 +76,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(5.0, value, 0.0);
@@ -90,7 +90,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(3.0, value, 0.0);
@@ -104,7 +104,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(48.0, value, 0.0);
@@ -118,7 +118,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(48.7227615443, value, 0.0000000001);
@@ -134,7 +134,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(9.0, value, 0.0);
@@ -148,7 +148,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(2.0, value, 0.0);
@@ -162,7 +162,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(12.0, value, 0.0);
@@ -176,7 +176,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(2.0, value, 0.0);
@@ -190,7 +190,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, new VariableRepository(), null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(53.33333, value, 0.001);
@@ -208,7 +208,7 @@ public class CalculatorTests {
 
         // Act
         Calculator calculator = new Calculator(null, variableRepository, null);
-        double value = calculator.calculate(tokens);
+        double value = calculator.resolveExpression(tokens);
 
         // Assert
         assertEquals(102.0, value, 0.0);

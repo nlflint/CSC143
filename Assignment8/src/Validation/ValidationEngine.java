@@ -1,6 +1,6 @@
 package Validation;
 
-import Calculator.VariableRepository;
+import Program.VariableRepository;
 import Tokenizer.Tokens.*;
 import Validation.Validators.*;
 

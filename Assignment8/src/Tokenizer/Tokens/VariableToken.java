@@ -1,8 +1,6 @@
 package Tokenizer.Tokens;
 
 
-import Calculator.VariableRepository;
-
 /**
  * Created by nate on 6/14/14.
  */

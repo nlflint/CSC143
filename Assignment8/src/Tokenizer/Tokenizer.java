@@ -22,7 +22,7 @@ public class Tokenizer {
 
         // Values and variables are more than one character, so they are built a character
         // at a time, stored in this variable.
-        String tempVariableValue = "";
+        String temp = "";
 
         // Loops through the expression character by character creating tokens.
         for (int i = 0; i < expression.length(); i++) {
@@ -30,22 +30,22 @@ public class Tokenizer {
 
             // If it's a value or variable, then add it to temp
             if (isValue(currentChar) || isVariable(currentChar)) {
-                tempVariableValue += currentChar;
+                temp += currentChar;
                 continue;
             }
 
             // If there something in the tempVarVal then add it as a token.
-            if (tempVariableValue.length() > 0) {
+            if (temp.length() > 0) {
                 // Checking to see if the temp val/var is actually a value or variable.
-                if (isValue(tempVariableValue) || isVariable(tempVariableValue)) {
-                    tokens.add(createToken(tempVariableValue));
+                if (isValue(temp) || isVariable(temp)) {
+                    tokens.add(createToken(temp));
                 }
                 else {
                     // It's not a value or variable to add an unknown token
-                    tokens.add(new UnknownToken(tempVariableValue));
+                    tokens.add(new UnknownToken(temp));
                 }
                 // clear the temp to get ready for the next one.
-                tempVariableValue = "";
+                temp = "";
             }
 
             // If the current char is an operator then add it as a token.
@@ -60,12 +60,12 @@ public class Tokenizer {
         }
 
         // Loop above doesn't handle the final token, if there is a last token, this handles it.
-        if (tempVariableValue.length() > 0) {
-            Token trailingToken = createToken(tempVariableValue);
+        if (temp.length() > 0) {
+            Token trailingToken = createToken(temp);
             if (trailingToken != null)
                 tokens.add(trailingToken);
             else
-                tokens.add(new UnknownToken(tempVariableValue));
+                tokens.add(new UnknownToken(temp));
         }
 
         return tokens;
@@ -73,43 +73,42 @@ public class Tokenizer {
 
     /**
      * Creates a token given a string.
-     * @param expressionPiece a string representation of a token
+     * @param expression a string representation of a token
      * @return a token with specific sub type
      */
-    public Token createToken(String expressionPiece) {
-        if (isValue(expressionPiece))
-            return new ValueToken(expressionPiece);
+    public Token createToken(String expression) {
+        if (isValue(expression))
+            return new ValueToken(expression);
 
-        if (isVariable(expressionPiece))
-            return new VariableToken(expressionPiece);
+        if (isVariable(expression))
+            return new VariableToken(expression);
 
-        if (isAssignmentOperator(expressionPiece))
+        if (isAssignmentOperator(expression))
             return new AssignmentToken();
 
-        if (isOpenParentheses(expressionPiece))
+        if (isOpenParentheses(expression))
             return new OpenParenToken();
 
-        if (isCloseParentheses(expressionPiece))
+        if (isCloseParentheses(expression))
             return new CloseParenToken();
 
-        if (isPlusOperator(expressionPiece))
+        if (isPlusOperator(expression))
             return new PlusToken();
 
-        if (isMinusOperator(expressionPiece))
+        if (isMinusOperator(expression))
             return new MinusToken();
 
-        if (isProductOperator(expressionPiece))
+        if (isProductOperator(expression))
             return new ProductToken();
 
-        if (isQuotientOperator(expressionPiece))
+        if (isQuotientOperator(expression))
             return new QuotientToken();
 
-        if (isListVariablesOperator(expressionPiece))
+        if (isListVariablesOperator(expression))
             return new ListVariablesToken();
 
-        if (isRemoveVariableOperator(expressionPiece))
+        if (isRemoveVariableOperator(expression))
             return new RemoveVariableToken();
-
 
         return null;
     }
@@ -129,15 +128,15 @@ public class Tokenizer {
 
     /**
      * Identifies if the given string is a value
-     * @param expressionPiece
+     * @param expression
      * @return true if the given expression is a value
      */
-    public boolean isValue(String expressionPiece) {
+    public boolean isValue(String expression) {
         // Keeps track of number of decimals in this number, only 1 or 0 allowed.
         int decimalCount = 0;
 
         // Check if all character in this expression are digitis or a decimal.
-        for (char character : expressionPiece.toCharArray()) {
+        for (char character : expression.toCharArray()) {
             if (!Character.isDigit(character)) {
                 if (character != '.') {
                     return false;
@@ -153,53 +152,52 @@ public class Tokenizer {
         return decimalCount < 2;
     }
 
-    public boolean isOpenParentheses(String expressionPiece) {
-        return expressionPiece.equals("(");
+    public boolean isOpenParentheses(String expression) {
+        return expression.equals("(");
     }
 
-    public boolean isCloseParentheses(String expressionPiece) {
-        return expressionPiece.equals(")");
+    public boolean isCloseParentheses(String expression) {
+        return expression.equals(")");
     }
 
-    public boolean isPlusOperator(String expressionPiece) {
-        return expressionPiece.equals("+");
+    public boolean isPlusOperator(String expression) {
+        return expression.equals("+");
     }
 
-    public boolean isMinusOperator(String expressionPiece) {
-        return expressionPiece.equals("-");
+    public boolean isMinusOperator(String expression) {
+        return expression.equals("-");
     }
 
-    public boolean isProductOperator(String expressionPiece) {
-        return expressionPiece.equals("*");
+    public boolean isProductOperator(String expression) {
+        return expression.equals("*");
     }
 
-    public boolean isQuotientOperator(String expressionPiece) {
-        return expressionPiece.equals("/");
+    public boolean isQuotientOperator(String expression) {
+        return expression.equals("/");
     }
 
-    public boolean isAssignmentOperator(String expressionPiece) {
-        return expressionPiece.equals("=");
+    public boolean isAssignmentOperator(String expression) {
+        return expression.equals("=");
     }
 
-    public boolean isListVariablesOperator(String expressionPiece) {
-        return expressionPiece.equals("?");
+    public boolean isListVariablesOperator(String expression) {
+        return expression.equals("?");
     }
 
-    public boolean isRemoveVariableOperator(String expressionPiece) {
-        return expressionPiece.equals("!");
+    public boolean isRemoveVariableOperator(String expression) {
+        return expression.equals("!");
     }
 
-
-    public boolean isOperator(String expressionPiece) {
-        return isOpenParentheses(expressionPiece)
-                || isCloseParentheses(expressionPiece)
-                || isAssignmentOperator(expressionPiece)
-                || isPlusOperator(expressionPiece)
-                || isMinusOperator(expressionPiece)
-                || isProductOperator(expressionPiece)
-                || isQuotientOperator(expressionPiece)
-                || isListVariablesOperator(expressionPiece)
-                || isRemoveVariableOperator(expressionPiece);
+    public boolean isOperator(String expression) {
+        return isOpenParentheses(expression)
+                || isCloseParentheses(expression)
+                || isAssignmentOperator(expression)
+                || isPlusOperator(expression)
+                || isMinusOperator(expression)
+                || isProductOperator(expression)
+                || isQuotientOperator(expression)
+                || isListVariablesOperator(expression)
+                || isRemoveVariableOperator(expression);
     }
 
 

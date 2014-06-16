@@ -1,4 +1,4 @@
-package Calculator;
+package Program;
 
 import Tokenizer.Tokens.*;
 import Tokenizer.*;
@@ -22,7 +22,7 @@ public class Calculator {
         this.validationEngine = validationEngine;
     }
 
-    public String resolveExpression(String expression) {
+    public String calculate(String expression) {
         List<Token> tokens = tokenizer.tokenize(expression);
         ValidationResult validationResult = validationEngine.isExpressionValid(tokens);
 
@@ -54,7 +54,7 @@ public class Calculator {
             int lastIndex = tokens.size();
             List<Token> tokensWithoutAssignment = tokens.subList(2, lastIndex);
 
-            double answer = calculate(tokensWithoutAssignment);
+            double answer = resolveExpression(tokensWithoutAssignment);
 
             VariableToken variable = (VariableToken) tokens.get(0);
             variableRepository.setVariableValue(variable.getName(), answer);
@@ -64,7 +64,7 @@ public class Calculator {
                     variableRepository.getVariableValue(variable.getName()));
         }
         else {
-            double answer = calculate(tokens);
+            double answer = resolveExpression(tokens);
             return String.format("%s", answer);
         }
     }
@@ -81,7 +81,7 @@ public class Calculator {
         return tokens.size() > 1 && tokens.get(1) instanceof AssignmentToken;
     }
 
-    public double calculate(List<Token> tokens) {
+    public double resolveExpression(List<Token> tokens) {
         // find first +
         int addOrSubtractIndex = findIndexOfRightMostPlusOrMinus(tokens);
         if (addOrSubtractIndex >= 0)
@@ -92,7 +92,7 @@ public class Calculator {
             return splitTokensAndRecurse(tokens, multipleOrDivideIndex);
 
         if (tokens.size() > 1 && isEntireExpressionContainedInParentheses(tokens))
-            return calculate(stripOuterParentheses(tokens));
+            return resolveExpression(stripOuterParentheses(tokens));
 
         Token token = tokens.get(0);
         if (token instanceof VariableToken)
@@ -105,7 +105,7 @@ public class Calculator {
         MathOperatorToken token = (MathOperatorToken) tokens.get(index);
         List<Token> leftTokens = getTokensLeftOfIndex(index, tokens);
         List<Token> rightTokens = getTokensRightOfIndex(index, tokens);
-        return token.operate(calculate(leftTokens), calculate(rightTokens));
+        return token.operate(resolveExpression(leftTokens), resolveExpression(rightTokens));
     }
 
     private List<Token> stripOuterParentheses(List<Token> tokens) {
