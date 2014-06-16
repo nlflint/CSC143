@@ -3,7 +3,6 @@ package Calculator;
 import Tokenizer.Tokenizer;
 import Tokenizer.Tokens.Token;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,10 +21,10 @@ public class Main {
             List<Token> tokens = tokenizer.tokenize(expression);
 
             Validator validator = new Validator();
-            boolean isValid = validator.isValid(tokens);
+            boolean isValid = validator.isExpressionValid(tokens);
 
             if (!isValid) {
-                output = validator.getMessage();
+                output = validator.getValidationMessage();
                 continue;
             }
         }

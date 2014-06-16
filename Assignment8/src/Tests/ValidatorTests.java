@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * Created by nate on 6/14/14.
  */
-public class ValidatorTest {
+public class ValidatorTests {
     @Test
     public void moreOpenParentheses() {
         // Arrange
@@ -22,11 +22,11 @@ public class ValidatorTest {
 
         // Act
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertFalse(isValid);
-        assertEquals("Missing closed parentheses.", validator.getMessage());
+        assertEquals("Missing closed parentheses.", validator.getValidationMessage());
     }
 
     @Test
@@ -37,11 +37,11 @@ public class ValidatorTest {
 
         // Act
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertFalse(isValid);
-        assertEquals("Redundant closed parentheses.", validator.getMessage());
+        assertEquals("Redundant closed parentheses.", validator.getValidationMessage());
     }
 
     @Test
@@ -52,11 +52,11 @@ public class ValidatorTest {
 
         // Act
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertFalse(isValid);
-        assertEquals("Expect a variable on the LHS.", validator.getMessage());
+        assertEquals("Expect a variable on the LHS.", validator.getValidationMessage());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ValidatorTest {
 
         // Act & Assert
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertTrue(isValid);
@@ -85,8 +85,8 @@ public class ValidatorTest {
         // Act & Assert
         for (List<Token> tokens : tokenListList) {
             Validator validator = new Validator();
-            assertFalse(validator.isValid(tokens));
-            assertEquals("Unexpected end of line.", validator.getMessage());
+            assertFalse(validator.isExpressionValid(tokens));
+            assertEquals("Unexpected end of line.", validator.getValidationMessage());
         }
     }
 
@@ -99,11 +99,11 @@ public class ValidatorTest {
 
         // Act & Assert
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertFalse(isValid);
-        assertEquals("Variable ‘radius’ is undefined.", validator.getMessage());
+        assertEquals("Variable ‘radius’ is undefined.", validator.getValidationMessage());
     }
 
     @Test
@@ -115,11 +115,11 @@ public class ValidatorTest {
 
         // Act
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertFalse(isValid);
-        assertEquals("Variable ‘MyNumber’ is undefined.", validator.getMessage());
+        assertEquals("Variable ‘MyNumber’ is undefined.", validator.getValidationMessage());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class ValidatorTest {
 
         // Act & Assert
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertTrue(isValid);
@@ -145,11 +145,11 @@ public class ValidatorTest {
 
         // Act & Assert
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertFalse(isValid);
-        assertEquals("Unrecognizable token ‘^’.", validator.getMessage());
+        assertEquals("Unrecognizable token ‘^’.", validator.getValidationMessage());
     }
 
     @Test
@@ -160,11 +160,11 @@ public class ValidatorTest {
 
         // Act & Assert
         Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
+        boolean isValid = validator.isExpressionValid(tokens);
 
         // Assert
         assertFalse(isValid);
-        assertEquals("Unrecognizable token ‘2ab’.", validator.getMessage());
+        assertEquals("Unrecognizable token ‘2ab’.", validator.getValidationMessage());
     }
 
 

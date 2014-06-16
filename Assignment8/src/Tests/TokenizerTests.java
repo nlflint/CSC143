@@ -11,7 +11,7 @@ import Tokenizer.*;
 /**
  * Created by nate on 6/14/14.
  */
-public class TokenizerTest {
+public class TokenizerTests {
     @Test
     public void createTokensFromExpression() {
         // Arrange

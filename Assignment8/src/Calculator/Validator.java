@@ -12,10 +12,10 @@ public class Validator {
     private String unknownTokenName;
 
     private String message;
-    public String getMessage() { return message;
+    public String getValidationMessage() { return message;
     }
 
-    public boolean isValid(List<Token> tokens) {
+    public boolean isExpressionValid(List<Token> tokens) {
         if (thereAreMoreOpenParenthesesThanClose(tokens)) {
             message = "Missing closed parentheses.";
             return false;
