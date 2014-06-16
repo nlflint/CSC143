@@ -26,7 +26,7 @@ public class ValidatorTest {
 
         // Assert
         assertFalse(isValid);
-        assertEquals(validator.getMessage(), "Missing closed parentheses.");
+        assertEquals("Missing closed parentheses.", validator.getMessage());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ValidatorTest {
 
         // Assert
         assertFalse(isValid);
-        assertEquals(validator.getMessage(), "Redundant closed parentheses.");
+        assertEquals("Redundant closed parentheses.", validator.getMessage());
     }
 
     @Test
@@ -56,7 +56,21 @@ public class ValidatorTest {
 
         // Assert
         assertFalse(isValid);
-        assertEquals(validator.getMessage(), "Expect a variable on the LHS.");
+        assertEquals("Expect a variable on the LHS.", validator.getMessage());
+    }
+
+    @Test
+    public void expressionWithoutAssignment() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("5 * 6");
+
+        // Act & Assert
+        Validator validator = new Validator();
+        boolean isValid = validator.isValid(tokens);
+
+        // Assert
+        assertTrue(isValid);
     }
 
     @Test
@@ -72,7 +86,86 @@ public class ValidatorTest {
         for (List<Token> tokens : tokenListList) {
             Validator validator = new Validator();
             assertFalse(validator.isValid(tokens));
-            assertEquals(validator.getMessage(), "Unexpected end of line.");
+            assertEquals("Unexpected end of line.", validator.getMessage());
         }
     }
+
+    @Test
+    public void variableUndefined() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("var = 5 * radius");
+        VariableRepository.removeVariable("radius");
+
+        // Act & Assert
+        Validator validator = new Validator();
+        boolean isValid = validator.isValid(tokens);
+
+        // Assert
+        assertFalse(isValid);
+        assertEquals("Variable ‘radius’ is undefined.", validator.getMessage());
+    }
+
+    @Test
+    public void variableUndefinedWithoutAssignment() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("5 * MyNumber");
+        VariableRepository.removeVariable("MyNumber");
+
+        // Act
+        Validator validator = new Validator();
+        boolean isValid = validator.isValid(tokens);
+
+        // Assert
+        assertFalse(isValid);
+        assertEquals("Variable ‘MyNumber’ is undefined.", validator.getMessage());
+    }
+
+    @Test
+    public void variableIsAssigned() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("5 * radius");
+        VariableRepository.setVariableValue("radius", 4.0);
+
+        // Act & Assert
+        Validator validator = new Validator();
+        boolean isValid = validator.isValid(tokens);
+
+        // Assert
+        assertTrue(isValid);
+    }
+
+    @Test
+    public void unrecognizedOperator() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("num = 3 * 4^2");
+
+        // Act & Assert
+        Validator validator = new Validator();
+        boolean isValid = validator.isValid(tokens);
+
+        // Assert
+        assertFalse(isValid);
+        assertEquals("Unrecognizable token ‘^’.", validator.getMessage());
+    }
+
+    @Test
+    public void unrecognizedValueOrVariable() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("area = 2ab");
+
+        // Act & Assert
+        Validator validator = new Validator();
+        boolean isValid = validator.isValid(tokens);
+
+        // Assert
+        assertFalse(isValid);
+        assertEquals("Unrecognizable token ‘2ab’.", validator.getMessage());
+    }
+
+
 }

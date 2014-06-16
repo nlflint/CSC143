@@ -16,6 +16,18 @@ public class VariableToken extends Token {
     }
 
     public boolean isVariableDefined() {
-        return false;
+        return VariableRepository.isVariableDefined(name);
+    }
+
+    @Override
+    public double getValue() {
+        if (!VariableRepository.isVariableDefined(name))
+            return Double.NaN;
+
+        return VariableRepository.getVariableValue(name);
+    }
+
+    public void setValue(double value) {
+        VariableRepository.setVariableValue(name, value);
     }
 }
