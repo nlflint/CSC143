@@ -109,6 +109,94 @@ public class CalculatorTests {
         double value = calculator.evaluate(tokens);
 
         // Assert
-        assertEquals(100.0, value, 0.0);
+        assertEquals(48.0, value, 0.0);
     }
+
+    @Test
+    public void decimals() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("30.123 / 6.553 * 4.212 + 10.1 * 3.12312 - 8.999 / 4.1231");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(48.7227615443, value, 0.0000000001);
+    }
+
+
+
+    @Test
+    public void parentheses() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("(1+2)*3");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(9.0, value, 0.0);
+    }
+
+    @Test
+    public void multipleDepthParentheses() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("((6+2)+4)/6");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(2.0, value, 0.0);
+    }
+
+    @Test
+    public void separateParentheses() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("(1 + 2) * (8 - 4) ");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(12.0, value, 0.0);
+    }
+
+    @Test
+    public void multiplicationInParentheses() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("12/(2 * 3)");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(2.0, value, 0.0);
+    }
+
+    @Test
+    public void complexParentheses() {
+        // Arrange
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("(1+19)*12/(((2 * 3) + (12/3) * 3)/4)");
+
+        // Act
+        Calculator calculator = new Calculator();
+        double value = calculator.evaluate(tokens);
+
+        // Assert
+        assertEquals(53.33333, value, 0.001);
+    }
+
+
 }

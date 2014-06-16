@@ -31,7 +31,25 @@ public class Calculator {
             return token.operate(recursiveCalculate(leftTokens), recursiveCalculate(rightTokens));
         }
 
+        if (tokens.size() > 1 && expressionContainedInParentheses(tokens))  {
+            List<Token> parenthesesStripped = stripOuterParentheses(tokens);
+            return recursiveCalculate(parenthesesStripped);
+        }
+
         return tokens.get(0).getValue();
+    }
+
+    private List<Token> stripOuterParentheses(List<Token> tokens) {
+        int lastIndex = tokens.size() - 1;
+        List<Token> newList = tokens.subList(1, lastIndex);
+        return newList;
+    }
+
+    private boolean expressionContainedInParentheses(List<Token> tokens) {
+        int lastIndex = tokens.size() - 1;
+        return (tokens.get(0) instanceof OpenParenToken)
+                && (tokens.get(lastIndex) instanceof CloseParenToken);
+
     }
 
     private List<Token> getTokensRightOfIndex(int plusIndex, List<Token> tokens) {
@@ -53,11 +71,18 @@ public class Calculator {
     }
 
     private int findIndexOfLastPlusOrMinus(List<Token> tokens) {
+
         int lastIndex = tokens.size() - 1;
+        int parenDepth = 0;
+
         for (int i = lastIndex; i > 0; i--) {
             Token token = tokens.get(i);
-            if (token instanceof PlusToken
-                    || token instanceof MinusToken)
+            if (token instanceof CloseParenToken)
+                parenDepth++;
+            if (token instanceof OpenParenToken)
+                parenDepth--;
+            if ((token instanceof PlusToken || token instanceof MinusToken)
+                    && parenDepth == 0)
                 return i;
         }
         return -1;
@@ -65,10 +90,16 @@ public class Calculator {
 
     private int findIndexOfLastMultiplyOrDivide(List<Token> tokens) {
         int lastIndex = tokens.size() - 1;
+        int parenDepth = 0;
+
         for (int i = lastIndex; i > 0; i--) {
             Token token = tokens.get(i);
-            if (token instanceof ProductToken
-                    || token instanceof QuotientToken)
+            if (token instanceof CloseParenToken)
+                parenDepth++;
+            if (token instanceof OpenParenToken)
+                parenDepth--;
+            if ((token instanceof ProductToken || token instanceof QuotientToken)
+                    && parenDepth == 0)
                 return i;
         }
         return -1;
