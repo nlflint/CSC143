@@ -63,16 +63,16 @@ public class ValidatorTest {
     public void unexpectedEndOfLine() {
         // Arrange
         Tokenizer tokenizer = new Tokenizer();
-        List<Token> tokens = tokenizer.tokenize("area = pi * radius *");
+        List<List<Token>> tokenListList = Arrays.asList(
+                tokenizer.tokenize("area = pi * radius *"),
+                tokenizer.tokenize("area = pi + (* radius)"),
+                tokenizer.tokenize("area = pi + (radius *)"));
 
-        // Act
-        Validator validator = new Validator();
-        boolean isValid = validator.isValid(tokens);
-
-        // Assert
-        assertFalse(isValid);
-        assertEquals(validator.getMessage(), "Unexpected end of line.");
+        // Act & Assert
+        for (List<Token> tokens : tokenListList) {
+            Validator validator = new Validator();
+            assertFalse(validator.isValid(tokens));
+            assertEquals(validator.getMessage(), "Unexpected end of line.");
+        }
     }
-
-
 }

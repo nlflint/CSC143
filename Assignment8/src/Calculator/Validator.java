@@ -84,13 +84,34 @@ public class Validator {
     private boolean anyOperatorsMissingOperands(List<Token> tokens) {
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
-            Token lastToken = i < 1 ? null : tokens.get(i - 1);
-            Token nextToken = i >= tokens.size() ? null : tokens.get(i + 1);
 
-            //if (isMathOperator(token))
+            boolean isMathOperator = isMathOperator(token);
+            if (!isMathOperator)
+                continue;
 
+            Token previousToken = i < 1 ? null : tokens.get(i - 1);
+            Token nextToken = i >= tokens.size() - 1 ? null : tokens.get(i + 1);
+
+            if (isMathOperator(previousToken)
+                    || previousToken instanceof OpenParenToken
+                    || previousToken == null) {
+                return true;
+            }
+
+            if (isMathOperator(nextToken)
+                    || nextToken instanceof CloseParenToken
+                    || nextToken == null) {
+                return true;
+            }
         }
         return false;
+    }
+
+    private boolean isMathOperator(Token token) {
+        return (token instanceof PlusToken
+                || token instanceof MinusToken
+                || token instanceof ProductToken
+                || token instanceof QuotientToken);
     }
 
 
