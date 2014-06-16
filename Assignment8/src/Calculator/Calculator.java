@@ -1,6 +1,8 @@
 package Calculator;
 
 import Tokenizer.Tokens.*;
+import Tokenizer.*;
+import Validation.ValidationEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,15 @@ import java.util.List;
  * Created by nate on 6/15/14.
  */
 public class Calculator {
+    private Tokenizer tokenizer;
+    private VariableRepository variableRepository;
+    private ValidationEngine validationEngine;
+
+    public Calculator(Tokenizer tokenizer, VariableRepository variableRepository, ValidationEngine validationEngine) {
+        this.tokenizer = tokenizer;
+        this.variableRepository = variableRepository;
+        this.validationEngine = validationEngine;
+    }
     public double calculate(List<Token> tokens) {
         // find first +
         int addOrSubtractIndex = findIndexOfLastPlusOrMinus(tokens);
@@ -22,7 +33,11 @@ public class Calculator {
         if (tokens.size() > 1 && expressionContainedInParentheses(tokens))
             return calculate(stripOuterParentheses(tokens));
 
-        return tokens.get(0).getValue();
+        Token token = tokens.get(0);
+        if (token instanceof VariableToken)
+            return variableRepository.getVariableValue(((VariableToken) token).getName());
+        else
+            return token.getValue();
     }
 
     private double splitTokensAndRecurse(List<Token> tokens, int index) {

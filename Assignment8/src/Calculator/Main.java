@@ -2,8 +2,8 @@ package Calculator;
 
 import Tokenizer.Tokenizer;
 import Tokenizer.Tokens.*;
+import Validation.ValidationEngine;
 import Validation.ValidationResult;
-import Validation.Validator;
 
 import java.util.List;
 
@@ -11,14 +11,18 @@ import java.util.List;
  * Created by nate on 6/14/14.
  */
 public class Main {
-    private Tokenizer tokenizer;
-    private Validator validator;
     private Calculator calculator;
+    private Tokenizer tokenizer;
+    private VariableRepository variableRepository;
+    private ValidationEngine validationEngine;
+
 
     public Main() {
+
         tokenizer = new Tokenizer();
-        validator = new Validator();
-        calculator = new Calculator();
+        variableRepository = new VariableRepository();
+        validationEngine = new ValidationEngine(variableRepository);
+        calculator = new Calculator(tokenizer, variableRepository, validationEngine);
     }
 
     public void run() {
@@ -28,7 +32,7 @@ public class Main {
 
     public String resolveExpression(String expression) {
         List<Token> tokens = tokenizer.tokenize(expression);
-        ValidationResult validationResult = validator.isExpressionValid(tokens);
+        ValidationResult validationResult = validationEngine.isExpressionValid(tokens);
 
         if (!validationResult.result) {
             return validationResult.message;
@@ -36,21 +40,21 @@ public class Main {
 
         if (isRemoveVariable(tokens)) {
             VariableToken variable = (VariableToken) tokens.get(1);
-            variable.removeVariable();
+            variableRepository.removeVariable(variable.getName());
             return String.format("‘%s’ has been removed!", variable.getName());
         }
 
         if (isListVariables(tokens)) {
             String output = "";
-            List<String> variableNames = VariableRepository.getAllVariableNames();
+            List<String> variableNames = variableRepository.getAllVariableNames();
             for (int i = 0; i < variableNames.size() - 1; i++) {
                 String variableName = variableNames.get(i);
-                double value = VariableRepository.getVariableValue(variableName);
+                double value = variableRepository.getVariableValue(variableName);
                 output += String.format("%s = %s; ", variableName, value);
             }
 
             String lastVariableName = variableNames.get(variableNames.size() - 1);
-            double value = VariableRepository.getVariableValue(lastVariableName);
+            double value = variableRepository.getVariableValue(lastVariableName);
             return output + String.format("%s = %s", lastVariableName, value);
         }
 
@@ -61,9 +65,11 @@ public class Main {
             double answer = calculator.calculate(tokensWithoutAssignment);
 
             VariableToken variable = (VariableToken) tokens.get(0);
-            variable.setValue(answer);
+            variableRepository.setVariableValue(variable.getName(), answer);
 
-            return String.format("%s = %s", variable.getName(), variable.getValue());
+            return String.format("%s = %s",
+                    variable.getName(),
+                    variableRepository.getVariableValue(variable.getName()));
         }
         else {
             double answer = calculator.calculate(tokens);

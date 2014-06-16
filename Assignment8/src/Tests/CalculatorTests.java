@@ -1,6 +1,6 @@
 package Tests;
 
-import Tokenizer.Tokens.VariableRepository;
+import Calculator.VariableRepository;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import java.util.List;
@@ -19,7 +19,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("2 + 2");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -33,7 +33,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("30 - 2");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -47,7 +47,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("30 - 2 + 4 + 34 - 2 - 10");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -61,7 +61,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("4 * 5");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -75,7 +75,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("30 / 6");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -89,7 +89,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("30 / 6 * 4 / 10 * 3 * 4 / 8");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -103,7 +103,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("30 / 6 * 4 + 10 * 3 - 8 / 4");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -117,7 +117,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("30.123 / 6.553 * 4.212 + 10.1 * 3.12312 - 8.999 / 4.1231");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -133,7 +133,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("(1+2)*3");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -147,7 +147,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("((6+2)+4)/6");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -161,7 +161,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("(1 + 2) * (8 - 4) ");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -175,7 +175,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("12/(2 * 3)");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -189,7 +189,7 @@ public class CalculatorTests {
         List<Token> tokens = tokenizer.tokenize("(1+19)*12/(((2 * 3) + (12/3) * 3)/4)");
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, new VariableRepository(), null);
         double value = calculator.calculate(tokens);
 
         // Assert
@@ -201,12 +201,13 @@ public class CalculatorTests {
         // Arrange
         Tokenizer tokenizer = new Tokenizer();
         List<Token> tokens = tokenizer.tokenize("(1 + weeks) * reds");
-        VariableRepository.setVariableValue("weeks", 50);
-        VariableRepository.setVariableValue("reds", 2);
+        VariableRepository variableRepository = new VariableRepository();
+        variableRepository.setVariableValue("weeks", 50);
+        variableRepository.setVariableValue("reds", 2);
 
 
         // Act
-        Calculator calculator = new Calculator();
+        Calculator calculator = new Calculator(null, variableRepository, null);
         double value = calculator.calculate(tokens);
 
         // Assert

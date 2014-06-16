@@ -1,6 +1,8 @@
 package Tokenizer.Tokens;
 
 
+import Calculator.VariableRepository;
+
 /**
  * Created by nate on 6/14/14.
  */
@@ -15,23 +17,8 @@ public class VariableToken extends Token {
         return name;
     }
 
-    public boolean isVariableDefined() {
-        return VariableRepository.isVariableDefined(name);
-    }
-
     @Override
     public double getValue() {
-        if (!VariableRepository.isVariableDefined(name))
-            return Double.NaN;
-
-        return VariableRepository.getVariableValue(name);
-    }
-
-    public void setValue(double value) {
-        VariableRepository.setVariableValue(name, value);
-    }
-
-    public void removeVariable() {
-        VariableRepository.removeVariable(name);
+        return Double.NaN;
     }
 }

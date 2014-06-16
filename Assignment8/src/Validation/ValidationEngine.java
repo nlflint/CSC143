@@ -1,5 +1,6 @@
 package Validation;
 
+import Calculator.VariableRepository;
 import Tokenizer.Tokens.*;
 import Validation.Validators.*;
 
@@ -9,17 +10,17 @@ import java.util.List;
 /**
  * Created by nate on 6/14/14.
  */
-public class Validator {
+public class ValidationEngine {
     private List<IValidator> validators;
 
-    public Validator() {
+    public ValidationEngine(VariableRepository variableRepository) {
         validators = Arrays.asList(
                 new OpenCloseParenthesesMatch(),
                 new AllOperatorsHaveOperands(),
                 new VariableExistsOnLhs(),
                 new AllOperatorsHaveOperands(),
                 new AllTokensAreKnown(),
-                new AllVariablesAreDefined()
+                new AllVariablesAreDefined(variableRepository)
         );
     }
     public ValidationResult isExpressionValid(List<Token> tokens) {

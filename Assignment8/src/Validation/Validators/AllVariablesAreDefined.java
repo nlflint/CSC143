@@ -1,5 +1,6 @@
 package Validation.Validators;
 
+import Calculator.VariableRepository;
 import Tokenizer.Tokens.AssignmentToken;
 import Tokenizer.Tokens.Token;
 import Tokenizer.Tokens.VariableToken;
@@ -11,6 +12,12 @@ import java.util.List;
  * Created by nathanf on 6/16/2014.
  */
 public class AllVariablesAreDefined implements IValidator {
+    private VariableRepository variableRepository;
+
+    public AllVariablesAreDefined(VariableRepository variableRepository) {
+        this.variableRepository = variableRepository;
+    }
+
     @Override
     public ValidationResult validate(List<Token> tokens) {
         ValidationResult validationResult = new ValidationResult();
@@ -23,7 +30,7 @@ public class AllVariablesAreDefined implements IValidator {
             Token token = tokens.get(i);
             if (token instanceof VariableToken) {
                 VariableToken variableToken = (VariableToken) token;
-                if (!variableToken.isVariableDefined()) {
+                if (!variableRepository.isVariableDefined(variableToken.getName())) {
                     validationResult.result = false;
                     validationResult.message = String.format("Variable ‘%s’ is undefined.", variableToken.getName());
                     break;

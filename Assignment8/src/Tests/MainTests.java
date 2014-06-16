@@ -1,7 +1,7 @@
 package Tests;
 
 import Calculator.Main;
-import Tokenizer.Tokens.VariableRepository;
+import Calculator.VariableRepository;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,7 +36,6 @@ public class MainTests {
                 {"area = 2ab","Unrecognizable token ‘2ab’."}};
         List<String[]> expressionsList = Arrays.asList(expressions);
         Main main = new Main();
-        VariableRepository.deleteAllVariables();
 
         // Act & Assert
         for (String[] expression : expressionsList) {

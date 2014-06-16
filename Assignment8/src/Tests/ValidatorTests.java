@@ -1,7 +1,8 @@
 package Tests;
 
+import Calculator.VariableRepository;
+import Validation.ValidationEngine;
 import Validation.ValidationResult;
-import Validation.Validator;
 import Tokenizer.Tokens.*;
 import Tokenizer.*;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class ValidatorTests {
         List<Token> tokens = tokenizer.tokenize("(1 + 2");
 
         // Act
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(new VariableRepository());
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -37,7 +38,7 @@ public class ValidatorTests {
         List<Token> tokens = tokenizer.tokenize("(1 + 2))");
 
         // Act
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(new VariableRepository());
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -52,7 +53,7 @@ public class ValidatorTests {
         List<Token> tokens = tokenizer.tokenize("pi * 2 = 10");
 
         // Act
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(new VariableRepository());
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -67,7 +68,7 @@ public class ValidatorTests {
         List<Token> tokens = tokenizer.tokenize("5 * 6");
 
         // Act & Assert
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(new VariableRepository());
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -85,7 +86,7 @@ public class ValidatorTests {
 
         // Act & Assert
         for (List<Token> tokens : tokenListList) {
-            Validator validator = new Validator();
+            ValidationEngine validator = new ValidationEngine(new VariableRepository());
             ValidationResult validationResult = validator.isExpressionValid(tokens);
             assertFalse(validationResult.result);
             assertEquals("Unexpected end of line.", validationResult.message);
@@ -97,10 +98,11 @@ public class ValidatorTests {
         // Arrange
         Tokenizer tokenizer = new Tokenizer();
         List<Token> tokens = tokenizer.tokenize("var = 5 * radius");
-        VariableRepository.removeVariable("radius");
+        VariableRepository variableRepository = new VariableRepository();
+        variableRepository.removeVariable("radius");
 
         // Act & Assert
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(variableRepository);
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -113,10 +115,11 @@ public class ValidatorTests {
         // Arrange
         Tokenizer tokenizer = new Tokenizer();
         List<Token> tokens = tokenizer.tokenize("5 * MyNumber");
-        VariableRepository.removeVariable("MyNumber");
+        VariableRepository variableRepository = new VariableRepository();
+        variableRepository.removeVariable("MyNumber");
 
         // Act
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(variableRepository);
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -129,10 +132,11 @@ public class ValidatorTests {
         // Arrange
         Tokenizer tokenizer = new Tokenizer();
         List<Token> tokens = tokenizer.tokenize("5 * radius");
-        VariableRepository.setVariableValue("radius", 4.0);
+        VariableRepository variableRepository = new VariableRepository();
+        variableRepository.setVariableValue("radius", 4.0);
 
         // Act & Assert
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(variableRepository);
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -146,7 +150,7 @@ public class ValidatorTests {
         List<Token> tokens = tokenizer.tokenize("num = 3 * 4^2");
 
         // Act & Assert
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(new VariableRepository());
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
@@ -161,7 +165,7 @@ public class ValidatorTests {
         List<Token> tokens = tokenizer.tokenize("area = 2ab");
 
         // Act & Assert
-        Validator validator = new Validator();
+        ValidationEngine validator = new ValidationEngine(new VariableRepository());
         ValidationResult validationResult = validator.isExpressionValid(tokens);
 
         // Assert
