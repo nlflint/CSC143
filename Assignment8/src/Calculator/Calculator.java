@@ -1,9 +1,6 @@
 package Calculator;
 
-import Tokenizer.Tokens.MinusToken;
-import Tokenizer.Tokens.PlusToken;
-import Tokenizer.Tokens.Token;
-import Tokenizer.Tokens.ValueToken;
+import Tokenizer.Tokens.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,32 +15,15 @@ public class Calculator {
 
     private double recursiveCalculate(List<Token> tokens) {
         // find first +
-        int plusIndex = findIndexOfFirstPlus(tokens);
-        if (plusIndex >= 0) {
-            List<Token> leftTokens = getTokensLeftOfIndex(plusIndex, tokens);
-            List<Token> rightTokens = getTokensRightOfIndex(plusIndex, tokens);
-            return recursiveCalculate(leftTokens) + recursiveCalculate(rightTokens);
-        }
-
-        // find first -
-        int minusIndex = findIndexOfFirstMinus(tokens);
-        if (minusIndex >= 0) {
-            List<Token> leftTokens = getTokensLeftOfIndex(minusIndex, tokens);
-            List<Token> rightTokens = getTokensRightOfIndex(minusIndex, tokens);
-            return recursiveCalculate(leftTokens) - recursiveCalculate(rightTokens);
+        int addOrSubtractIndex = findIndexOfLastPlusOrMinus(tokens);
+        if (addOrSubtractIndex >= 0) {
+            OperatorToken token = (OperatorToken) tokens.get(addOrSubtractIndex);
+            List<Token> leftTokens = getTokensLeftOfIndex(addOrSubtractIndex, tokens);
+            List<Token> rightTokens = getTokensRightOfIndex(addOrSubtractIndex, tokens);
+            return token.operate(recursiveCalculate(leftTokens), recursiveCalculate(rightTokens));
         }
 
         return tokens.get(0).getValue();
-    }
-
-    private int findIndexOfFirstMinus(List<Token> tokens) {
-        int size = tokens.size();
-        for (int i = 0; i < size; i++) {
-            Token token = tokens.get(i);
-            if (token instanceof MinusToken)
-                return i;
-        }
-        return -1;
     }
 
     private List<Token> getTokensRightOfIndex(int plusIndex, List<Token> tokens) {
@@ -64,11 +44,12 @@ public class Calculator {
         return leftTokens;
     }
 
-    private int findIndexOfFirstPlus(List<Token> tokens) {
-        int size = tokens.size();
-        for (int i = 0; i < size; i++) {
+    private int findIndexOfLastPlusOrMinus(List<Token> tokens) {
+        int lastIndex = tokens.size() - 1;
+        for (int i = lastIndex; i > 0; i--) {
             Token token = tokens.get(i);
-            if (token instanceof PlusToken)
+            if (token instanceof PlusToken
+                    || token instanceof MinusToken)
                 return i;
         }
         return -1;
