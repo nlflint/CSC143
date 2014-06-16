@@ -36,13 +36,13 @@ public class Validator {
             return false;
         }
 
-        if (!allVariableAreDefined(tokens)) {
-            message = String.format("Variable ‘%s’ is undefined.", undefinedVariableName);
+        if (!allTokensAreKnown(tokens)) {
+            message = String.format("Unrecognizable token ‘%s’.", unknownTokenName);
             return false;
         }
 
-        if (!allTokensAreKnown(tokens)) {
-            message = String.format("Unrecognizable token ‘%s’.", unknownTokenName);
+        if (!allVariableAreDefined(tokens)) {
+            message = String.format("Variable ‘%s’ is undefined.", undefinedVariableName);
             return false;
         }
 

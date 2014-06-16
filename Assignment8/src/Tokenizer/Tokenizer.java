@@ -104,6 +104,13 @@ public class Tokenizer {
         if (isQuotientOperator(expressionPiece))
             return new QuotientToken();
 
+        if (isListVariablesOperator(expressionPiece))
+            return new ListVariablesToken();
+
+        if (isRemoveVariableOperator(expressionPiece))
+            return new RemoveVariableToken();
+
+
         return null;
     }
 
@@ -174,6 +181,15 @@ public class Tokenizer {
         return expressionPiece.equals("=");
     }
 
+    public boolean isListVariablesOperator(String expressionPiece) {
+        return expressionPiece.equals("?");
+    }
+
+    public boolean isRemoveVariableOperator(String expressionPiece) {
+        return expressionPiece.equals("!");
+    }
+
+
     public boolean isOperator(String expressionPiece) {
         return isOpenParentheses(expressionPiece)
                 || isCloseParentheses(expressionPiece)
@@ -181,7 +197,9 @@ public class Tokenizer {
                 || isPlusOperator(expressionPiece)
                 || isMinusOperator(expressionPiece)
                 || isProductOperator(expressionPiece)
-                || isQuotientOperator(expressionPiece);
+                || isQuotientOperator(expressionPiece)
+                || isListVariablesOperator(expressionPiece)
+                || isRemoveVariableOperator(expressionPiece);
     }
 
 

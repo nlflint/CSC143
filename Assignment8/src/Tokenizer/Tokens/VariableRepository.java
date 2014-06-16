@@ -1,15 +1,12 @@
 package Tokenizer.Tokens;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by nate on 6/15/14.
  */
 public class VariableRepository {
-    private static HashMap<String,Double> variables = new HashMap<String, Double>();
+    private static LinkedHashMap<String,Double> variables = new LinkedHashMap<String, Double>();
 
     public static void setVariableValue(String name, double value) {
         variables.put(name, value);
@@ -27,7 +24,13 @@ public class VariableRepository {
         variables.remove(name);
     }
 
-    public static Set<String> getAllVariableNames() {
-        return variables.keySet();
+    public static List<String> getAllVariableNames() {
+        ArrayList<String> variableNames = new ArrayList<String>();
+        variableNames.addAll(variables.keySet());
+        return variableNames;
+    }
+
+    public static void deleteAllVariables() {
+        variables.clear();
     }
 }

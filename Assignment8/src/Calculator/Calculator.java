@@ -9,34 +9,27 @@ import java.util.List;
  * Created by nate on 6/15/14.
  */
 public class Calculator {
-    public double evaluate(List<Token> tokens) {
-        return recursiveCalculate(tokens);
-    }
-
-    private double recursiveCalculate(List<Token> tokens) {
+    public double calculate(List<Token> tokens) {
         // find first +
         int addOrSubtractIndex = findIndexOfLastPlusOrMinus(tokens);
-        if (addOrSubtractIndex >= 0) {
-            OperatorToken token = (OperatorToken) tokens.get(addOrSubtractIndex);
-            List<Token> leftTokens = getTokensLeftOfIndex(addOrSubtractIndex, tokens);
-            List<Token> rightTokens = getTokensRightOfIndex(addOrSubtractIndex, tokens);
-            return token.operate(recursiveCalculate(leftTokens), recursiveCalculate(rightTokens));
-        }
+        if (addOrSubtractIndex >= 0)
+            return splitTokensAndRecurse(tokens, addOrSubtractIndex);
 
         int multipleOrDivideIndex = findIndexOfLastMultiplyOrDivide(tokens);
-        if (multipleOrDivideIndex >= 0) {
-            OperatorToken token = (OperatorToken) tokens.get(multipleOrDivideIndex);
-            List<Token> leftTokens = getTokensLeftOfIndex(multipleOrDivideIndex, tokens);
-            List<Token> rightTokens = getTokensRightOfIndex(multipleOrDivideIndex, tokens);
-            return token.operate(recursiveCalculate(leftTokens), recursiveCalculate(rightTokens));
-        }
+        if (multipleOrDivideIndex >= 0)
+            return splitTokensAndRecurse(tokens, multipleOrDivideIndex);
 
-        if (tokens.size() > 1 && expressionContainedInParentheses(tokens))  {
-            List<Token> parenthesesStripped = stripOuterParentheses(tokens);
-            return recursiveCalculate(parenthesesStripped);
-        }
+        if (tokens.size() > 1 && expressionContainedInParentheses(tokens))
+            return calculate(stripOuterParentheses(tokens));
 
         return tokens.get(0).getValue();
+    }
+
+    private double splitTokensAndRecurse(List<Token> tokens, int index) {
+        MathOperatorToken token = (MathOperatorToken) tokens.get(index);
+        List<Token> leftTokens = getTokensLeftOfIndex(index, tokens);
+        List<Token> rightTokens = getTokensRightOfIndex(index, tokens);
+        return token.operate(calculate(leftTokens), calculate(rightTokens));
     }
 
     private List<Token> stripOuterParentheses(List<Token> tokens) {

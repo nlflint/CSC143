@@ -30,4 +30,8 @@ public class VariableToken extends Token {
     public void setValue(double value) {
         VariableRepository.setVariableValue(name, value);
     }
+
+    public void removeVariable() {
+        VariableRepository.removeVariable(name);
+    }
 }

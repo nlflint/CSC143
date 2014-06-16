@@ -1,32 +1,91 @@
 package Calculator;
 
 import Tokenizer.Tokenizer;
-import Tokenizer.Tokens.Token;
+import Tokenizer.Tokens.*;
+import com.sun.org.apache.xpath.internal.operations.Variable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by nate on 6/14/14.
  */
 public class Main {
-    public static void main(String[] args) {
-        List<String> expressions = Arrays.asList("var = 1+2 * (3+10)", "4+5", "var = 2^2");
+    private Tokenizer tokenizer;
+    private Validator validator;
+    private Calculator calculator;
+
+    public Main() {
+        tokenizer = new Tokenizer();
+        validator = new Validator();
+        calculator = new Calculator();
+    }
+
+    public void run() {
 
 
-        String output;
+    }
 
-        for (String expression : expressions) {
-            Tokenizer tokenizer = new Tokenizer();
-            List<Token> tokens = tokenizer.tokenize(expression);
+    public String resolveExpression(String expression) {
+        List<Token> tokens = tokenizer.tokenize(expression);
+        boolean isValid = validator.isExpressionValid(tokens);
 
-            Validator validator = new Validator();
-            boolean isValid = validator.isExpressionValid(tokens);
-
-            if (!isValid) {
-                output = validator.getValidationMessage();
-                continue;
-            }
+        if (!isValid) {
+            return validator.getValidationMessage();
         }
+
+        if (isRemoveVariable(tokens)) {
+            VariableToken variable = (VariableToken) tokens.get(1);
+            variable.removeVariable();
+            return String.format("‘%s’ has been removed!", variable.getName());
+        }
+
+        if (isListVariables(tokens)) {
+            String output = "";
+            List<String> variableNames = VariableRepository.getAllVariableNames();
+            for (int i = 0; i < variableNames.size() - 1; i++) {
+                String variableName = variableNames.get(i);
+                double value = VariableRepository.getVariableValue(variableName);
+                output += String.format("%s = %s; ", variableName, value);
+            }
+
+            String lastVariableName = variableNames.get(variableNames.size() - 1);
+            double value = VariableRepository.getVariableValue(lastVariableName);
+            return output + String.format("%s = %s", lastVariableName, value);
+        }
+
+        if (containsAssignment(tokens)) {
+            int lastIndex = tokens.size();
+            List<Token> tokensWithoutAssignment = tokens.subList(2, lastIndex);
+
+            double answer = calculator.calculate(tokensWithoutAssignment);
+
+            VariableToken variable = (VariableToken) tokens.get(0);
+            variable.setValue(answer);
+
+            return String.format("%s = %s", variable.getName(), variable.getValue());
+        }
+        else {
+            double answer = calculator.calculate(tokens);
+            return String.format("%s", answer);
+        }
+    }
+
+    private boolean isListVariables(List<Token> tokens) {
+        return tokens.size() == 1 && tokens.get(0) instanceof ListVariablesToken;
+    }
+
+    private boolean isRemoveVariable(List<Token> tokens) {
+        return tokens.size() == 2 && tokens.get(0) instanceof RemoveVariableToken;
+    }
+
+    private boolean containsAssignment(List<Token> tokens) {
+        return tokens.size() > 1 && tokens.get(1) instanceof AssignmentToken;
+    }
+
+    public static void main(String[] args) {
+        new Main().run();
+
     }
 }

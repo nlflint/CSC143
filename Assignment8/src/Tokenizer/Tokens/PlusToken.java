@@ -3,7 +3,7 @@ package Tokenizer.Tokens;
 /**
  * Created by nate on 6/14/14.
  */
-public class PlusToken extends OperatorToken {
+public class PlusToken extends MathOperatorToken {
     @Override
     public double operate(double first, double second) {
         return first + second;

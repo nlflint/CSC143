@@ -287,4 +287,25 @@ public class TokenizerTests {
             assertFalse(facory.isAssignmentOperator(value));
 
     }
+
+    @Test
+    public void listVariables() {
+        // Arrange & Act
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("?");
+
+        // Assert
+        assertTrue(tokens.get(0) instanceof ListVariablesToken);
+    }
+
+    @Test
+    public void removeVariable() {
+        // Arrange & Act
+        Tokenizer tokenizer = new Tokenizer();
+        List<Token> tokens = tokenizer.tokenize("!weeks");
+
+        // Assert
+        assertTrue(tokens.get(0) instanceof RemoveVariableToken);
+        assertTrue(tokens.get(1) instanceof VariableToken);
+    }
 }
