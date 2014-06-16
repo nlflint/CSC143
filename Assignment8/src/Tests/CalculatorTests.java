@@ -1,14 +1,18 @@
 package Tests;
 
-import Calculator.Calculator;
-import Tokenizer.Tokenizer;
-import Tokenizer.Tokens.Token;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import Calculator.Calculator;
+import Tokenizer.Tokenizer;
+import Tokenizer.Tokens.Token;
+
+
+
+
+
 
 /**
  * Created by nate on 6/15/14.
