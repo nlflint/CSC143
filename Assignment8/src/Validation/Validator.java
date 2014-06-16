@@ -1,4 +1,4 @@
-package Calculator;
+package Validation;
 
 import Tokenizer.Tokens.*;
 
@@ -16,21 +16,6 @@ public class Validator {
     }
 
     public boolean isExpressionValid(List<Token> tokens) {
-        if (thereAreMoreOpenParenthesesThanClose(tokens)) {
-            message = "Missing closed parentheses.";
-            return false;
-        }
-
-        if (thereAreMoreCloseParenthesesThanOpen(tokens)) {
-            message = "Redundant closed parentheses.";
-            return false;
-        }
-
-        if (expressionUsesAssignmentOperator(tokens) && !variableExistsOnLHS(tokens)) {
-            message = "Expect a variable on the LHS.";
-            return false;
-        }
-
         if (!allOperatorsHaveOperands(tokens)) {
             message = "Unexpected end of line.";
             return false;
@@ -45,42 +30,6 @@ public class Validator {
             message = String.format("Variable ‘%s’ is undefined.", undefinedVariableName);
             return false;
         }
-
-        return true;
-    }
-
-    private boolean thereAreMoreOpenParenthesesThanClose(List<Token> tokens) {
-        return getOpenParenCount(tokens) > getCloseParenCount(tokens);
-    }
-
-    private int getCloseParenCount(List<Token> tokens) {
-        int count = 0;
-        for (Token token : tokens)
-            if (token instanceof CloseParenToken)
-                count++;
-        return count;
-    }
-
-    private int getOpenParenCount(List<Token> tokens) {
-        int count = 0;
-        for (Token token : tokens)
-            if (token instanceof OpenParenToken)
-                count++;
-        return count;
-    }
-
-    private boolean thereAreMoreCloseParenthesesThanOpen(List<Token> tokens) {
-        return getOpenParenCount(tokens) < getCloseParenCount(tokens);
-    }
-
-    private boolean variableExistsOnLHS(List<Token> tokens) {
-        int indexOfAssignment = getIndexOfAssignment(tokens);
-
-        if (indexOfAssignment != 1)
-            return false;
-
-        if (!(tokens.get(indexOfAssignment - 1) instanceof VariableToken))
-            return false;
 
         return true;
     }

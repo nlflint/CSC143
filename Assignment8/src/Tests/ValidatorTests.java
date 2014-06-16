@@ -1,6 +1,6 @@
 package Tests;
 
-import Calculator.Validator;
+import Validation.Validator;
 import Tokenizer.Tokens.*;
 import Tokenizer.*;
 import org.junit.Test;

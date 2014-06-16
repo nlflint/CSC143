@@ -2,11 +2,9 @@ package Calculator;
 
 import Tokenizer.Tokenizer;
 import Tokenizer.Tokens.*;
-import com.sun.org.apache.xpath.internal.operations.Variable;
+import Validation.Validator;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by nate on 6/14/14.
