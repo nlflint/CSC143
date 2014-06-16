@@ -3,6 +3,7 @@ package Calculator;
 import Tokenizer.Tokens.*;
 import Tokenizer.*;
 import Validation.ValidationEngine;
+import Validation.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +21,77 @@ public class Calculator {
         this.variableRepository = variableRepository;
         this.validationEngine = validationEngine;
     }
+
+    public String resolveExpression(String expression) {
+        List<Token> tokens = tokenizer.tokenize(expression);
+        ValidationResult validationResult = validationEngine.isExpressionValid(tokens);
+
+        if (!validationResult.result) {
+            return validationResult.message;
+        }
+
+        if (isRemoveVariable(tokens)) {
+            VariableToken variable = (VariableToken) tokens.get(1);
+            variableRepository.removeVariable(variable.getName());
+            return String.format("‘%s’ has been removed!", variable.getName());
+        }
+
+        if (isListVariables(tokens)) {
+            String output = "";
+            List<String> variableNames = variableRepository.getAllVariableNames();
+            for (int i = 0; i < variableNames.size() - 1; i++) {
+                String variableName = variableNames.get(i);
+                double value = variableRepository.getVariableValue(variableName);
+                output += String.format("%s = %s; ", variableName, value);
+            }
+
+            String lastVariableName = variableNames.get(variableNames.size() - 1);
+            double value = variableRepository.getVariableValue(lastVariableName);
+            return output + String.format("%s = %s", lastVariableName, value);
+        }
+
+        if (containsAssignment(tokens)) {
+            int lastIndex = tokens.size();
+            List<Token> tokensWithoutAssignment = tokens.subList(2, lastIndex);
+
+            double answer = calculate(tokensWithoutAssignment);
+
+            VariableToken variable = (VariableToken) tokens.get(0);
+            variableRepository.setVariableValue(variable.getName(), answer);
+
+            return String.format("%s = %s",
+                    variable.getName(),
+                    variableRepository.getVariableValue(variable.getName()));
+        }
+        else {
+            double answer = calculate(tokens);
+            return String.format("%s", answer);
+        }
+    }
+
+    private boolean isListVariables(List<Token> tokens) {
+        return tokens.size() == 1 && tokens.get(0) instanceof ListVariablesToken;
+    }
+
+    private boolean isRemoveVariable(List<Token> tokens) {
+        return tokens.size() == 2 && tokens.get(0) instanceof RemoveVariableToken;
+    }
+
+    private boolean containsAssignment(List<Token> tokens) {
+        return tokens.size() > 1 && tokens.get(1) instanceof AssignmentToken;
+    }
+
     public double calculate(List<Token> tokens) {
         // find first +
-        int addOrSubtractIndex = findIndexOfLastPlusOrMinus(tokens);
+        int addOrSubtractIndex = findIndexOfRightMostPlusOrMinus(tokens);
         if (addOrSubtractIndex >= 0)
             return splitTokensAndRecurse(tokens, addOrSubtractIndex);
 
-        int multipleOrDivideIndex = findIndexOfLastMultiplyOrDivide(tokens);
+        int multipleOrDivideIndex = findIndexOfRightMostMultiplyOrDivide(tokens);
         if (multipleOrDivideIndex >= 0)
             return splitTokensAndRecurse(tokens, multipleOrDivideIndex);
 
-        if (tokens.size() > 1 && expressionContainedInParentheses(tokens))
+        if (tokens.size() > 1 && isEntireExpressionContainedInParentheses(tokens))
             return calculate(stripOuterParentheses(tokens));
 
         Token token = tokens.get(0);
@@ -53,7 +114,7 @@ public class Calculator {
         return newList;
     }
 
-    private boolean expressionContainedInParentheses(List<Token> tokens) {
+    private boolean isEntireExpressionContainedInParentheses(List<Token> tokens) {
         int lastIndex = tokens.size() - 1;
         return (tokens.get(0) instanceof OpenParenToken)
                 && (tokens.get(lastIndex) instanceof CloseParenToken);
@@ -78,7 +139,7 @@ public class Calculator {
         return leftTokens;
     }
 
-    private int findIndexOfLastPlusOrMinus(List<Token> tokens) {
+    private int findIndexOfRightMostPlusOrMinus(List<Token> tokens) {
 
         int lastIndex = tokens.size() - 1;
         int parenDepth = 0;
@@ -96,7 +157,7 @@ public class Calculator {
         return -1;
     }
 
-    private int findIndexOfLastMultiplyOrDivide(List<Token> tokens) {
+    private int findIndexOfRightMostMultiplyOrDivide(List<Token> tokens) {
         int lastIndex = tokens.size() - 1;
         int parenDepth = 0;
 
