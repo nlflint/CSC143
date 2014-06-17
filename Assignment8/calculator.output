@@ -1,0 +1,11 @@
+9.0
+weeks = 52.0
+hoursPerWeek = 40.0
+hourlyRate = 10.5
+bonus = 1000.0
+annualSalary = 22840.0
+40.0
+‘weeks’ has been removed!
+pi = 3.14
+0.314
+hoursPerWeek = 40.0; hourlyRate = 10.5; bonus = 1000.0; annualSalary = 22840.0; pi = 3.14

@@ -1,0 +1,11 @@
+(1+2)*3
+weeks = 52
+hoursPerWeek=40
+hourlyRate = 10.50
+bonus =1000
+annualSalary = weeks * hoursPerWeek * hourlyRate + bonus
+hoursPerWeek
+!weeks
+pi = 3.14
+pi / 10
+?
