@@ -3,7 +3,7 @@ package Tokenizer.Tokens;
 import Tokenizer.Tokenizer;
 
 /**
- * Created by nate on 6/14/14.
+ * Represents a close parentheses: ")"
  */
 public class CloseParenToken extends Token {
 }

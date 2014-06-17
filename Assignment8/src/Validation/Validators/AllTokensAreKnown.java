@@ -18,7 +18,7 @@ public class AllTokensAreKnown implements IValidator {
             if (token instanceof UnknownToken) {
                 UnknownToken unknownToken = (UnknownToken) token;
                 validationResult.result = false;
-                validationResult.message = String.format("Unrecognizable token ‘%s’.", unknownToken.getUnkownTokenName());
+                validationResult.message = String.format("Unrecognizable token ‘%s’.", unknownToken.getUnknownTokenName());
                 break;
             }
         }

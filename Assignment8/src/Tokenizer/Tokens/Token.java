@@ -3,8 +3,7 @@ package Tokenizer.Tokens;
 import Tokenizer.Tokenizer;
 
 /**
- * Created by nate on 6/14/14.
+ * Reprsents all tokens in an arithmetic statement.
  */
 public abstract class Token {
-    public double getValue() { return Double.NaN; }
 }

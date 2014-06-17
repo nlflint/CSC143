@@ -24,17 +24,17 @@ public class TokenizerTests {
         // Assert
         assertTrue(tokens.get(0) instanceof VariableToken);
         assertTrue(tokens.get(1) instanceof AssignmentToken);
-        assertTrue(tokens.get(2) instanceof ValueToken);
+        assertTrue(tokens.get(2) instanceof NumberToken);
         assertTrue(tokens.get(3) instanceof PlusToken);
         assertTrue(tokens.get(4) instanceof VariableToken);
         assertTrue(tokens.get(5) instanceof ProductToken);
         assertTrue(tokens.get(6) instanceof OpenParenToken);
-        assertTrue(tokens.get(7) instanceof ValueToken);
+        assertTrue(tokens.get(7) instanceof NumberToken);
         assertTrue(tokens.get(8) instanceof QuotientToken);
-        assertTrue(tokens.get(9) instanceof ValueToken);
+        assertTrue(tokens.get(9) instanceof NumberToken);
         assertTrue(tokens.get(10) instanceof CloseParenToken);
         assertTrue(tokens.get(11) instanceof MinusToken);
-        assertTrue(tokens.get(12) instanceof ValueToken);
+        assertTrue(tokens.get(12) instanceof NumberToken);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class TokenizerTests {
         // Assert
         assertTrue(tokens.get(0) instanceof UnknownToken);
         assertTrue(tokens.get(1) instanceof PlusToken);
-        assertTrue(tokens.get(2) instanceof ValueToken);
+        assertTrue(tokens.get(2) instanceof NumberToken);
     }
 
     @Test
@@ -95,9 +95,9 @@ public class TokenizerTests {
         // Assert
         assertTrue(tokens.get(0) instanceof VariableToken);
         assertTrue(tokens.get(1) instanceof AssignmentToken);
-        assertTrue(tokens.get(2) instanceof ValueToken);
+        assertTrue(tokens.get(2) instanceof NumberToken);
         assertTrue(tokens.get(3) instanceof UnknownToken);
-        assertTrue(tokens.get(4) instanceof ValueToken);
+        assertTrue(tokens.get(4) instanceof NumberToken);
     }
 
     @Test

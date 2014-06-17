@@ -1,14 +1,22 @@
 package Tokenizer.Tokens;
 
 /**
- * Created by nate on 6/14/14.
+ * Represents any unidentifiable text in a statement
  */
 public class UnknownToken extends Token {
     private String unkownTokenName;
 
+    /**
+     * Constructor. Saves the name of this unidentifiable token.
+     * @param unknownToken the text of the unknown token
+     */
     public UnknownToken(String unknownToken) {
         this.unkownTokenName = unknownToken;
     }
 
-    public String getUnkownTokenName() { return unkownTokenName;}
+    /**
+     * Gets the name of the unknonwn token
+     * @return the text of the unknown token
+     */
+    public String getUnknownTokenName() { return unkownTokenName;}
 }

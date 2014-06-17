@@ -1,7 +1,7 @@
 package Tokenizer.Tokens;
 
 /**
- * Created by nate on 6/14/14.
+ * Represents an assignment operator: "="
  */
 public class AssignmentToken extends Token {
 }

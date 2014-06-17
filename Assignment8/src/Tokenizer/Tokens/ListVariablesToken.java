@@ -1,7 +1,7 @@
 package Tokenizer.Tokens;
 
 /**
- * Created by nate on 6/15/14.
+ * Represents the command to list variables: "?"
  */
 public class ListVariablesToken extends Token {
 }

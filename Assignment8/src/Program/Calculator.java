@@ -9,21 +9,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by nate on 6/15/14.
+ * This class does the recursive math calculations and handles special commands. It dependent on tokenizer,
+ * variableRepository, and validation engine.
  */
 public class Calculator {
     private Tokenizer tokenizer;
     private VariableRepository variableRepository;
     private ValidationEngine validationEngine;
 
+    /**
+     * Constructor saves references dependencies.
+     * @param tokenizer tokenizer that will be used for calculations
+     * @param variableRepository the variable repository that will be used for claculations
+     * @param validationEngine Validation engine that will be used for calculations
+     */
     public Calculator(Tokenizer tokenizer, VariableRepository variableRepository, ValidationEngine validationEngine) {
         this.tokenizer = tokenizer;
         this.variableRepository = variableRepository;
         this.validationEngine = validationEngine;
     }
 
-    public String calculate(String expression) {
-        List<Token> tokens = tokenizer.tokenize(expression);
+    /**
+     * Processes the given statement and gives a textual answer or error.
+     * @param statement The arithmetic statement that will be calculated
+     * @return a text response to the statement
+     */
+    public String processStatement(String statement) {
+        List<Token> tokens = tokenizer.tokenize(statement);
         ValidationResult validationResult = validationEngine.isExpressionValid(tokens);
 
         if (!validationResult.result) {
@@ -81,6 +93,11 @@ public class Calculator {
         return tokens.size() > 1 && tokens.get(1) instanceof AssignmentToken;
     }
 
+    /**
+     * Recursively calculates the given expression and gives a numerical answer.
+     * @param tokens a list of tokens representing an arithmetic expression
+     * @return the answer to the expression
+     */
     public double resolveExpression(List<Token> tokens) {
         // find first +
         int addOrSubtractIndex = findIndexOfRightMostPlusOrMinus(tokens);
@@ -98,7 +115,7 @@ public class Calculator {
         if (token instanceof VariableToken)
             return variableRepository.getVariableValue(((VariableToken) token).getName());
         else
-            return token.getValue();
+            return ((NumberToken)(token)).getValue();
     }
 
     private double splitTokensAndRecurse(List<Token> tokens, int index) {

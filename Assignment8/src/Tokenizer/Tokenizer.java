@@ -7,26 +7,26 @@ import java.util.List;
 
 
 /**
- * This class tokenizes arithmetic expressions.
+ * This class tokenizes arithmetic statemtns.
  * @author Nathan Flint
  * @version Assignment 8: Recursion and Parsing
  */
 public class Tokenizer {
     /**
-     * Tokenizes an expression into a list of tokens in the order they were found in the expression.
-     * @param expression an arithmetic expression
+     * Tokenizes a statement into a list of tokens in the order they were found in the statement.
+     * @param statement an arithmetic statement
      * @return a list of tokens.
      */
-    public List<Token> tokenize(String expression) {
+    public List<Token> tokenize(String statement) {
         ArrayList<Token> tokens = new ArrayList<Token>();
 
         // Values and variables are more than one character, so they are built a character
         // at a time, stored in this variable.
         String temp = "";
 
-        // Loops through the expression character by character creating tokens.
-        for (int i = 0; i < expression.length(); i++) {
-            String currentChar = expression.charAt(i) + "";
+        // Loops through the statement character by character creating tokens.
+        for (int i = 0; i < statement.length(); i++) {
+            String currentChar = statement.charAt(i) + "";
 
             // If it's a value or variable, then add it to temp
             if (isValue(currentChar) || isVariable(currentChar)) {
@@ -78,7 +78,7 @@ public class Tokenizer {
      */
     public Token createToken(String expression) {
         if (isValue(expression))
-            return new ValueToken(expression);
+            return new NumberToken(expression);
 
         if (isVariable(expression))
             return new VariableToken(expression);
@@ -152,42 +152,84 @@ public class Tokenizer {
         return decimalCount < 2;
     }
 
+    /**
+     * Determines if the given expression is an open parentheses
+     * @param expression the express to test
+     * @return true if the expression is an open parentheses, false if it is not.
+     */
     public boolean isOpenParentheses(String expression) {
         return expression.equals("(");
     }
 
+    /**
+     * Determines if the given expression is a close parentheses
+     * @param expression the express to test
+     * @return true if the expression is a close parentheses, false if it is not.
+     */
     public boolean isCloseParentheses(String expression) {
         return expression.equals(")");
     }
-
+    /**
+     * Determines if the given expression is plus operator
+     * @param expression the express to test
+     * @return true if the expression is a plus operator, false if it is not.
+     */
     public boolean isPlusOperator(String expression) {
         return expression.equals("+");
     }
-
+    /**
+     * Determines if the given expression is an open parentheses
+     * @param expression the express to test
+     * @return true if the expression is an open parentheses, false if it is not.
+     */
     public boolean isMinusOperator(String expression) {
         return expression.equals("-");
     }
-
+    /**
+     * Determines if the given expression is a minus operator
+     * @param expression the express to test
+     * @return true if the expression is an minus parentheses, false if it is not.
+     */
     public boolean isProductOperator(String expression) {
         return expression.equals("*");
     }
-
+    /**
+     * Determines if the given expression is a Quotient Operator
+     * @param expression the express to test
+     * @return true if the expression is a Quotient Operator, false if it is not.
+     */
     public boolean isQuotientOperator(String expression) {
         return expression.equals("/");
     }
-
+    /**
+     * Determines if the given expression is an assignment operator
+     * @param expression the express to test
+     * @return true if the expression is an assignment operator, false if it is not.
+     */
     public boolean isAssignmentOperator(String expression) {
         return expression.equals("=");
     }
-
+    /**
+     * Determines if the given expression is a list variable command
+     * @param expression the express to test
+     * @return true if the expression is a list variable command, false if it is not.
+     */
     public boolean isListVariablesOperator(String expression) {
         return expression.equals("?");
     }
-
+    /**
+     * Determines if the given expression is a remove variable command
+     * @param expression the express to test
+     * @return true if the expression is remove variable command, false if it is not.
+     */
     public boolean isRemoveVariableOperator(String expression) {
         return expression.equals("!");
     }
-
+    /**
+     * Determines if the given expression is any kind of operator or command
+     * @param expression the express to test
+     * @return true if the expression is any kind of operator or command, false if it is not.
+     */
     public boolean isOperator(String expression) {
         return isOpenParentheses(expression)
                 || isCloseParentheses(expression)

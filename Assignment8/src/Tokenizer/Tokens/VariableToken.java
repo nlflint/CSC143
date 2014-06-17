@@ -15,7 +15,7 @@ public class VariableToken extends Token {
         return name;
     }
 
-    @Override
+
     public double getValue() {
         return Double.NaN;
     }

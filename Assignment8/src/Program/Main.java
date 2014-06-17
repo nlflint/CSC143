@@ -33,8 +33,8 @@ public class Main {
         List<String> inputContents = readFileContents(inputFilename);
         List<String> outputContents = new ArrayList<String>();
 
-        for (String expression : inputContents)
-            outputContents.add(calculator.calculate(expression));
+        for (String statement : inputContents)
+            outputContents.add(calculator.processStatement(statement));
 
         writeFileContents(outputFilename, outputContents);
 

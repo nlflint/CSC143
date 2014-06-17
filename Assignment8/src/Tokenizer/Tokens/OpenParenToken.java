@@ -1,7 +1,7 @@
 package Tokenizer.Tokens;
 
 /**
- * Created by nate on 6/14/14.
+ * Reprsents the open parentheses: "("
  */
 public class OpenParenToken extends Token {
 }
