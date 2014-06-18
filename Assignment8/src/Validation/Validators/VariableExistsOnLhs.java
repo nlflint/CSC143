@@ -8,9 +8,15 @@ import Validation.ValidationResult;
 import java.util.List;
 
 /**
- * Created by nathanf on 6/16/2014.
+ * Validates that if the statment uses assignment, then there must be just one variable on the left
+ * hand side of the assignment operator.
  */
 public class VariableExistsOnLhs implements IValidator {
+    /**
+     * Runs validation on the given set of tokens.
+     * @param tokens a list of tokens to validate
+     * @return the results of the validation
+     */
     @Override
     public ValidationResult validate(List<Token> tokens) {
         ValidationResult validationResult = new ValidationResult();

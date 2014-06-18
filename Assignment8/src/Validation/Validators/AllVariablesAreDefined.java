@@ -9,15 +9,27 @@ import Validation.ValidationResult;
 import java.util.List;
 
 /**
- * Created by nathanf on 6/16/2014.
+ * Validates that all Variable tokens on the right side of the assignment statement
+ * have a value defined in thh variable repository.  When setting up the calculator
+ * is is important that the calculator and this validator are using the same instance
+ * of the variable repository.
  */
 public class AllVariablesAreDefined implements IValidator {
     private VariableRepository variableRepository;
 
+    /**
+     * Constructor takes a variable repository that is used to look up values.
+     * @param variableRepository the variable repository for looking up values.
+     */
     public AllVariablesAreDefined(VariableRepository variableRepository) {
         this.variableRepository = variableRepository;
     }
 
+    /**
+     * Runs validation on the given set of tokens.
+     * @param tokens a list of tokens to validate
+     * @return the results of the validation
+     */
     @Override
     public ValidationResult validate(List<Token> tokens) {
         ValidationResult validationResult = new ValidationResult();

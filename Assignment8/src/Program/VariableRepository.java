@@ -3,7 +3,8 @@ package Program;
 import java.util.*;
 
 /**
- * Manages the values stored in variables.
+ * Manages the values stored in variables. Variable values are stored by name
+ * and are case sensitive.
  */
 public class VariableRepository {
     private LinkedHashMap<String,Double> variables = new LinkedHashMap<String, Double>();

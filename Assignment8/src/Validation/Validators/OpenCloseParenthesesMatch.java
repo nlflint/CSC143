@@ -8,9 +8,16 @@ import Validation.ValidationResult;
 import java.util.List;
 
 /**
- * Created by nathanf on 6/16/2014.
+ * This class validates that the number of close and open parentheses are equal.
+ * If the count is not the same then the validation fails with a message
+ * explaining the specific problem.
  */
 public class OpenCloseParenthesesMatch implements IValidator {
+    /**
+     * Runs validation on the given set of tokens.
+     * @param tokens a list of tokens to validate
+     * @return the results of the validation
+     */
     @Override
     public ValidationResult validate(List<Token> tokens) {
         int closeParenCount = getCloseParenCount(tokens);

@@ -7,9 +7,15 @@ import Validation.ValidationResult;
 import java.util.List;
 
 /**
- * Created by nathanf on 6/16/2014.
+ * Validates there are no UnknownToken types and prints an error message if it finds one. Tokens
+ * like "^" and or "abc123" are detected during tokenization and classified as unknown tokens.
  */
 public class AllTokensAreKnown implements IValidator {
+    /**
+     * Runs validation on the given set of tokens.
+     * @param tokens a list of tokens to validate
+     * @return the results of the validation
+     */
     @Override
     public ValidationResult validate(List<Token> tokens) {
         ValidationResult validationResult = new ValidationResult();

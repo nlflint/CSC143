@@ -7,7 +7,12 @@ import java.util.List;
 
 
 /**
- * This class tokenizes arithmetic statemtns.
+ * This class tokenizes arithmetic statements. It breaks down the variables, numbers,
+ * operators, and commands into specific objects based on Token class.
+ *
+ * This tokenizer does not validate if the given statements are correct. Any unknown tokens
+ * will be returned as UnknownToken types with the name of the token in the object.
+ *
  * @author Nathan Flint
  * @version Assignment 8: Recursion and Parsing
  */

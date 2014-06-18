@@ -18,7 +18,7 @@ public class ValidationResult {
     public boolean result;
 
     /**
-     * Messages states why the validation failed. If validation did not fail, then message is blank.
+     * Messages says why the validation failed. If validation is successful, then message is blank.
      */
     public String message;
 }

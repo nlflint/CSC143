@@ -6,11 +6,17 @@ import Validation.ValidationResult;
 import java.util.List;
 
 /**
- * Created by nathanf on 6/16/2014.
+ * Validates that each math operator (+,-,*,/), has a variable, value, or appropriate parentheses
+ * on it's left and right.
  */
 public class AllOperatorsHaveOperands implements IValidator {
     private final String errorMessage = "Unexpected end of line.";
 
+    /**
+     * Runs validation on the given set of tokens.
+     * @param tokens a list of tokens to validate
+     * @return the results of the validation
+     */
     @Override
     public ValidationResult validate(List<Token> tokens) {
         ValidationResult validationResult = new ValidationResult();
@@ -43,8 +49,6 @@ public class AllOperatorsHaveOperands implements IValidator {
         }
         return validationResult;
     }
-
-
 
     private boolean isMathOperator(Token token) {
         return (token instanceof PlusToken
